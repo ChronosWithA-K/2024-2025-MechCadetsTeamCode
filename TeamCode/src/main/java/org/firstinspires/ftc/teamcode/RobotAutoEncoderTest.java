@@ -123,6 +123,9 @@ public class RobotAutoEncoderTest extends LinearOpMode {
                 limelightStatus.getPipelineIndex(), limelightStatus.getPipelineType());
 
         LLResult limelightResult = limelight.getLatestResult();
+        double tx = limelightResult.getTx();
+        double ty = limelightResult.getTy();
+
         if (limelightResult != null) {
             // Access general information
             Pose3D botpose = limelightResult.getBotpose();
