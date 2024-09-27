@@ -84,6 +84,7 @@ public class RobotAutoEncoderTest extends LinearOpMode {
          * 6 is for april tag 14
          * 7 is for april tag 15
          * 8 is for april tag 16
+         * 9 is unused
          */
 
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
@@ -123,12 +124,11 @@ public class RobotAutoEncoderTest extends LinearOpMode {
                 limelightStatus.getPipelineIndex(), limelightStatus.getPipelineType());
 
         LLResult limelightResult = limelight.getLatestResult();
-        double tx = limelightResult.getTx();
-        double ty = limelightResult.getTy();
 
         if (limelightResult != null) {
             // Access general information
             Pose3D botpose = limelightResult.getBotpose();
+
             double captureLatency = limelightResult.getCaptureLatency();
             double targetingLatency = limelightResult.getTargetingLatency();
             double parseLatency = limelightResult.getParseLatency();
@@ -137,10 +137,20 @@ public class RobotAutoEncoderTest extends LinearOpMode {
             telemetry.addData("PythonOutput", java.util.Arrays.toString(limelightResult.getPythonOutput()));
 
             if (limelightResult.isValid()) {
-                telemetry.addData("tx", limelightResult.getTx());
-                telemetry.addData("txnc", limelightResult.getTxNC());
-                telemetry.addData("ty", limelightResult.getTy());
-                telemetry.addData("tync", limelightResult.getTyNC());
+                double targetX = limelightResult.getTx(); // How far left or right the target is (degrees)
+                double targetY = limelightResult.getTy(); // How far up or down the target is (degrees)
+                double targetArea = limelightResult.getTa(); // How big the target looks (0%-100% of the image)
+
+                telemetry.addData("Target X", targetX);
+                telemetry.addData("Target Y", targetY);
+                telemetry.addData("Target Area", targetArea);
+
+                if (botpose != null) {
+                    double robotX = botpose.getPosition().x;
+                    double robotY = botpose.getPosition().y;
+                    double robotRotation = botpose.getOrientation().getYaw();
+                    telemetry.addData("MT1 Location", "(" + robotX + ", " + robotY + ", " + robotRotation + ")");
+                }
 
                 telemetry.addData("Botpose", botpose.toString());
 
@@ -155,6 +165,8 @@ public class RobotAutoEncoderTest extends LinearOpMode {
                 for (LLResultTypes.ColorResult cr : colorResults) {
                     telemetry.addData("Color", "X: %.2f, Y: %.2f", cr.getTargetXDegrees(), cr.getTargetYDegrees());
                 }
+            } else {
+                telemetry.addData("Limelight", "No targets");
             }
         } else {
             telemetry.addData("Limelight", "No data available");
