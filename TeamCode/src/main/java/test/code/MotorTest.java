@@ -6,18 +6,18 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp(name = "Basic: Motor Test", group = "Test")
-public class MotorTest extends LinearOpMode{
+public class MotorTest extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor activeMotor = null;
     // To test more motors, add them to the below array
     private String[] motorNames = {"ladder_motor", "intake_motor", "left_front", "left_back"};
     private int activeMotorIndex = 0;
 
-    private void setMotor(){
+    private void setMotor() {
         setMotor(0);
     }
 
-    private void setMotor(int delta){
+    private void setMotor(int delta) {
         activeMotorIndex += delta;
         activeMotorIndex = (activeMotorIndex + motorNames.length) % motorNames.length;
         activeMotor = hardwareMap.get(DcMotor.class, motorNames[activeMotorIndex]);
@@ -40,6 +40,10 @@ public class MotorTest extends LinearOpMode{
         final int HIGH_SPEED = 100;
 
         int motorPower = MEDIUM_SPEED;
+
+        boolean lastFramedDpadLeft = false;
+        boolean lastFramedDpadRight = false;
+
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
@@ -65,16 +69,19 @@ public class MotorTest extends LinearOpMode{
                 motorPower = 100;
             }
 
-            if (gamepad1.dpad_left){
+            lastFramedDpadLeft = gamepad1.dpad_left;
+            lastFramedDpadRight = gamepad1.dpad_right;
+
+            if (gamepad1.dpad_left && !lastFramedDpadLeft) {
                 setMotor(-1);
-            } else if (gamepad1.dpad_right){
+            } else if (gamepad1.dpad_right && !lastFramedDpadRight) {
                 setMotor(1);
             }
 
             if (gamepad1.dpad_up) {
-                activeMotor.setPower(motorPower);
-            } else if (gamepad1.dpad_down) {
                 activeMotor.setPower(-motorPower);
+            } else if (gamepad1.dpad_down) {
+                activeMotor.setPower(motorPower);
             } else {
                 activeMotor.setPower(0);
             }
