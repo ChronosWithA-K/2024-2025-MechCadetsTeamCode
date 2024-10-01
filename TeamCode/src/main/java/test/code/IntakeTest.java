@@ -40,18 +40,16 @@ public class IntakeTest extends LinearOpMode{
                 motorPower = HIGH_SPEED;
             } else if (gamepad1.x) {
                 motorPower = 50; // I know it's a magic number, but it's worse to call it MEDIUM_SPEED or similar, isn't it?
-            }
-
-            if (gamepad1.right_bumper) {
+            } else if (gamepad1.right_bumper) {
                 motorPower += 10;
             } else if (gamepad1.left_bumper) {
                 motorPower -= 10;
-            }
-
-            if (motorPower < 0) {
+            } else if (motorPower < 0) {
                 motorPower = 0;
             } else if (motorPower > 100) {
                 motorPower = 100;
+            } else {
+                motorPower = 0;
             }
 
             if (gamepad1.dpad_up) {
