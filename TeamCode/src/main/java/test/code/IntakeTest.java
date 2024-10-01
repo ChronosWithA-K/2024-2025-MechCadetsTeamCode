@@ -24,14 +24,14 @@ public class IntakeTest extends LinearOpMode{
         waitForStart();
         runtime.reset();
 
+        final int LOW_SPEED = 33;
+        final int MEDIUM_SPEED = 66;
+        final int HIGH_SPEED = 100;
+
+        int motorPower = MEDIUM_SPEED;
+
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-            final int LOW_SPEED = 33;
-            final int MEDIUM_SPEED = 66;
-            final int HIGH_SPEED = 100;
-
-            int motorPower = MEDIUM_SPEED;
-
             if (gamepad1.a) {
                 motorPower = LOW_SPEED;
             } else if (gamepad1.b) {
@@ -60,7 +60,7 @@ public class IntakeTest extends LinearOpMode{
                 intakeMotor.setPower(-motorPower);
             }
 
-            telemetry.addData("Wheel power", "%4.2f, %4.2f", motorPower);
+            telemetry.addData("Wheel power: ", motorPower);
             telemetry.update();
         }
     }
