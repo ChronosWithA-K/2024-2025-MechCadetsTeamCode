@@ -6,14 +6,14 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@TeleOp(name = "Basic: Intake Test", group = "Test")
-public class IntakeTest extends LinearOpMode{
+@TeleOp(name = "Basic: Ladder Test", group = "Test")
+public class LadderTest extends LinearOpMode{
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor intakeMotor = null;
 
     @Override
     public void runOpMode() {
-        intakeMotor = hardwareMap.get(DcMotor.class, "intake_motor");
+        intakeMotor = hardwareMap.get(DcMotor.class, "ladder_motor");
 
         intakeMotor.setDirection(DcMotor.Direction.FORWARD);
 
