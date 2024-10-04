@@ -41,8 +41,8 @@ public class MotorTest extends LinearOpMode {
 
         int motorPower = MEDIUM_SPEED;
 
-        boolean lastFramedDpadLeft = false;
-        boolean lastFramedDpadRight = false;
+        boolean lastFrameDpadLeft = false;
+        boolean lastFrameDpadRight = false;
 
 
         // run until the end of the match (driver presses STOP)
@@ -69,14 +69,13 @@ public class MotorTest extends LinearOpMode {
                 motorPower = 100;
             }
 
-            lastFramedDpadLeft = gamepad1.dpad_left;
-            lastFramedDpadRight = gamepad1.dpad_right;
-
-            if (gamepad1.dpad_left && !lastFramedDpadLeft) {
+            if (gamepad1.dpad_left && !lastFrameDpadLeft) {
                 setMotor(-1);
-            } else if (gamepad1.dpad_right && !lastFramedDpadRight) {
+            } else if (gamepad1.dpad_right && !lastFrameDpadRight) {
                 setMotor(1);
             }
+            lastFrameDpadLeft = gamepad1.dpad_left;
+            lastFrameDpadRight = gamepad1.dpad_right;
 
             if (gamepad1.dpad_up) {
                 activeMotor.setPower(-motorPower);
