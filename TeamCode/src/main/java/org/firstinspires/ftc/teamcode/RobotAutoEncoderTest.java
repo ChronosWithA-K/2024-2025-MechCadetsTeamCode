@@ -107,6 +107,7 @@ public class RobotAutoEncoderTest extends LinearOpMode {
 
         // Start the limelight polling for data (getLatestResult() will return null without this)
         limelight.start();
+        limelight.pipelineSwitch(9);
 
         // Send telemetry message to indicate successful Encoder reset
         telemetry.addData("Starting at",  "%7d :%7d",
@@ -123,53 +124,56 @@ public class RobotAutoEncoderTest extends LinearOpMode {
         telemetry.addData("Pipeline", "Index: %d, Type: %s",
                 limelightStatus.getPipelineIndex(), limelightStatus.getPipelineType());
 
-        LLResult limelightResult = limelight.getLatestResult();
+        while(opModeIsActive()) {
+            LLResult limelightResult = limelight.getLatestResult();
 
-        if (limelightResult != null) {
-            // Access general information
-            Pose3D botpose = limelightResult.getBotpose();
+            if (limelightResult != null) {
+                // Access general information
+                Pose3D botpose = limelightResult.getBotpose();
 
-            double captureLatency = limelightResult.getCaptureLatency();
-            double targetingLatency = limelightResult.getTargetingLatency();
-            double parseLatency = limelightResult.getParseLatency();
-            telemetry.addData("LL Latency", captureLatency + targetingLatency);
-            telemetry.addData("Parse Latency", parseLatency);
-            telemetry.addData("PythonOutput", java.util.Arrays.toString(limelightResult.getPythonOutput()));
+                double captureLatency = limelightResult.getCaptureLatency();
+                double targetingLatency = limelightResult.getTargetingLatency();
+                double parseLatency = limelightResult.getParseLatency();
+                telemetry.addData("LL Latency", captureLatency + targetingLatency);
+                telemetry.addData("Parse Latency", parseLatency);
+                telemetry.addData("PythonOutput", java.util.Arrays.toString(limelightResult.getPythonOutput()));
 
-            if (limelightResult.isValid()) {
-                double targetX = limelightResult.getTx(); // How far left or right the target is (degrees)
-                double targetY = limelightResult.getTy(); // How far up or down the target is (degrees)
-                double targetArea = limelightResult.getTa(); // How big the target looks (0%-100% of the image)
+                if (limelightResult.isValid()) {
+                    double targetX = limelightResult.getTx(); // How far left or right the target is (degrees)
+                    double targetY = limelightResult.getTy(); // How far up or down the target is (degrees)
+                    double targetArea = limelightResult.getTa(); // How big the target looks (0%-100% of the image)
 
-                telemetry.addData("Target X", targetX);
-                telemetry.addData("Target Y", targetY);
-                telemetry.addData("Target Area", targetArea);
+                    telemetry.addData("Target X", targetX);
+                    telemetry.addData("Target Y", targetY);
+                    telemetry.addData("Target Area", targetArea);
 
-                if (botpose != null) {
-                    double robotX = botpose.getPosition().x;
-                    double robotY = botpose.getPosition().y;
-                    double robotRotation = botpose.getOrientation().getYaw();
-                    telemetry.addData("MT1 Location", "(" + robotX + ", " + robotY + ", " + robotRotation + ")");
-                }
+                    if (botpose != null) {
+                        double robotX = botpose.getPosition().x;
+                        double robotY = botpose.getPosition().y;
+                        double robotRotation = botpose.getOrientation().getYaw();
+                        telemetry.addData("MT1 Location", "(" + robotX + ", " + robotY + ", " + robotRotation + ")");
+                    }
 
-                telemetry.addData("Botpose", botpose.toString());
+                    telemetry.addData("Botpose", botpose.toString());
 
-                // Access fiducial results
-                List<LLResultTypes.FiducialResult> fiducialResults = limelightResult.getFiducialResults();
-                for (LLResultTypes.FiducialResult fr : fiducialResults) {
-                    telemetry.addData("Fiducial", "ID: %d, Family: %s, X: %.2f, Y: %.2f", fr.getFiducialId(), fr.getFamily(), fr.getTargetXDegrees(), fr.getTargetYDegrees());
-                }
+                    // Access fiducial results
+                    List<LLResultTypes.FiducialResult> fiducialResults = limelightResult.getFiducialResults();
+                    for (LLResultTypes.FiducialResult fr : fiducialResults) {
+                        telemetry.addData("Fiducial", "ID: %d, Family: %s, X: %.2f, Y: %.2f", fr.getFiducialId(), fr.getFamily(), fr.getTargetXDegrees(), fr.getTargetYDegrees());
+                    }
 
-                // Access color results
-                List<LLResultTypes.ColorResult> colorResults = limelightResult.getColorResults();
-                for (LLResultTypes.ColorResult cr : colorResults) {
-                    telemetry.addData("Color", "X: %.2f, Y: %.2f", cr.getTargetXDegrees(), cr.getTargetYDegrees());
+                    // Access color results
+                    List<LLResultTypes.ColorResult> colorResults = limelightResult.getColorResults();
+                    for (LLResultTypes.ColorResult cr : colorResults) {
+                        telemetry.addData("Color", "X: %.2f, Y: %.2f", cr.getTargetXDegrees(), cr.getTargetYDegrees());
+                    }
+                } else {
+                    telemetry.addData("Limelight", "No targets");
                 }
             } else {
-                telemetry.addData("Limelight", "No targets");
+                telemetry.addData("Limelight", "No data available");
             }
-        } else {
-            telemetry.addData("Limelight", "No data available");
+            telemetry.update();
         }
 
         // Step through each leg of the path
