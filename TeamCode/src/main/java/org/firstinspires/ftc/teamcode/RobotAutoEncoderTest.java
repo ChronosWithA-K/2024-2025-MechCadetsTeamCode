@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
@@ -44,6 +45,8 @@ public class RobotAutoEncoderTest extends LinearOpMode {
     private DcMotor xEncoder = null;
     private DcMotor yEncoder = null;
 
+    private IMU imu = null;
+
     private Limelight3A limelight;
 
     private ElapsedTime runtime = new ElapsedTime();
@@ -72,6 +75,8 @@ public class RobotAutoEncoderTest extends LinearOpMode {
 
         xEncoder = hardwareMap.get(DcMotor.class, "x_encoder");
         yEncoder = hardwareMap.get(DcMotor.class, "y_encoder");
+
+        imu = hardwareMap.get(IMU.class, "imu");
 
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
         /*
@@ -128,6 +133,7 @@ public class RobotAutoEncoderTest extends LinearOpMode {
             LLResult limelightResult = limelight.getLatestResult();
 
             if (limelightResult != null) {
+                limelight.updateRobotOrientation(imu.getRobotYawPitchRollAngles().getYaw());
                 // Access general information
                 Pose3D botpose = limelightResult.getBotpose();
 
