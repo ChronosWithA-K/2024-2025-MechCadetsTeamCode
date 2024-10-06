@@ -26,4 +26,5 @@ android {
 dependencies {
     implementation project(':FtcRobotController')
     implementation files('../libs/navx_ftc-release.aar')
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib:2.0.0'
 }

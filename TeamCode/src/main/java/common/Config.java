@@ -6,10 +6,10 @@ package common;
  */
 
 public class Config {
-    public static final String LEFT_FRONT       = "leftFront";      // control hub port 0
-    public static final String RIGHT_FRONT      = "rightFront";     // control hub port 1
-    public static final String LEFT_BACK        = "leftRear";       // control hub port 2
-    public static final String RIGHT_BACK       = "rightRear";      // control hub port 3
+    public static final String LEFT_FRONT       = "left_front";      // control hub port 0
+    public static final String RIGHT_FRONT      = "right_front";     // control hub port 1
+    public static final String LEFT_BACK        = "left_back";       // control hub port 2
+    public static final String RIGHT_BACK       = "right_back";      // control hub port 3
 
     public static final String ODOMETER          = "odometer";
 
