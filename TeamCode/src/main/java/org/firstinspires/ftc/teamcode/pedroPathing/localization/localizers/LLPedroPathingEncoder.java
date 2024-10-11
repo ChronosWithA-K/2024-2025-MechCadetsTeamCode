@@ -74,6 +74,7 @@ public class LLPedroPathingEncoder extends DriveEncoderLocalizer {
                 double y = botpose.getPosition().y;
                 y /= 0.0254;
                 limelightPose = new Pose(x,y, botpose.getOrientation().getYaw());
+                //  setPose(limelightPose);
             } else {
                 limelightPose = null;
             }
