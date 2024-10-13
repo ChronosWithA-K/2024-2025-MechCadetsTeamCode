@@ -24,6 +24,7 @@ public class CustomHolonomicDrive extends LinearOpMode {
     private Servo extendServo = null;
     private Servo bucketServo = null;
     private Servo intakeServo = null;
+    private Servo clawServo = null;
 
     @Override
     public void runOpMode() {
@@ -41,6 +42,7 @@ public class CustomHolonomicDrive extends LinearOpMode {
         extendServo = hardwareMap.get(Servo.class, "extend_servo");
         bucketServo = hardwareMap.get(Servo.class, "bucket_servo");
         intakeServo = hardwareMap.get(Servo.class, "intake_servo");
+        clawServo = hardwareMap.get(Servo.class, "claw_servo");
 
         viperSlideMotor = hardwareMap.get(DcMotor.class, "viper_slide_motor");
 
@@ -74,6 +76,7 @@ public class CustomHolonomicDrive extends LinearOpMode {
             int extendServoPosition = 0;
             int bucketServoPosition = 0;
             int intakeServoPosition = 0;
+            int clawServoPosition = 0;
 
             int viperSlideMotorPower = 0;
 
@@ -138,10 +141,17 @@ public class CustomHolonomicDrive extends LinearOpMode {
                 intakeServoPosition = 0;
             }
 
+            if (gamepad1.x && clawServoPosition == 0) {
+                clawServoPosition = 1;
+            } else if (gamepad1.x && clawServoPosition == 1) {
+                clawServoPosition = 0;
+            }
+
             // Set servo positions
             extendServo.setPosition(extendServoPosition);
             bucketServo.setPosition(bucketServoPosition);
             intakeServo.setPosition(intakeServoPosition);
+            clawServo.setPosition(clawServoPosition);
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
