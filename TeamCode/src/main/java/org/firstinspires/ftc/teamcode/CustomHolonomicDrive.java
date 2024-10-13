@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -17,21 +16,33 @@ public class CustomHolonomicDrive extends LinearOpMode {
     private DcMotor rightFrontDrive = null;
     private DcMotor rightBackDrive = null;
 
+    private DcMotor viperSlideMotor = null;
+
     private DcMotor xEncoder = null;
     private DcMotor yEncoder = null;
+
+    private Servo extendServo = null;
+    private Servo bucketServo = null;
+    private Servo intakeServo = null;
 
     @Override
     public void runOpMode() {
 
         // Initialize the hardware variables. Note that the strings used here must correspond
         // to the names assigned during the robot configuration step on the DS or RC devices.
-        leftFrontDrive  = hardwareMap.get(DcMotor.class, "left_front");
-        leftBackDrive  = hardwareMap.get(DcMotor.class, "left_back");
+        leftFrontDrive = hardwareMap.get(DcMotor.class, "left_front");
+        leftBackDrive = hardwareMap.get(DcMotor.class, "left_back");
         rightFrontDrive = hardwareMap.get(DcMotor.class, "right_front");
         rightBackDrive = hardwareMap.get(DcMotor.class, "right_back");
 
         xEncoder = hardwareMap.get(DcMotor.class, "x_encoder");
         yEncoder = hardwareMap.get(DcMotor.class, "y_encoder");
+
+        extendServo = hardwareMap.get(Servo.class, "extend_servo");
+        bucketServo = hardwareMap.get(Servo.class, "bucket_servo");
+        intakeServo = hardwareMap.get(Servo.class, "intake_servo");
+
+        viperSlideMotor = hardwareMap.get(DcMotor.class, "viper_slide_motor");
 
         // ########################################################################################
         // !!!            IMPORTANT Drive Information. Test your motor directions.            !!!!!
@@ -48,6 +59,8 @@ public class CustomHolonomicDrive extends LinearOpMode {
         rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
         rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
 
+        viperSlideMotor.setDirection(DcMotor.Direction.FORWARD);
+
         // Wait for the game to start (driver presses PLAY)
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -58,18 +71,23 @@ public class CustomHolonomicDrive extends LinearOpMode {
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
             double max;
+            int extendServoPosition = 0;
+            int bucketServoPosition = 0;
+            int intakeServoPosition = 0;
+
+            int viperSlideMotorPower = 0;
 
             // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
-            double axial   = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
-            double lateral =  gamepad1.left_stick_x;
-            double yaw     =  gamepad1.right_stick_x;
+            double axial = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
+            double lateral = gamepad1.left_stick_x;
+            double yaw = gamepad1.right_stick_x;
 
             // Combine the joystick requests for each axis-motion to determine each wheel's power.
             // Set up a variable for each drive wheel to save the power level for telemetry.
-            double leftFrontPower  = axial + lateral + yaw;
+            double leftFrontPower = axial + lateral + yaw;
             double rightFrontPower = axial - lateral - yaw;
-            double leftBackPower   = axial - lateral + yaw;
-            double rightBackPower  = axial + lateral - yaw;
+            double leftBackPower = axial - lateral + yaw;
+            double rightBackPower = axial + lateral - yaw;
 
             // Normalize the values so no wheel power exceeds 100%
             // This ensures that the robot maintains the desired motion.
@@ -78,10 +96,10 @@ public class CustomHolonomicDrive extends LinearOpMode {
             max = Math.max(max, Math.abs(rightBackPower));
 
             if (max > 1.0) {
-                leftFrontPower  /= max;
+                leftFrontPower /= max;
                 rightFrontPower /= max;
-                leftBackPower   /= max;
-                rightBackPower  /= max;
+                leftBackPower /= max;
+                rightBackPower /= max;
             }
 
             // Send calculated power to wheels
@@ -90,6 +108,40 @@ public class CustomHolonomicDrive extends LinearOpMode {
             leftBackDrive.setPower(leftBackPower);
             rightBackDrive.setPower(rightBackPower);
 
+            // Viper slide motor logic
+            if (gamepad1.right_trigger > 0) { // Put deadzone later
+                viperSlideMotorPower = Math.round(gamepad1.right_trigger * 100);
+            } else if (gamepad1.left_trigger > 0) {
+                viperSlideMotorPower = Math.round(-(gamepad1.left_trigger * 100));
+            } else {
+                viperSlideMotorPower = 0;
+            }
+
+            viperSlideMotor.setPower(viperSlideMotorPower);
+
+            // Servo position logic
+            if (gamepad1.a && extendServoPosition == 0) {
+                extendServoPosition = 1;
+            } else if (gamepad1.a && extendServoPosition == 1) {
+                extendServoPosition = 0;
+            }
+
+            if (gamepad1.b && bucketServoPosition == 0) {
+                bucketServoPosition = 1;
+            } else if (gamepad1.b && bucketServoPosition == 1) {
+                bucketServoPosition = 0;
+            }
+
+            if (gamepad1.y && intakeServoPosition == 0) {
+                intakeServoPosition = 1;
+            } else if (gamepad1.y && intakeServoPosition == 1) {
+                intakeServoPosition = 0;
+            }
+
+            // Set servo positions
+            extendServo.setPosition(extendServoPosition);
+            bucketServo.setPosition(bucketServoPosition);
+            intakeServo.setPosition(intakeServoPosition);
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
@@ -97,6 +149,11 @@ public class CustomHolonomicDrive extends LinearOpMode {
             telemetry.addData("Back  left/Right", "%4.2f, %4.2f", leftBackPower, rightBackPower);
             telemetry.addData("xEncoder", "%4.2f, %4.2f", xEncoder);
             telemetry.addData("yEncoder", "%4.2f, %4.2f", yEncoder);
+            telemetry.addData("extendServo", extendServoPosition);
+            telemetry.addData("bucketServo", bucketServoPosition);
+            telemetry.addData("intakeServo", intakeServoPosition);
+            telemetry.addData("viperSlideMotorPower", viperSlideMotorPower);
             telemetry.update();
         }
-    }}
+    }
+}

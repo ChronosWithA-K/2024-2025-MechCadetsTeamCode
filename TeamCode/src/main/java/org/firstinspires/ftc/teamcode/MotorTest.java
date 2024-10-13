@@ -54,7 +54,7 @@ public class MotorTest extends LinearOpMode {
             } else if (gamepad1.y) {
                 motorPower = HIGH_SPEED;
             } else if (gamepad1.x) {
-                motorPower = 50; // I know it's a magic number, but it's worse to call it HALF_SPEED or similar, isn't it?
+                motorPower = 50; // I know it's a magic number but it's worse to call it HALF_SPEED or similar
             }
 
             if (gamepad1.right_bumper) {
