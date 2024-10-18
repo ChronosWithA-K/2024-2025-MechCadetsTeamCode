@@ -25,6 +25,7 @@ public class CustomHolonomicDrive extends LinearOpMode {
     private Servo bucketServo = null;
     private Servo intakeServo = null;
     private Servo clawServo = null;
+    private Servo clawWristServo = null;
 
     @Override
     public void runOpMode() {
@@ -43,6 +44,7 @@ public class CustomHolonomicDrive extends LinearOpMode {
         bucketServo = hardwareMap.get(Servo.class, "bucket_servo");
         intakeServo = hardwareMap.get(Servo.class, "intake_servo");
         clawServo = hardwareMap.get(Servo.class, "claw_servo");
+        clawWristServo = hardwareMap.get(Servo.class, "claw_wrist_servo");
 
         viperSlideMotor = hardwareMap.get(DcMotor.class, "viper_slide_motor");
 
@@ -77,6 +79,7 @@ public class CustomHolonomicDrive extends LinearOpMode {
             int bucketServoPosition = 0;
             int intakeServoPosition = 0;
             int clawServoPosition = 0;
+            int clawWristServoPosition = 0;
 
             int viperSlideMotorPower = 0;
 
@@ -147,11 +150,18 @@ public class CustomHolonomicDrive extends LinearOpMode {
                 clawServoPosition = 0;
             }
 
+            if (gamepad1.right_bumper && clawWristServoPosition == 0) {
+                clawWristServoPosition = 1;
+            } else if (gamepad1.right_bumper && clawWristServoPosition == 1) {
+                clawWristServoPosition = 0;
+            }
+
             // Set servo positions
             extendServo.setPosition(extendServoPosition);
             bucketServo.setPosition(bucketServoPosition);
             intakeServo.setPosition(intakeServoPosition);
             clawServo.setPosition(clawServoPosition);
+            clawWristServo.setPosition(clawWristServoPosition);
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
@@ -159,9 +169,11 @@ public class CustomHolonomicDrive extends LinearOpMode {
             telemetry.addData("Back  left/Right", "%4.2f, %4.2f", leftBackPower, rightBackPower);
             telemetry.addData("xEncoder", "%4.2f, %4.2f", xEncoder);
             telemetry.addData("yEncoder", "%4.2f, %4.2f", yEncoder);
-            telemetry.addData("extendServo", extendServoPosition);
-            telemetry.addData("bucketServo", bucketServoPosition);
-            telemetry.addData("intakeServo", intakeServoPosition);
+            telemetry.addData("extendServo position: ", extendServoPosition);
+            telemetry.addData("bucketServo position: ", bucketServoPosition);
+            telemetry.addData("intakeServo position: ", intakeServoPosition);
+            telemetry.addData("clawServo position: ", clawServoPosition);
+            telemetry.addData("clawWristServo position: ", clawWristServoPosition);
             telemetry.addData("viperSlideMotorPower", viperSlideMotorPower);
             telemetry.update();
         }
