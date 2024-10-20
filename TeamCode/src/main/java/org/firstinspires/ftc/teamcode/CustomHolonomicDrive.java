@@ -18,8 +18,8 @@ public class CustomHolonomicDrive extends LinearOpMode {
 
     private DcMotor viperSlideMotor = null;
 
-    private DcMotor xEncoder = null;
-    private DcMotor yEncoder = null;
+//    private DcMotor xEncoder = null;
+//    private DcMotor yEncoder = null;
 
     private Servo extendServo = null;
     private Servo bucketServo = null;
@@ -37,8 +37,8 @@ public class CustomHolonomicDrive extends LinearOpMode {
         rightFrontDrive = hardwareMap.get(DcMotor.class, "right_front");
         rightBackDrive = hardwareMap.get(DcMotor.class, "right_back");
 
-        xEncoder = hardwareMap.get(DcMotor.class, "x_encoder");
-        yEncoder = hardwareMap.get(DcMotor.class, "y_encoder");
+//        xEncoder = hardwareMap.get(DcMotor.class, "x_encoder");
+//        yEncoder = hardwareMap.get(DcMotor.class, "y_encoder");
 
         extendServo = hardwareMap.get(Servo.class, "extend_servo");
         bucketServo = hardwareMap.get(Servo.class, "bucket_servo");
@@ -79,7 +79,7 @@ public class CustomHolonomicDrive extends LinearOpMode {
             int bucketServoPosition = 0;
             int intakeServoPosition = 0;
             int clawServoPosition = 0;
-            int clawWristServoPosition = 0;
+            double clawWristServoPosition = 0.5; // Servo left value is too far down, center is perfect
 
             int viperSlideMotorPower = 0;
 
@@ -150,10 +150,10 @@ public class CustomHolonomicDrive extends LinearOpMode {
                 clawServoPosition = 0;
             }
 
-            if (gamepad1.right_bumper && clawWristServoPosition == 0) {
+            if (gamepad1.right_bumper && clawWristServoPosition == 0.5) {
                 clawWristServoPosition = 1;
             } else if (gamepad1.right_bumper && clawWristServoPosition == 1) {
-                clawWristServoPosition = 0;
+                clawWristServoPosition = 0.5;
             }
 
             // Set servo positions
@@ -167,8 +167,8 @@ public class CustomHolonomicDrive extends LinearOpMode {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Front left/Right", "%4.2f, %4.2f", leftFrontPower, rightFrontPower);
             telemetry.addData("Back  left/Right", "%4.2f, %4.2f", leftBackPower, rightBackPower);
-            telemetry.addData("xEncoder", "%4.2f, %4.2f", xEncoder);
-            telemetry.addData("yEncoder", "%4.2f, %4.2f", yEncoder);
+//            telemetry.addData("xEncoder", "%4.2f, %4.2f", xEncoder);
+//            telemetry.addData("yEncoder", "%4.2f, %4.2f", yEncoder);
             telemetry.addData("extendServo position: ", extendServoPosition);
             telemetry.addData("bucketServo position: ", bucketServoPosition);
             telemetry.addData("intakeServo position: ", intakeServoPosition);
