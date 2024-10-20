@@ -41,11 +41,6 @@ public class ServoTest extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-            if (gamepad1.a) {
-                activeServoPosition = 0;
-            } else if (gamepad1.b) {
-                activeServoPosition = 1;
-            }
 
             if (gamepad1.dpad_left && !lastFrameDpadLeft) {
                 setServo(-1);
@@ -56,9 +51,9 @@ public class ServoTest extends LinearOpMode {
             lastFrameDpadRight = gamepad1.dpad_right;
 
             if (gamepad1.dpad_up) {
-                activeServoPosition = 0;
-            } else if (gamepad1.dpad_down) {
                 activeServoPosition = 1;
+            } else if (gamepad1.dpad_down) {
+                activeServoPosition = 0;
             }
 
             activeServo.setPosition(activeServoPosition);
