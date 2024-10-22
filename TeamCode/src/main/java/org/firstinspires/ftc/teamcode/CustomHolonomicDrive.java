@@ -90,7 +90,7 @@ public class CustomHolonomicDrive extends LinearOpMode {
             double axialThreshold = 0.05 * lateral;
             double lateralThreshold = 0.05 * axial;
 
-            // Untested
+            // If not steering much, assume it's because of human inaccuracy and fix it (untested)
             if (Math.abs(axial) <= axialThreshold) {
                 axial = 0;
             } else if (Math.abs(lateral) <= lateralThreshold) {
