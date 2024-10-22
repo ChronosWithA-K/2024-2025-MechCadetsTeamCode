@@ -18,7 +18,7 @@ public class CustomHolonomicDrive extends LinearOpMode {
 
     private DcMotor viperSlideMotor = null;
 
-//    private DcMotor xEncoder = null;
+//    private DcMotor xEncoder = null; // If uncommented and not attached to the robot, things will break
 //    private DcMotor yEncoder = null;
 
     private Servo extendServo = null;
@@ -29,7 +29,6 @@ public class CustomHolonomicDrive extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-
         // Initialize the hardware variables. Note that the strings used here must correspond
         // to the names assigned during the robot configuration step on the DS or RC devices.
         leftFrontDrive = hardwareMap.get(DcMotor.class, "left_front");
@@ -87,6 +86,16 @@ public class CustomHolonomicDrive extends LinearOpMode {
             double axial = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
             double lateral = gamepad1.left_stick_x;
             double yaw = gamepad1.right_stick_x;
+
+            double axialThreshold = 0.05 * lateral;
+            double lateralThreshold = 0.05 * axial;
+
+            // Untested
+            if (Math.abs(axial) <= axialThreshold) {
+                axial = 0;
+            } else if (Math.abs(lateral) <= lateralThreshold) {
+                lateral = 0;
+            }
 
             // Combine the joystick requests for each axis-motion to determine each wheel's power.
             // Set up a variable for each drive wheel to save the power level for telemetry.
