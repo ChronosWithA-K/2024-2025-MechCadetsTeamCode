@@ -44,6 +44,8 @@ public class CustomHolonomicDrive extends LinearOpMode {
         intakeServo = hardwareMap.get(Servo.class, "intake_servo");
         clawServo = hardwareMap.get(Servo.class, "claw_servo");
         clawWristServo = hardwareMap.get(Servo.class, "claw_wrist_servo");
+        clawWristServo.scaleRange(0.5, 1); // Normal 0 is too far down
+
 
         viperSlideMotor = hardwareMap.get(DcMotor.class, "viper_slide_motor");
 
@@ -74,11 +76,11 @@ public class CustomHolonomicDrive extends LinearOpMode {
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
             double max;
-            int extendServoPosition = 0;
-            int bucketServoPosition = 0;
-            int intakeServoPosition = 0;
-            int clawServoPosition = 0;
-            double clawWristServoPosition = 0.5; // Servo left value is too far down, center is perfect
+            double extendServoPosition = 0.0;
+            double bucketServoPosition = 0.0;
+            double intakeServoPosition = 0.0;
+            double clawServoPosition = 0.0;
+            double clawWristServoPosition = 0.0; // Servo left value is too far down, center is perfect
 
             int viperSlideMotorPower = 0;
 
@@ -135,34 +137,34 @@ public class CustomHolonomicDrive extends LinearOpMode {
             viperSlideMotor.setPower(viperSlideMotorPower);
 
             // Servo position logic
-            if (gamepad1.a && extendServoPosition == 0) {
-                extendServoPosition = 1;
-            } else if (gamepad1.a && extendServoPosition == 1) {
-                extendServoPosition = 0;
+            if (gamepad1.a && extendServoPosition == 0.0) {
+                extendServoPosition = 1.0;
+            } else if (gamepad1.a && extendServoPosition == 1.0) {
+                extendServoPosition = 0.0;
             }
 
-            if (gamepad1.b && bucketServoPosition == 0) {
-                bucketServoPosition = 1;
-            } else if (gamepad1.b && bucketServoPosition == 1) {
-                bucketServoPosition = 0;
+            if (gamepad1.b && bucketServoPosition == 0.0) {
+                bucketServoPosition = 1.0;
+            } else if (gamepad1.b && bucketServoPosition == 1.0) {
+                bucketServoPosition = 0.0;
             }
 
-            if (gamepad1.y && intakeServoPosition == 0) {
-                intakeServoPosition = 1;
-            } else if (gamepad1.y && intakeServoPosition == 1) {
-                intakeServoPosition = 0;
+            if (gamepad1.y && intakeServoPosition == 0.0) {
+                intakeServoPosition = 1.0;
+            } else if (gamepad1.y && intakeServoPosition == 1.0) {
+                intakeServoPosition = 0.0;
             }
 
-            if (gamepad1.x && clawServoPosition == 0) {
-                clawServoPosition = 1;
-            } else if (gamepad1.x && clawServoPosition == 1) {
-                clawServoPosition = 0;
+            if (gamepad1.x && clawServoPosition == 0.0) {
+                clawServoPosition = 1.0;
+            } else if (gamepad1.x && clawServoPosition == 1.0) {
+                clawServoPosition = 0.0;
             }
 
-            if (gamepad1.right_bumper && clawWristServoPosition == 0.5) {
-                clawWristServoPosition = 1;
-            } else if (gamepad1.right_bumper && clawWristServoPosition == 1) {
-                clawWristServoPosition = 0.5;
+            if (gamepad1.right_bumper && clawWristServoPosition == 0.0) {
+                clawWristServoPosition = 1.0;
+            } else if (gamepad1.right_bumper && clawWristServoPosition == 1.0) {
+                clawWristServoPosition = 0.0;
             }
 
             // Set servo positions
