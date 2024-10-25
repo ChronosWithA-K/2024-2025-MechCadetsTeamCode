@@ -44,7 +44,7 @@ public class CustomHolonomicDrive extends LinearOpMode {
         intakeServo = hardwareMap.get(Servo.class, "intake_servo");
         clawServo = hardwareMap.get(Servo.class, "claw_servo");
         clawWristServo = hardwareMap.get(Servo.class, "claw_wrist_servo");
-        clawWristServo.scaleRange(0.5, 1); // Normal 0 is too far down
+        clawWristServo.scaleRange(0.0, 0.5); // Normal 0 is too far down
 
 
         viperSlideMotor = hardwareMap.get(DcMotor.class, "viper_slide_motor");
