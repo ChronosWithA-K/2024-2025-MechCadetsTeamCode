@@ -134,8 +134,6 @@ public class CustomHolonomicDrive extends LinearOpMode {
                 viperSlideMotorPower = 0;
             }
 
-            viperSlideMotor.setPower(viperSlideMotorPower);
-
             // Servo position logic
             if (gamepad1.a && extendServoPosition == 0.0) {
                 extendServoPosition = 1.0;
@@ -173,6 +171,10 @@ public class CustomHolonomicDrive extends LinearOpMode {
             intakeServo.setPosition(intakeServoPosition);
             clawServo.setPosition(clawServoPosition);
             clawWristServo.setPosition(clawWristServoPosition);
+
+            // Set (non-drive) motor power
+            viperSlideMotor.setPower(viperSlideMotorPower);
+
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
