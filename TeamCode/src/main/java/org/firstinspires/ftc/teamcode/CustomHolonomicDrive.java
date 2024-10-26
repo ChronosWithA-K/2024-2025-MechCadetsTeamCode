@@ -64,6 +64,7 @@ public class CustomHolonomicDrive extends LinearOpMode {
         rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
         rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
 
+        viperSlideMotor.setTargetPosition(0);
         viperSlideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         viperSlideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         viperSlideMotor.setPower(1);
@@ -76,7 +77,6 @@ public class CustomHolonomicDrive extends LinearOpMode {
 
         waitForStart();
         runtime.reset();
-
 
         double max;
         double extendServoPosition = 0.0;
@@ -92,6 +92,7 @@ public class CustomHolonomicDrive extends LinearOpMode {
         double lateral = gamepad1.left_stick_x;
         double yaw = gamepad1.right_stick_x;
 
+        boolean prevExtend = false;
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
@@ -131,18 +132,23 @@ public class CustomHolonomicDrive extends LinearOpMode {
             rightBackDrive.setPower(rightBackPower);
 
             // Viper slide motor logic
-            if (gamepad1.right_trigger > 0) { // Put deadzone later
-                viperSlideMotorPosition = Math.round(gamepad1.right_trigger * 100);
-            } else if (gamepad1.left_trigger > 0) {
-                viperSlideMotorPosition = 0;
-            }
+//            if (gamepad1.right_trigger > 0) { // Put deadzone later
+//                viperSlideMotorPosition = ;
+//            } else if (gamepad1.left_trigger > 0) {
+//                viperSlideMotorPosition = 0;
+//            }
+            telemetry.addData("Viper encoder: ", viperSlideMotor.getCurrentPosition());
 
             // Servo position logic
-            if (gamepad1.a && extendServoPosition == 0.0) {
-                extendServoPosition = 1.0;
-            } else if (gamepad1.a && extendServoPosition == 1.0) {
-                extendServoPosition = 0.0;
+            if (!prevExtend) {
+                if (gamepad1.a && extendServoPosition == 0.0) {
+                    extendServoPosition = 1.0;
+                } else if (gamepad1.a && extendServoPosition == 1.0) {
+                    extendServoPosition = 0.0;
+                }
             }
+
+            prevExtend = gamepad1.a;
 
             if (gamepad1.b && bucketServoPosition == 0.0) {
                 bucketServoPosition = 1.0;
@@ -177,7 +183,6 @@ public class CustomHolonomicDrive extends LinearOpMode {
 
             // Set (non-drive) motor power
             viperSlideMotor.setTargetPosition(viperSlideMotorPosition);
-
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
