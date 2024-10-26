@@ -44,7 +44,7 @@ public class CustomHolonomicDrive extends LinearOpMode {
         intakeServo = hardwareMap.get(Servo.class, "intake_servo");
         clawServo = hardwareMap.get(Servo.class, "claw_servo");
         clawWristServo = hardwareMap.get(Servo.class, "claw_wrist_servo");
-        clawWristServo.scaleRange(0.0, 0.5); // Normal 0 is too far down
+        clawWristServo.scaleRange(0.0, 0.5);
 
 
         viperSlideMotor = hardwareMap.get(DcMotor.class, "viper_slide_motor");
@@ -64,6 +64,10 @@ public class CustomHolonomicDrive extends LinearOpMode {
         rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
         rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
 
+        viperSlideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        viperSlideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        viperSlideMotor.setPower(1);
+
         viperSlideMotor.setDirection(DcMotor.Direction.FORWARD);
 
         // Wait for the game to start (driver presses PLAY)
@@ -73,25 +77,26 @@ public class CustomHolonomicDrive extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
+
+        double max;
+        double extendServoPosition = 0.0;
+        double bucketServoPosition = 0.0;
+        double intakeServoPosition = 0.0;
+        double clawServoPosition = 0.0;
+        double clawWristServoPosition = 0.0; // Servo left value is too far down, center is perfect
+
+        int viperSlideMotorPosition = 0;
+
+        // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
+        double axial = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
+        double lateral = gamepad1.left_stick_x;
+        double yaw = gamepad1.right_stick_x;
+
+
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-            double max;
-            double extendServoPosition = 0.0;
-            double bucketServoPosition = 0.0;
-            double intakeServoPosition = 0.0;
-            double clawServoPosition = 0.0;
-            double clawWristServoPosition = 0.0; // Servo left value is too far down, center is perfect
-
-            int viperSlideMotorPower = 0;
-
-            // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
-            double axial = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
-            double lateral = gamepad1.left_stick_x;
-            double yaw = gamepad1.right_stick_x;
-
             double axialThreshold = 0.05 * lateral;
             double lateralThreshold = 0.05 * axial;
-
             // If not steering much, assume it's because of human inaccuracy and fix it (untested)
             if (Math.abs(axial) <= axialThreshold) {
                 axial = 0;
@@ -127,11 +132,9 @@ public class CustomHolonomicDrive extends LinearOpMode {
 
             // Viper slide motor logic
             if (gamepad1.right_trigger > 0) { // Put deadzone later
-                viperSlideMotorPower = Math.round(gamepad1.right_trigger * 100);
+                viperSlideMotorPosition = Math.round(gamepad1.right_trigger * 100);
             } else if (gamepad1.left_trigger > 0) {
-                viperSlideMotorPower = Math.round(-(gamepad1.left_trigger * 100));
-            } else {
-                viperSlideMotorPower = 0;
+                viperSlideMotorPosition = 0;
             }
 
             // Servo position logic
@@ -173,7 +176,7 @@ public class CustomHolonomicDrive extends LinearOpMode {
             clawWristServo.setPosition(clawWristServoPosition);
 
             // Set (non-drive) motor power
-            viperSlideMotor.setPower(viperSlideMotorPower);
+            viperSlideMotor.setTargetPosition(viperSlideMotorPosition);
 
 
             // Show the elapsed game time and wheel power.
@@ -187,7 +190,7 @@ public class CustomHolonomicDrive extends LinearOpMode {
             telemetry.addData("intakeServo position: ", intakeServoPosition);
             telemetry.addData("clawServo position: ", clawServoPosition);
             telemetry.addData("clawWristServo position: ", clawWristServoPosition);
-            telemetry.addData("viperSlideMotorPower", viperSlideMotorPower);
+            telemetry.addData("viperSlideMotorPosition", viperSlideMotorPosition);
             telemetry.update();
         }
     }
