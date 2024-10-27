@@ -165,9 +165,9 @@ public class CustomHolonomicDrive extends LinearOpMode {
 
             boolean intake = gamepad1.y;
             if (!prevIntake) {
-                if (gamepad1.y && intakeServoPosition == 0.0) {
+                if (intake && intakeServoPosition == 0.0) {
                     intakeServoPosition = 1.0;
-                } else if (gamepad1.y && intakeServoPosition == 1.0) {
+                } else if (intake && intakeServoPosition == 1.0) {
                     intakeServoPosition = 0.0;
                 }
             }
