@@ -97,6 +97,8 @@ public class CustomHolonomicDrive extends LinearOpMode {
         boolean prevClawWrist = false;
         boolean prevClaw = false;
 
+        boolean prevViper = false;
+
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
             double axialThreshold = 0.05 * lateral;
@@ -135,11 +137,15 @@ public class CustomHolonomicDrive extends LinearOpMode {
             rightBackDrive.setPower(rightBackPower);
 
             // Viper slide motor logic
-            if (gamepad1.right_trigger > 0) { // Put deadzone later
-                viperSlideMotorPosition = 3100;
-            } else if (gamepad1.left_trigger > 0) {
-                viperSlideMotorPosition = 0;
+            boolean viper = gamepad1.left_bumper;
+            if (!prevViper) {
+                if (viper && viperSlideMotorPosition == 0) {
+                    viperSlideMotorPosition = 3100;
+                } else if (viper && viperSlideMotorPosition == 3100) {
+                    viperSlideMotorPosition = 0;
+                }
             }
+            prevViper = viper;
 
             // Servo position logic
             boolean extend = gamepad1.a;
@@ -201,7 +207,7 @@ public class CustomHolonomicDrive extends LinearOpMode {
             clawWristServo.setPosition(clawWristServoPosition);
 
              // Set (non-drive) motor power
-            viperSlideMotor.setTargetPosition(viperSlideMotorPosition); // uncomment after testing telemetry values
+            viperSlideMotor.setTargetPosition(viperSlideMotorPosition);
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
