@@ -44,7 +44,7 @@ public class CustomHolonomicDrive extends LinearOpMode {
         intakeServo = hardwareMap.get(Servo.class, "intake_servo");
         clawServo = hardwareMap.get(Servo.class, "claw_servo");
         clawWristServo = hardwareMap.get(Servo.class,  "claw_wrist_servo");
-        clawWristServo.scaleRange(0.0, 0.5);
+        clawWristServo.scaleRange(0.5, 1.0);
 
         viperSlideMotor = hardwareMap.get(DcMotor.class, "viper_slide_motor");
 
@@ -191,7 +191,7 @@ public class CustomHolonomicDrive extends LinearOpMode {
                     clawWristServoPosition = 0.0;
                 }
             }
-            prevClawWrist = claw;
+            prevClawWrist = clawWrist;
 
 
             // Set servo positions
