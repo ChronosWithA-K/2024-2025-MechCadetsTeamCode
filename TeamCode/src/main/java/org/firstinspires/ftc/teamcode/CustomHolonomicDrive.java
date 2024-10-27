@@ -135,12 +135,11 @@ public class CustomHolonomicDrive extends LinearOpMode {
             rightBackDrive.setPower(rightBackPower);
 
             // Viper slide motor logic
-//            if (gamepad1.right_trigger > 0) { // Put deadzone later
-//                viperSlideMotorPosition = ;
-//            } else if (gamepad1.left_trigger > 0) {
-//                viperSlideMotorPosition = 0;
-//            }
-            telemetry.addData("Viper encoder: ", viperSlideMotor.getCurrentPosition()); // for testing, delete
+            if (gamepad1.right_trigger > 0) { // Put deadzone later
+                viperSlideMotorPosition = 3100;
+            } else if (gamepad1.left_trigger > 0) {
+                viperSlideMotorPosition = 0;
+            }
 
             // Servo position logic
             boolean extend = gamepad1.a;
@@ -201,8 +200,8 @@ public class CustomHolonomicDrive extends LinearOpMode {
             clawServo.setPosition(clawServoPosition);
             clawWristServo.setPosition(clawWristServoPosition);
 
-            // Set (non-drive) motor power
-//            viperSlideMotor.setTargetPosition(viperSlideMotorPosition); // uncomment after testing telemetry values
+             // Set (non-drive) motor power
+            viperSlideMotor.setTargetPosition(viperSlideMotorPosition); // uncomment after testing telemetry values
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
@@ -215,7 +214,7 @@ public class CustomHolonomicDrive extends LinearOpMode {
             telemetry.addData("intakeServo position: ", intakeServoPosition);
             telemetry.addData("clawServo position: ", clawServoPosition);
             telemetry.addData("clawWristServo position: ", clawWristServoPosition);
-            telemetry.addData("viperSlideMotorPosition", viperSlideMotorPosition);
+            telemetry.addData("Viper encoder: ", viperSlideMotor.getCurrentPosition());
             telemetry.update();
         }
     }
