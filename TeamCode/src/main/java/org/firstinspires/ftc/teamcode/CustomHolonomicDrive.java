@@ -43,9 +43,8 @@ public class CustomHolonomicDrive extends LinearOpMode {
         bucketServo = hardwareMap.get(Servo.class, "bucket_servo");
         intakeServo = hardwareMap.get(Servo.class, "intake_servo");
         clawServo = hardwareMap.get(Servo.class, "claw_servo");
-        clawWristServo = hardwareMap.get(Servo.class, "claw_wrist_servo");
+        clawWristServo = hardwareMap.get(Servo.class,  "claw_wrist_servo");
         clawWristServo.scaleRange(0.0, 0.5);
-
 
         viperSlideMotor = hardwareMap.get(DcMotor.class, "viper_slide_motor");
 
@@ -93,6 +92,10 @@ public class CustomHolonomicDrive extends LinearOpMode {
         double yaw = gamepad1.right_stick_x;
 
         boolean prevExtend = false;
+        boolean prevBucket = false;
+        boolean prevIntake = false;
+        boolean prevClawWrist = false;
+        boolean prevClaw = false;
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
@@ -137,42 +140,59 @@ public class CustomHolonomicDrive extends LinearOpMode {
 //            } else if (gamepad1.left_trigger > 0) {
 //                viperSlideMotorPosition = 0;
 //            }
-            telemetry.addData("Viper encoder: ", viperSlideMotor.getCurrentPosition());
+            telemetry.addData("Viper encoder: ", viperSlideMotor.getCurrentPosition()); // for testing, delete
 
             // Servo position logic
+            boolean extend = gamepad1.a;
             if (!prevExtend) {
-                if (gamepad1.a && extendServoPosition == 0.0) {
+                if (extend && extendServoPosition == 0.0) {
                     extendServoPosition = 1.0;
-                } else if (gamepad1.a && extendServoPosition == 1.0) {
+                } else if (extend && extendServoPosition == 1.0) {
                     extendServoPosition = 0.0;
                 }
             }
+            prevExtend = extend;
 
-            prevExtend = gamepad1.a;
-
-            if (gamepad1.b && bucketServoPosition == 0.0) {
-                bucketServoPosition = 1.0;
-            } else if (gamepad1.b && bucketServoPosition == 1.0) {
-                bucketServoPosition = 0.0;
+            boolean bucket = gamepad1.b;
+            if (!prevBucket) {
+                if (bucket && bucketServoPosition == 0.0) {
+                    bucketServoPosition = 1.0;
+                } else if (bucket && bucketServoPosition == 1.0) {
+                    bucketServoPosition = 0.0;
+                }
             }
+            prevBucket = bucket;
 
-            if (gamepad1.y && intakeServoPosition == 0.0) {
-                intakeServoPosition = 1.0;
-            } else if (gamepad1.y && intakeServoPosition == 1.0) {
-                intakeServoPosition = 0.0;
+            boolean intake = gamepad1.y;
+            if (!prevIntake) {
+                if (gamepad1.y && intakeServoPosition == 0.0) {
+                    intakeServoPosition = 1.0;
+                } else if (gamepad1.y && intakeServoPosition == 1.0) {
+                    intakeServoPosition = 0.0;
+                }
             }
+            prevIntake = intake;
 
-            if (gamepad1.x && clawServoPosition == 0.0) {
-                clawServoPosition = 1.0;
-            } else if (gamepad1.x && clawServoPosition == 1.0) {
-                clawServoPosition = 0.0;
+            boolean claw = gamepad1.x;
+            if (!prevClaw) {
+                if (claw && clawServoPosition == 0.0) {
+                    clawServoPosition = 1.0;
+                } else if (claw && clawServoPosition == 1.0) {
+                    clawServoPosition = 0.0;
+                }
             }
+            prevClaw = claw;
 
-            if (gamepad1.right_bumper && clawWristServoPosition == 0.0) {
-                clawWristServoPosition = 1.0;
-            } else if (gamepad1.right_bumper && clawWristServoPosition == 1.0) {
-                clawWristServoPosition = 0.0;
+            boolean clawWrist = gamepad1.right_bumper;
+            if (!prevClawWrist) {
+                if (clawWrist && clawWristServoPosition == 0.0) {
+                    clawWristServoPosition = 1.0;
+                } else if (clawWrist && clawWristServoPosition == 1.0) {
+                    clawWristServoPosition = 0.0;
+                }
             }
+            prevClawWrist = claw;
+
 
             // Set servo positions
             extendServo.setPosition(extendServoPosition);
@@ -182,7 +202,7 @@ public class CustomHolonomicDrive extends LinearOpMode {
             clawWristServo.setPosition(clawWristServoPosition);
 
             // Set (non-drive) motor power
-            viperSlideMotor.setTargetPosition(viperSlideMotorPosition);
+//            viperSlideMotor.setTargetPosition(viperSlideMotorPosition); // uncomment after testing telemetry values
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
