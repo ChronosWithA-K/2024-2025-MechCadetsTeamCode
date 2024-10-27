@@ -86,11 +86,6 @@ public class CustomHolonomicDrive extends LinearOpMode {
 
         int viperSlideMotorPosition = 0;
 
-        // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
-        double axial = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
-        double lateral = gamepad1.left_stick_x;
-        double yaw = gamepad1.right_stick_x;
-
         boolean prevExtend = false;
         boolean prevBucket = false;
         boolean prevIntake = false;
@@ -101,6 +96,11 @@ public class CustomHolonomicDrive extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
+            // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
+            double axial = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
+            double lateral = gamepad1.left_stick_x;
+            double yaw = gamepad1.right_stick_x;
+
             double axialThreshold = 0.05 * lateral;
             double lateralThreshold = 0.05 * axial;
             // If not steering much, assume it's because of human inaccuracy and fix it (untested)
