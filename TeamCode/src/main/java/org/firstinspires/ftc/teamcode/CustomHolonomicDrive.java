@@ -44,7 +44,7 @@ public class CustomHolonomicDrive extends LinearOpMode {
         intakeServo = hardwareMap.get(Servo.class, "intake_servo");
         clawServo = hardwareMap.get(Servo.class, "claw_servo");
         clawWristServo = hardwareMap.get(Servo.class,  "claw_wrist_servo");
-        clawWristServo.scaleRange(0.0, 0.5);
+        clawWristServo.scaleRange(0.5, 1.0);
 
         viperSlideMotor = hardwareMap.get(DcMotor.class, "viper_slide_motor");
 
@@ -178,16 +178,6 @@ public class CustomHolonomicDrive extends LinearOpMode {
             }
             prevIntake = intake;
 
-            boolean claw = gamepad1.x;
-            if (!prevClaw) {
-                if (claw && clawServoPosition == 0.0) {
-                    clawServoPosition = 1.0;
-                } else if (claw && clawServoPosition == 1.0) {
-                    clawServoPosition = 0.0;
-                }
-            }
-            prevClaw = claw;
-
             boolean clawWrist = gamepad1.right_bumper;
             if (!prevClawWrist) {
                 if (clawWrist && clawWristServoPosition == 0.0) {
@@ -197,6 +187,16 @@ public class CustomHolonomicDrive extends LinearOpMode {
                 }
             }
             prevClawWrist = clawWrist;
+
+            boolean claw = gamepad1.x;
+            if (!prevClaw) {
+                if (claw && clawServoPosition == 0.0) {
+                    clawServoPosition = 1.0;
+                } else if (claw && clawServoPosition == 1.0) {
+                    clawServoPosition = 0.0;
+                }
+            }
+            prevClaw = claw;
 
 
             // Set servo positions
