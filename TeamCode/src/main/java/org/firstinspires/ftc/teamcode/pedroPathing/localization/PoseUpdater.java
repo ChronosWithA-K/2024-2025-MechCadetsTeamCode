@@ -71,7 +71,7 @@ public class PoseUpdater {
      */
     public PoseUpdater(HardwareMap hardwareMap) {
         // TODO: replace the second argument with your preferred localizer
-        this(hardwareMap, new LLPedroPathingEncoder(hardwareMap));
+        this(hardwareMap, new DriveEncoderLocalizer(hardwareMap));
     }
 
     /**
