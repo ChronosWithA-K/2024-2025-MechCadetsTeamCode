@@ -117,6 +117,9 @@ public class CustomHolonomicDrive extends LinearOpMode {
 
         boolean prevViper = false;
 
+        boolean aPrev = false;
+        boolean bPrev = false;
+
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
             // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
@@ -159,6 +162,14 @@ public class CustomHolonomicDrive extends LinearOpMode {
             leftBackDrive.setPower(leftBackPower);
             rightBackDrive.setPower(rightBackPower);
 
+            aPrev = gamepad1.a;
+            bPrev = gamepad1.b;
+
+            boolean a = gamepad1.a && !aPrev;
+            aPrev = gamepad1.a;
+            boolean b = gamepad1.b && !bPrev;
+            bPrev = gamepad1.b;
+
             switch (state) {
                 case IDLE:
                     viperSlideMotorPosition = liftDown;
@@ -168,7 +179,7 @@ public class CustomHolonomicDrive extends LinearOpMode {
                     clawWristServoPosition = wristDrop;
                     clawServoPosition = clawClosed;
 
-                    if (gamepad1.a) {
+                    if (a) {
                         state = State.EXTENDED;
                     }
                     break;
@@ -180,9 +191,9 @@ public class CustomHolonomicDrive extends LinearOpMode {
                     clawWristServoPosition = wristLoad;
                     clawServoPosition = clawOpen;
 
-                    if (gamepad1.a) {
+                    if (a) {
                         state = State.IDLE;
-                    } else if (gamepad1.b) {
+                    } else if (b) {
                         state = State.EXTENDED;
                     }
                     break;
@@ -194,9 +205,9 @@ public class CustomHolonomicDrive extends LinearOpMode {
                     clawWristServoPosition = wristLoad;
                     clawServoPosition = clawClosed;
 
-                    if (gamepad1.a) {
+                    if (a) {
                         state = State.LOADED;
-                    } else if (gamepad1.b) {
+                    } else if (b) {
                         state = State.EXTENDED;
                     }
                     break;
@@ -208,7 +219,7 @@ public class CustomHolonomicDrive extends LinearOpMode {
                     clawWristServoPosition = wristDrop;
                     clawServoPosition = clawClosed;
 
-                    if (gamepad1.b) {
+                    if (b) {
                         state = State.LIFTED;
                     }
                     break;
@@ -220,7 +231,7 @@ public class CustomHolonomicDrive extends LinearOpMode {
                     clawWristServoPosition = wristDrop;
                     clawServoPosition = clawClosed;
 
-                    if (gamepad1.a) {
+                    if (a) {
                         state = State.DROP;
                     }
                     break;
@@ -232,7 +243,7 @@ public class CustomHolonomicDrive extends LinearOpMode {
                     clawWristServoPosition = wristDrop;
                     clawServoPosition = clawOpen;
 
-                    if (gamepad1.a) {
+                    if (a) {
                         state = State.IDLE;
                     }
                     break;
