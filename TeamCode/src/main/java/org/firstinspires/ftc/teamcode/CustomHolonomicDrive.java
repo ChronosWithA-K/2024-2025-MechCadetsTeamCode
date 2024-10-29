@@ -6,15 +6,13 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import common.SimpleDrive;
+
 @TeleOp(name="Basic: Custom Holonomic Drive", group="Linear OpMode")
 public class CustomHolonomicDrive extends LinearOpMode {
 
     // Declare OpMode members for each of the 4 motors.
     private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor leftFrontDrive = null;
-    private DcMotor leftBackDrive = null;
-    private DcMotor rightFrontDrive = null;
-    private DcMotor rightBackDrive = null;
 
     private DcMotor viperSlideMotor = null;
 
@@ -39,12 +37,10 @@ public class CustomHolonomicDrive extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        // Initialize the hardware variables. Note that the strings used here must correspond
-        // to the names assigned during the robot configuration step on the DS or RC devices.
-        leftFrontDrive = hardwareMap.get(DcMotor.class, "left_front");
-        leftBackDrive = hardwareMap.get(DcMotor.class, "left_back");
-        rightFrontDrive = hardwareMap.get(DcMotor.class, "right_front");
-        rightBackDrive = hardwareMap.get(DcMotor.class, "right_back");
+
+        SimpleDrive drive = new SimpleDrive(this);
+        drive.start();
+
 
 //        xEncoder = hardwareMap.get(DcMotor.class, "x_encoder");
 //        yEncoder = hardwareMap.get(DcMotor.class, "y_encoder");
@@ -56,21 +52,6 @@ public class CustomHolonomicDrive extends LinearOpMode {
         clawWristServo = hardwareMap.get(Servo.class,  "claw_wrist_servo");
 
         viperSlideMotor = hardwareMap.get(DcMotor.class, "viper_slide_motor");
-
-        // ########################################################################################
-        // !!!            IMPORTANT Drive Information. Test your motor directions.            !!!!!
-        // ########################################################################################
-        // Most robots need the motors on one side to be reversed to drive forward.
-        // The motor reversals shown here are for a "direct drive" robot (the wheels turn the same direction as the motor shaft)
-        // If your robot has additional gear reductions or uses a right-angled drive, it's important to ensure
-        // that your motors are turning in the correct direction.  So, start out with the reversals here, BUT
-        // when you first test your robot, push the left joystick forward and observe the direction the wheels turn.
-        // Reverse the direction (flip FORWARD <-> REVERSE ) of any wheel that runs backward
-        // Keep testing until ALL the wheels move the robot forward when you push the left joystick forward.
-        leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
-        leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
-        rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
-        rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
 
         viperSlideMotor.setTargetPosition(0);
         viperSlideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -86,12 +67,13 @@ public class CustomHolonomicDrive extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
-        double max;
+        double liftedTime = 0;
+
         double extendServoPosition = 0.0;
         double bucketServoPosition = 0.0;
         double intakeServoPosition = 0.0;
         double clawServoPosition = 0.0;
-        double clawWristServoPosition = 0.0; // Servo left value is too far down, centre is perfect
+        double clawWristServoPosition = 0.0;
 
         int viperSlideMotorPosition = 0;
 
@@ -101,10 +83,11 @@ public class CustomHolonomicDrive extends LinearOpMode {
         double bucketLoad = 0.5;
         double extendClosed = 0;
         double extendExtended = 1;
-        double intakeDown = 0.2;
+        double intakeDown = 0.23;
         double intakeUp = 1;
         double wristLoad = 0.5;
         double wristDrop = 1;
+        double wristLift = 0.2;
         double clawClosed = 0;
         double clawOpen = 0.5;
 
@@ -121,44 +104,6 @@ public class CustomHolonomicDrive extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-            // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
-            double axial = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
-            double lateral = gamepad1.left_stick_x;
-            double yaw = gamepad1.right_stick_x;
-
-            double axialThreshold = 0.05 * lateral;
-            double lateralThreshold = 0.05 * axial;
-            // If not steering much, assume it's because of human inaccuracy and fix it (untested)
-            if (Math.abs(axial) <= axialThreshold) {
-                axial = 0;
-            } else if (Math.abs(lateral) <= lateralThreshold) {
-                lateral = 0;
-            }
-
-            // Combine the joystick requests for each axis-motion to determine each wheel's power.
-            // Set up a variable for each drive wheel to save the power level for telemetry.
-            double leftFrontPower = axial + lateral + yaw;
-            double rightFrontPower = axial - lateral - yaw;
-            double leftBackPower = axial - lateral + yaw;
-            double rightBackPower = axial + lateral - yaw;
-
-            // Normalize the values so no wheel power exceeds 100%
-            // This ensures that the robot maintains the desired motion.
-            max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
-            max = Math.max(max, Math.abs(leftBackPower));
-            max = Math.max(max, Math.abs(rightBackPower));
-
-            if (max > 1.0) {
-                leftFrontPower /= max;
-                rightFrontPower /= max;
-                leftBackPower /= max;
-                rightBackPower /= max;
-            }
-
-            // Send calculated power to wheels
-            leftFrontDrive.setPower(leftFrontPower);
-            rightFrontDrive.setPower(rightFrontPower);
-            leftBackDrive.setPower(leftBackPower);
 
             boolean a = gamepad1.a && !aPrev;
             aPrev = gamepad1.a;
@@ -199,7 +144,6 @@ public class CustomHolonomicDrive extends LinearOpMode {
                     intakeServoPosition = intakeDown;
                     clawWristServoPosition = wristLoad;
                     clawServoPosition = clawClosed;
-
                     if (a) {
                         state = State.LOADED;
                     } else if (b) {
@@ -216,14 +160,19 @@ public class CustomHolonomicDrive extends LinearOpMode {
 
                     if (a) {
                         state = State.LIFTED;
+                        liftedTime = runtime.seconds();
                     }
                     break;
                 case LIFTED:
-                    viperSlideMotorPosition = liftUp;
+                    if (runtime.seconds() > liftedTime + 1) {
+                        viperSlideMotorPosition = liftUp;
+                    }
                     bucketServoPosition = bucketLoad;
                     extendServoPosition = extendClosed;
                     intakeServoPosition = intakeUp;
-                    clawWristServoPosition = wristDrop;
+                    if (runtime.seconds() > liftedTime + 0.5){
+                        clawWristServoPosition = wristLift;
+                    }
                     clawServoPosition = clawOpen;
 
                     if (a) {
@@ -319,8 +268,6 @@ public class CustomHolonomicDrive extends LinearOpMode {
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("Front left/Right", "%4.2f, %4.2f", leftFrontPower, rightFrontPower);
-            telemetry.addData("Back  left/Right", "%4.2f, %4.2f", leftBackPower, rightBackPower);
 //            telemetry.addData("xEncoder", "%4.2f, %4.2f", xEncoder);
 //            telemetry.addData("yEncoder", "%4.2f, %4.2f", yEncoder);
             telemetry.addData("State", state);
