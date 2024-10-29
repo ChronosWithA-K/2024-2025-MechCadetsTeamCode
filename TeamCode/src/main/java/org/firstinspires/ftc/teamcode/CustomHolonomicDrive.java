@@ -27,6 +27,16 @@ public class CustomHolonomicDrive extends LinearOpMode {
     private Servo clawServo = null;
     private Servo clawWristServo = null;
 
+    enum State {
+        IDLE,
+        EXTENDED,
+        GRABBED,
+        LOADED,
+        LIFTED,
+        DROP
+    }
+    private State state = State.IDLE;
+
     @Override
     public void runOpMode() {
         // Initialize the hardware variables. Note that the strings used here must correspond
@@ -82,9 +92,22 @@ public class CustomHolonomicDrive extends LinearOpMode {
         double bucketServoPosition = 0.0;
         double intakeServoPosition = 0.0;
         double clawServoPosition = 0.0;
-        double clawWristServoPosition = 0.0; // Servo left value is too far down, center is perfect
+        double clawWristServoPosition = 0.0; // Servo left value is too far down, centre is perfect
 
         int viperSlideMotorPosition = 0;
+
+        int liftDown = 0;
+        int liftUp = 3100;
+        double bucketDrop = 0;
+        double bucketLoad = 0.5;
+        double extendClosed = 0;
+        double extendExtended = 1;
+        double intakeDown = 0;
+        double intakeUp = 1;
+        double wristLoad = 0.5;
+        double wristDrop = 1;
+        double clawClosed = 0;
+        double clawOpen = 0.5;
 
         boolean prevExtend = false;
         boolean prevBucket = false;
@@ -136,68 +159,147 @@ public class CustomHolonomicDrive extends LinearOpMode {
             leftBackDrive.setPower(leftBackPower);
             rightBackDrive.setPower(rightBackPower);
 
-            // Viper slide motor logic
-            boolean viper = gamepad1.left_bumper;
-            if (!prevViper) {
-                if (viper && viperSlideMotorPosition == 0) {
-                    viperSlideMotorPosition = 3100;
-                } else if (viper && viperSlideMotorPosition == 3100) {
-                    viperSlideMotorPosition = 0;
-                }
-            }
-            prevViper = viper;
+            switch (state) {
+                case IDLE:
+                    viperSlideMotorPosition = liftDown;
+                    bucketServoPosition = bucketLoad;
+                    extendServoPosition = extendClosed;
+                    intakeServoPosition = intakeUp;
+                    clawWristServoPosition = wristDrop;
+                    clawServoPosition = clawClosed;
 
-            // Servo position logic
-            boolean extend = gamepad1.a;
-            if (!prevExtend) {
-                if (extend && extendServoPosition == 0.0) {
-                    extendServoPosition = 1.0;
-                } else if (extend && extendServoPosition == 1.0) {
-                    extendServoPosition = 0.0;
-                }
-            }
-            prevExtend = extend;
+                    if (gamepad1.a) {
+                        state = State.EXTENDED;
+                    }
+                    break;
+                case EXTENDED:
+                    viperSlideMotorPosition = liftDown;
+                    bucketServoPosition = bucketLoad;
+                    extendServoPosition = extendExtended;
+                    intakeServoPosition = intakeDown;
+                    clawWristServoPosition = wristLoad;
+                    clawServoPosition = clawOpen;
 
-            boolean bucket = gamepad1.b;
-            if (!prevBucket) {
-                if (bucket && bucketServoPosition == 0.0) {
-                    bucketServoPosition = 1.0;
-                } else if (bucket && bucketServoPosition == 1.0) {
-                    bucketServoPosition = 0.0;
-                }
-            }
-            prevBucket = bucket;
+                    if (gamepad1.a) {
+                        state = State.IDLE;
+                    } else if (gamepad1.b) {
+                        state = State.EXTENDED;
+                    }
+                    break;
+                case GRABBED:
+                    viperSlideMotorPosition = liftDown;
+                    bucketServoPosition = bucketLoad;
+                    extendServoPosition = extendExtended;
+                    intakeServoPosition = intakeDown;
+                    clawWristServoPosition = wristLoad;
+                    clawServoPosition = clawClosed;
 
-            boolean intake = gamepad1.y;
-            if (!prevIntake) {
-                if (intake && intakeServoPosition == 0.0) {
-                    intakeServoPosition = 1.0;
-                } else if (intake && intakeServoPosition == 1.0) {
-                    intakeServoPosition = 0.0;
-                }
-            }
-            prevIntake = intake;
+                    if (gamepad1.a) {
+                        state = State.LOADED;
+                    } else if (gamepad1.b) {
+                        state = State.EXTENDED;
+                    }
+                    break;
+                case LOADED:
+                    viperSlideMotorPosition = liftDown;
+                    bucketServoPosition = bucketLoad;
+                    extendServoPosition = extendClosed;
+                    intakeServoPosition = intakeUp;
+                    clawWristServoPosition = wristDrop;
+                    clawServoPosition = clawClosed;
 
-            boolean clawWrist = gamepad1.right_bumper;
-            if (!prevClawWrist) {
-                if (clawWrist && clawWristServoPosition == 0.0) {
-                    clawWristServoPosition = 1.0;
-                } else if (clawWrist && clawWristServoPosition == 1.0) {
-                    clawWristServoPosition = 0.0;
-                }
-            }
-            prevClawWrist = clawWrist;
+                    if (gamepad1.b) {
+                        state = State.LIFTED;
+                    }
+                    break;
+                case LIFTED:
+                    viperSlideMotorPosition = liftUp;
+                    bucketServoPosition = bucketLoad;
+                    extendServoPosition = extendClosed;
+                    intakeServoPosition = intakeUp;
+                    clawWristServoPosition = wristDrop;
+                    clawServoPosition = clawClosed;
 
-            boolean claw = gamepad1.x;
-            if (!prevClaw) {
-                if (claw && clawServoPosition == 0.0) {
-                    clawServoPosition = 1.0;
-                } else if (claw && clawServoPosition == 1.0) {
-                    clawServoPosition = 0.0;
-                }
-            }
-            prevClaw = claw;
+                    if (gamepad1.a) {
+                        state = State.DROP;
+                    }
+                    break;
+                case DROP:
+                    viperSlideMotorPosition = liftUp;
+                    bucketServoPosition = bucketDrop;
+                    extendServoPosition = extendClosed;
+                    intakeServoPosition = intakeUp;
+                    clawWristServoPosition = wristDrop;
+                    clawServoPosition = clawOpen;
 
+                    if (gamepad1.a) {
+                        state = State.IDLE;
+                    }
+                    break;
+            }
+
+//
+//            // Viper slide motor logic
+//            boolean viper = gamepad1.left_bumper;
+//            if (!prevViper) {
+//                if (viper && viperSlideMotorPosition == 0) {
+//                    viperSlideMotorPosition = 3100;
+//                } else if (viper && viperSlideMotorPosition == 3100) {
+//                    viperSlideMotorPosition = 0;
+//                }
+//            }
+//            prevViper = viper;
+//
+//            // Servo position logic
+//            boolean extend = gamepad1.a;
+//            if (!prevExtend) {
+//                if (extend && extendServoPosition == 0.0) {
+//                    extendServoPosition = 1.0;
+//                } else if (extend && extendServoPosition == 1.0) {
+//                    extendServoPosition = 0.0;
+//                }
+//            }
+//            prevExtend = extend;
+//
+//            boolean bucket = gamepad1.b;
+//            if (!prevBucket) {
+//                if (bucket && bucketServoPosition == 0.0) {
+//                    bucketServoPosition = 1.0;
+//                } else if (bucket && bucketServoPosition == 1.0) {
+//                    bucketServoPosition = 0.0;
+//                }
+//            }
+//            prevBucket = bucket;
+//
+//            boolean intake = gamepad1.y;
+//            if (!prevIntake) {
+//                if (intake && intakeServoPosition == 0.0) {
+//                    intakeServoPosition = 1.0;
+//                } else if (intake && intakeServoPosition == 1.0) {
+//                    intakeServoPosition = 0.0;
+//                }
+//            }
+//            prevIntake = intake;
+//
+//            boolean clawWrist = gamepad1.right_bumper;
+//            if (!prevClawWrist) {
+//                if (clawWrist && clawWristServoPosition == 0.0) {
+//                    clawWristServoPosition = 1.0;
+//                } else if (clawWrist && clawWristServoPosition == 1.0) {
+//                    clawWristServoPosition = 0.0;
+//                }
+//            }
+//            prevClawWrist = clawWrist;
+//
+//            boolean claw = gamepad1.x;
+//            if (!prevClaw) {
+//                if (claw && clawServoPosition == 0.0) {
+//                    clawServoPosition = 1.0;
+//                } else if (claw && clawServoPosition == 1.0) {
+//                    clawServoPosition = 0.0;
+//                }
+//            }
+//            prevClaw = claw;
 
             // Set servo positions
             extendServo.setPosition(extendServoPosition);
@@ -215,6 +317,7 @@ public class CustomHolonomicDrive extends LinearOpMode {
             telemetry.addData("Back  left/Right", "%4.2f, %4.2f", leftBackPower, rightBackPower);
 //            telemetry.addData("xEncoder", "%4.2f, %4.2f", xEncoder);
 //            telemetry.addData("yEncoder", "%4.2f, %4.2f", yEncoder);
+            telemetry.addData("State", state);
             telemetry.addData("extendServo position: ", extendServoPosition);
             telemetry.addData("bucketServo position: ", bucketServoPosition);
             telemetry.addData("intakeServo position: ", intakeServoPosition);
