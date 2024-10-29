@@ -135,24 +135,23 @@ public class AyanshHolo extends LinearOpMode {
             rightBackDrive.setPower(rightBackPower);
 
             // Viper slide motor logic
-//            if (gamepad1.right_trigger > 0) { // Put deadzone later
-//                viperSlideMotorPosition = ;
-//            } else if (gamepad1.left_trigger > 0) {
-//                viperSlideMotorPosition = 0;
-//            }
-            telemetry.addData("Viper encoder: ", viperSlideMotor.getCurrentPosition()); // for testing, delete
+            if (gamepad1.right_trigger > 0) { // Put deadzone later
+                viperSlideMotorPosition = 3100;
+            } else if (gamepad1.left_trigger > 0) {
+                viperSlideMotorPosition = 0;
+            }
 
             // Servo position logic
             boolean extend = gamepad1.a;
             if (!prevExtend) {
-                if (extend && extendServoPosition && intakeServoPosition && clawWristServoPosition == 0.0) {
+                if (extend && extendServoPosition == 0.0 && intakeServoPosition == 0.0 && clawWristServoPosition == 0.0) {
                     extendServoPosition = 1.0;
-                    intakeServo = 1.0;
-                    clawWristServo = 1.0;
-                } else if (extend && extendServoPosition && intakeServoPosition && clawWristServoPosition == 1.0) {
+                    intakeServoPosition = 1.0;
+                    clawWristServoPosition = 1.0;
+                } else if (extend && extendServoPosition == 0.0 && intakeServoPosition == 0.0 && clawWristServoPosition == 1.0) {
                     extendServoPosition = 0.0;
-                    intakeServo = 0.0;
-                    clawWristServo = 0.0;
+                    intakeServoPosition = 0.0;
+                    clawWristServoPosition = 0.0;
                 }
             }
             prevExtend = extend;
@@ -160,9 +159,9 @@ public class AyanshHolo extends LinearOpMode {
             boolean bucket = gamepad1.b;
             if (!prevBucket) {
                 if (bucket && clawServoPosition == 0.0) {
-                    clawServo = 1.0;
+                    clawServoPosition = 1.0;
                 } else if (bucket && clawServoPosition == 1.0) {
-                    clawServo = 0.0;
+                    clawServoPosition = 0.0;
                 }
             }
             prevBucket = bucket;
@@ -187,9 +186,6 @@ public class AyanshHolo extends LinearOpMode {
             }
             prevClaw = claw;
 
-       
-
-
             // Set servo positions
             extendServo.setPosition(extendServoPosition);
             bucketServo.setPosition(bucketServoPosition);
@@ -198,7 +194,7 @@ public class AyanshHolo extends LinearOpMode {
             clawWristServo.setPosition(clawWristServoPosition);
 
             // Set (non-drive) motor power
-//            viperSlideMotor.setTargetPosition(viperSlideMotorPosition); // uncomment after testing telemetry values
+            viperSlideMotor.setTargetPosition(viperSlideMotorPosition);
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
