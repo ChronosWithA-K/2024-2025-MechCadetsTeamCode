@@ -81,8 +81,8 @@ public class CustomHolonomicDrive extends LinearOpMode {
 
         int liftDown = 0;
         int liftUp = 3100;
-        int liftTopBar = ;
-        int liftBottomBar = ;
+//        int liftTopBar = ;
+//        int liftBottomBar = ;
         double bucketDrop = 0.37;
         double bucketLoad = 0.5;
         double extendClosed = 0;
@@ -154,7 +154,7 @@ public class CustomHolonomicDrive extends LinearOpMode {
                     }
                     break;
                 case PLACE_SPECIMEN_HIGH:
-                    viperSlideMotorPosition = liftTopBar;
+//                    viperSlideMotorPosition = liftBottomBar;
                     bucketServoPosition = bucketLoad;
                     extendServoPosition = extendExtended;
                     intakeServoPosition = intakeDown;
@@ -166,7 +166,7 @@ public class CustomHolonomicDrive extends LinearOpMode {
                     }
                     break;
                 case PLACE_SPECIMEN_LOW:
-                    viperSlideMotorPosition = liftBottomBar;
+//                    viperSlideMotorPosition = liftTopBar;
                     bucketServoPosition = bucketLoad;
                     extendServoPosition = extendExtended;
                     intakeServoPosition = intakeDown;
@@ -304,7 +304,7 @@ public class CustomHolonomicDrive extends LinearOpMode {
             clawWristServo.setPosition(clawWristServoPosition);
 
              // Set (non-drive) motor power
-            viperSlideMotor.setTargetPosition(viperSlideMotorPosition);
+//            viperSlideMotor.setTargetPosition(viperSlideMotorPosition);
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
