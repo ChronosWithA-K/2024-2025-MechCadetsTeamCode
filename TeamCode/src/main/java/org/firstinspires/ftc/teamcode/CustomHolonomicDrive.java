@@ -28,10 +28,12 @@ public class CustomHolonomicDrive extends LinearOpMode {
     enum State {
         IDLE,
         EXTENDED,
+        PLACE_SPECIMEN_HIGH,
+        PLACE_SPECIMEN_LOW,
         GRABBED,
         LOADED,
         LIFTED,
-        DROP
+        DROP,
     }
     private State state = State.IDLE;
 
@@ -79,6 +81,8 @@ public class CustomHolonomicDrive extends LinearOpMode {
 
         int liftDown = 0;
         int liftUp = 3100;
+        int liftTopBar = ;
+        int liftBottomBar = ;
         double bucketDrop = 0.37;
         double bucketLoad = 0.5;
         double extendClosed = 0;
@@ -101,6 +105,8 @@ public class CustomHolonomicDrive extends LinearOpMode {
 
         boolean aPrev = false;
         boolean bPrev = false;
+        boolean xPrev = false;
+        boolean yPrev = false;
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
@@ -109,6 +115,10 @@ public class CustomHolonomicDrive extends LinearOpMode {
             aPrev = gamepad1.a;
             boolean b = gamepad1.b && !bPrev;
             bPrev = gamepad1.b;
+            boolean x = gamepad1.x && !xPrev;
+            x = gamepad1.x && !xPrev;
+            boolean y = gamepad1.y && !yPrev;
+            y = gamepad1.y && !yPrev;
 
             switch (state) {
                 case IDLE:
@@ -121,6 +131,12 @@ public class CustomHolonomicDrive extends LinearOpMode {
 
                     if (a) {
                         state = State.EXTENDED;
+                    }
+                    if (b) {
+                        state = State.PLACE_SPECIMEN_HIGH;
+                    }
+                    if (x) {
+                        state = State.PLACE_SPECIMEN_LOW;
                     }
                     break;
                 case EXTENDED:
@@ -135,6 +151,30 @@ public class CustomHolonomicDrive extends LinearOpMode {
                         state = State.IDLE;
                     } else if (b) {
                         state = State.GRABBED;
+                    }
+                    break;
+                case PLACE_SPECIMEN_HIGH:
+                    viperSlideMotorPosition = liftTopBar;
+                    bucketServoPosition = bucketLoad;
+                    extendServoPosition = extendExtended;
+                    intakeServoPosition = intakeDown;
+                    clawWristServoPosition = wristLoad;
+                    clawServoPosition = clawOpen;
+
+                    if (b) {
+                        state = State.IDLE;
+                    }
+                    break;
+                case PLACE_SPECIMEN_LOW:
+                    viperSlideMotorPosition = liftBottomBar;
+                    bucketServoPosition = bucketLoad;
+                    extendServoPosition = extendExtended;
+                    intakeServoPosition = intakeDown;
+                    clawWristServoPosition = wristLoad;
+                    clawServoPosition = clawOpen;
+
+                    if (x) {
+                        state = State.IDLE;
                     }
                     break;
                 case GRABBED:
