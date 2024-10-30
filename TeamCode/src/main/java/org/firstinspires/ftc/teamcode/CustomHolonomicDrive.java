@@ -81,7 +81,7 @@ public class CustomHolonomicDrive extends LinearOpMode {
 
         int liftDown = 0;
         int liftUp = 3100;
-        int liftTopBar = 1500;
+        int liftTopBar = 1700;
         int liftBottomBar = 500;
         double bucketDrop = 0.37;
         double bucketLoad = 0.5;
@@ -154,24 +154,24 @@ public class CustomHolonomicDrive extends LinearOpMode {
                     }
                     break;
                 case PLACE_SPECIMEN_HIGH:
-                    viperSlideMotorPosition = liftBottomBar;
+                    viperSlideMotorPosition = liftTopBar;
                     bucketServoPosition = bucketLoad;
                     extendServoPosition = extendExtended;
-                    intakeServoPosition = intakeDown;
-                    clawWristServoPosition = wristLoad;
-                    clawServoPosition = clawOpen;
+                    intakeServoPosition = intakeUp;
+                    clawWristServoPosition = wristLift;
+                    clawServoPosition = clawClosed;
 
                     if (b) {
                         state = State.IDLE;
                     }
                     break;
                 case PLACE_SPECIMEN_LOW:
-                    viperSlideMotorPosition = liftTopBar;
+                    viperSlideMotorPosition = liftBottomBar;
                     bucketServoPosition = bucketLoad;
                     extendServoPosition = extendExtended;
-                    intakeServoPosition = intakeDown;
-                    clawWristServoPosition = wristLoad;
-                    clawServoPosition = clawOpen;
+                    intakeServoPosition = intakeUp;
+                    clawWristServoPosition = wristLift;
+                    clawServoPosition = clawClosed;
 
                     if (x) {
                         state = State.IDLE;
