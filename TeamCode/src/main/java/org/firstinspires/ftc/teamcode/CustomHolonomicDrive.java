@@ -43,7 +43,6 @@ public class CustomHolonomicDrive extends LinearOpMode {
         SimpleDrive drive = new SimpleDrive(this);
         drive.start();
 
-
 //        xEncoder = hardwareMap.get(DcMotor.class, "x_encoder");
 //        yEncoder = hardwareMap.get(DcMotor.class, "y_encoder");
 
@@ -83,30 +82,26 @@ public class CustomHolonomicDrive extends LinearOpMode {
         int liftUp = 3100;
         int liftTopBar = 1700;
         int liftBottomBar = 500;
+
         double bucketDrop = 0.37;
         double bucketLoad = 0.5;
+
         double extendClosed = 0;
         double extendExtended = 1;
+
         double intakeDown = 0.23;
         double intakeUp = 1;
+
         double wristLoad = 0.5;
         double wristDrop = 1;
         double wristLift = 0.2;
+
         double clawClosed = 0;
         double clawOpen = 0.5;
-
-        boolean prevExtend = false;
-        boolean prevBucket = false;
-        boolean prevIntake = false;
-        boolean prevClawWrist = false;
-        boolean prevClaw = false;
-
-        boolean prevViper = false;
 
         boolean aPrev = false;
         boolean bPrev = false;
         boolean xPrev = false;
-        boolean yPrev = false;
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
@@ -116,9 +111,7 @@ public class CustomHolonomicDrive extends LinearOpMode {
             boolean b = gamepad1.b && !bPrev;
             bPrev = gamepad1.b;
             boolean x = gamepad1.x && !xPrev;
-            x = gamepad1.x && !xPrev;
-            boolean y = gamepad1.y && !yPrev;
-            y = gamepad1.y && !yPrev;
+            xPrev = gamepad1.x;
 
             switch (state) {
                 case IDLE:
