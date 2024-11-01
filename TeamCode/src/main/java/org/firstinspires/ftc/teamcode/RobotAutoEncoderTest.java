@@ -57,7 +57,7 @@ public class RobotAutoEncoderTest extends LinearOpMode {
 
     private Follower follower;
 
-    private Pose startPose = new Pose(0, 0, 0);
+    private Pose startPose = new Pose(96, 12, 90);
 
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -189,9 +189,14 @@ public class RobotAutoEncoderTest extends LinearOpMode {
         telemetry.update();
         while (opModeIsActive()) {
             follower.followPath(follower.pathBuilder().addPath(new Path(
-                    new BezierLine(new
-                            Point(startPose),
-                                new Point(-36, 0, Point.CARTESIAN)))).build());
+                    new BezierLine(
+                            new Point(startPose),
+                            new Point(84, 36, Point.CARTESIAN)))).build());
+                    // place specimen top bar
+                    new BezierLine(
+                            new Point(132, 36,
+                            new Point(Point.CARTESIAN)))).build());
+
             follower.update();
         }
 
