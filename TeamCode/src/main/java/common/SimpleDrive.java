@@ -72,11 +72,19 @@ public class SimpleDrive extends Thread{
                 rightBackPower /= max;
             }
 
+            // If right trigger pressed enter half speed
+            if (opMode.gamepad1.right_trigger > 0) {
+                leftFrontPower /= 2;
+                rightFrontPower /= 2;
+                leftBackPower /= 2;
+                rightBackPower /= 2;
+            }
+
             // Send calculated power to wheels
             leftFrontDrive.setPower(leftFrontPower);
             rightFrontDrive.setPower(rightFrontPower);
             leftBackDrive.setPower(leftBackPower);
-            rightBackDrive.setPower(leftBackPower);
+            rightBackDrive.setPower(rightBackPower);
         }
     }
 }
