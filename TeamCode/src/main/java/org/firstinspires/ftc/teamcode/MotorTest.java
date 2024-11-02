@@ -44,7 +44,6 @@ public class MotorTest extends LinearOpMode {
         boolean lastFrameDpadLeft = false;
         boolean lastFrameDpadRight = false;
 
-
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
             if (gamepad1.a) {
