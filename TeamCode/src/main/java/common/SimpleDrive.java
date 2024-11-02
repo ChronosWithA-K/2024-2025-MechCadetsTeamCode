@@ -76,6 +76,7 @@ public class SimpleDrive extends Thread{
             leftFrontDrive.setPower(leftFrontPower);
             rightFrontDrive.setPower(rightFrontPower);
             leftBackDrive.setPower(leftBackPower);
+            rightBackDrive.setPower(leftBackPower);
         }
     }
 }
