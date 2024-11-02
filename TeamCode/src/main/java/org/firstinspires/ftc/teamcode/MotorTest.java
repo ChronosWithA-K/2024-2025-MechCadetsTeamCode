@@ -10,7 +10,7 @@ public class MotorTest extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor activeMotor = null;
     // To test more motors, add them to the below array
-    private String[] motorNames = {"ladder_motor", "intake_motor", "left_front", "left_back", "right_front", "right_back"};
+    private String[] motorNames = {"left_front", "left_back", "right_front", "right_back", "viper_slide_motor"};
     private int activeMotorIndex = 0;
 
     private void setMotor() {
