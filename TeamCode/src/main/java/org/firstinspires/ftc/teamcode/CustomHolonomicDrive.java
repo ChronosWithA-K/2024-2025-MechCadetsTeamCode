@@ -71,6 +71,7 @@ public class CustomHolonomicDrive extends LinearOpMode {
         runtime.reset();
 
         double liftedTime = 0;
+        double wristTime = 0;
 
         double extendServoPosition = 0.0;
         double bucketServoPosition = 0.0;
@@ -136,12 +137,15 @@ public class CustomHolonomicDrive extends LinearOpMode {
                     }
                     break;
                 case EXTENDED:
+                    if (runtime.seconds() > wristTime + 0.5) {
+                        clawServoPosition = clawOpen;
+                    }
+
                     viperSlideMotorPosition = liftDown;
                     bucketServoPosition = bucketLoad;
                     extendServoPosition = extendExtended;
                     intakeServoPosition = intakeDown;
                     clawWristServoPosition = wristLoad;
-                    clawServoPosition = clawOpen;
 
                     if (a) {
                         state = State.IDLE;
@@ -200,6 +204,7 @@ public class CustomHolonomicDrive extends LinearOpMode {
                         liftedTime = runtime.seconds();
                     } else if (b) {
                         state = State.EXTENDED;
+                        wristTime = runtime.seconds();
                     } else if (x) {
                         state = State.LIFTED_LOW_BUCKET;
                     }
@@ -208,6 +213,7 @@ public class CustomHolonomicDrive extends LinearOpMode {
                     if (runtime.seconds() > liftedTime + 1) {
                         viperSlideMotorPosition = liftTopBucket;
                     }
+
                     bucketServoPosition = bucketLoad;
                     extendServoPosition = extendClosed;
                     intakeServoPosition = intakeUp;
