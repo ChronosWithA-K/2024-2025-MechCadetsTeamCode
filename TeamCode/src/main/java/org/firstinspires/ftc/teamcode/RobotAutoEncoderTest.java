@@ -188,14 +188,28 @@ public class RobotAutoEncoderTest extends LinearOpMode {
         }
         telemetry.update();
         while (opModeIsActive()) {
-            follower.followPath(follower.pathBuilder().addPath(new Path(
-                    new BezierLine(
-                            new Point(startPose),
-                            new Point(84, 36, Point.CARTESIAN)))).build());
-                    // place specimen top bar
-                    new BezierLine(
-                            new Point(132, 36,
-                            new Point(Point.CARTESIAN)))).build());
+            follower.followPath(follower.pathBuilder()
+                    .addPath(
+                            new Path(
+                                new BezierLine(
+                                        new Point(startPose),
+                                        new Point(84, 36, Point.CARTESIAN) // Drive in front of scoring bar
+                                )
+                            )
+                    ) // Place specimen on top scoring bar
+                    .addPath(
+                            new Path(
+                                    new BezierLine(
+                                            new Point(84, 36, Point.CARTESIAN),
+                                            new Point(132, 36, Point.CARTESIAN) // Drive to closest sample
+                    ) // Pick up sample
+                    .addPath(
+                            new Path(
+                                    new BezierLine(
+                                            new Point(132, 36, Point.CARTESIAN),
+                                            new Point(132, 36, Point.CARTESIAN) //
+                    )
+            ))).build());
 
             follower.update();
         }
