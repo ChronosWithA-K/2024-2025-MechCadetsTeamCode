@@ -119,7 +119,7 @@ public class CustomHolonomicDrive extends LinearOpMode {
                     bucketServoPosition = bucketLoad;
                     extendServoPosition = extendClosed;
                     intakeServoPosition = intakeUp;
-                    clawWristServoPosition = wristDrop;
+                    clawWristServoPosition = wristLift;
                     clawServoPosition = clawClosed;
 
                     if (a) {
@@ -217,7 +217,7 @@ public class CustomHolonomicDrive extends LinearOpMode {
                     bucketServoPosition = bucketDrop;
                     extendServoPosition = extendClosed;
                     intakeServoPosition = intakeUp;
-                    clawWristServoPosition = wristDrop;
+                    clawWristServoPosition = wristLift;
                     clawServoPosition = clawOpen;
 
                     if (a) {
