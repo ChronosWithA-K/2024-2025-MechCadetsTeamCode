@@ -93,7 +93,7 @@ public class CustomHolonomicDrive extends LinearOpMode {
         double extendClosed = 0;
         double extendExtended = 1;
 
-        double intakeDown = 0.28;
+        double intakeDown = 0.26;
         double intakeUp = 1;
 
         double wristLoad = 0.5;
