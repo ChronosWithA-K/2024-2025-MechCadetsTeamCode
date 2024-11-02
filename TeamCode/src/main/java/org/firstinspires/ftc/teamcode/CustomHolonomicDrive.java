@@ -56,10 +56,10 @@ public class CustomHolonomicDrive extends LinearOpMode {
 
         viperSlideMotor = hardwareMap.get(DcMotor.class, "viper_slide_motor");
 
-        viperSlideMotor.setTargetPosition(0);
-        viperSlideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        viperSlideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        viperSlideMotor.setPower(1);
+//        viperSlideMotor.setTargetPosition(0);
+//        viperSlideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        viperSlideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        viperSlideMotor.setPower(1);
 
         viperSlideMotor.setDirection(DcMotor.Direction.FORWARD);
 
@@ -81,10 +81,10 @@ public class CustomHolonomicDrive extends LinearOpMode {
         int viperSlideMotorPosition = 0;
 
         int liftDown = 0;
-        int liftTopBucket = 3100; // change
-        int liftBottomBucket = 0; // change
-        int liftTopBar = 1700; // change
-        int liftBottomBar = 500; // change
+        int liftTopBucket = 3260; // change
+        int liftBottomBucket = 1730; // change
+        int liftTopBar = 1630; // change
+        int liftBottomBar = 580; // change
 
         double bucketDrop = 0.37;
         double bucketLoad = 0.5;
@@ -92,7 +92,7 @@ public class CustomHolonomicDrive extends LinearOpMode {
         double extendClosed = 0;
         double extendExtended = 1;
 
-        double intakeDown = 0.15;
+        double intakeDown = 0.175;
         double intakeUp = 1;
 
         double wristLoad = 0.5;
@@ -116,159 +116,159 @@ public class CustomHolonomicDrive extends LinearOpMode {
             boolean x = gamepad1.x && !xPrev;
             xPrev = gamepad1.x;
 
-            switch (state) {
-                case IDLE:
-                    viperSlideMotorPosition = liftDown;
-                    bucketServoPosition = bucketLoad;
-                    extendServoPosition = extendClosed;
-                    intakeServoPosition = intakeUp;
-                    clawWristServoPosition = wristLift;
-                    clawServoPosition = clawClosed;
-
-                    if (a) {
-                        state = State.EXTENDED;
-                    }
-                    if (b) {
-                        state = State.PLACE_SPECIMEN_HIGH_BAR;
-                    }
-                    if (x) {
-                        state = State.PLACE_SPECIMEN_LOW_BAR;
-                    }
-                    break;
-                case EXTENDED:
-                    viperSlideMotorPosition = liftDown;
-                    bucketServoPosition = bucketLoad;
-                    extendServoPosition = extendExtended;
-                    intakeServoPosition = intakeDown;
-                    clawWristServoPosition = wristLoad;
-                    clawServoPosition = clawOpen;
-
-                    if (a) {
-                        state = State.IDLE;
-                    } else if (b) {
-                        state = State.GRABBED;
-                    }
-                    break;
-                case PLACE_SPECIMEN_HIGH_BAR:
-                    viperSlideMotorPosition = liftTopBar;
-                    bucketServoPosition = bucketLoad;
-                    extendServoPosition = extendExtended;
-                    intakeServoPosition = intakeUp;
-                    clawWristServoPosition = wristLoad;
-                    clawServoPosition = clawClosed;
-
-                    if (b) {
-                        state = State.IDLE;
-                    }
-                    break;
-                case PLACE_SPECIMEN_LOW_BAR:
-                    viperSlideMotorPosition = liftBottomBar;
-                    bucketServoPosition = bucketLoad;
-                    extendServoPosition = extendExtended;
-                    intakeServoPosition = intakeUp;
-                    clawWristServoPosition = wristLoad;
-                    clawServoPosition = clawClosed;
-
-                    if (x) {
-                        state = State.IDLE;
-                    }
-                    break;
-                case GRABBED:
-                    viperSlideMotorPosition = liftDown;
-                    bucketServoPosition = bucketLoad;
-                    extendServoPosition = extendExtended;
-                    intakeServoPosition = intakeDown;
-                    clawWristServoPosition = wristLoad;
-                    clawServoPosition = clawClosed;
-
-                    if (a) {
-                        state = State.LOADED;
-                    } else if (b) {
-                        state = State.EXTENDED;
-                    }
-                    break;
-                case LOADED:
-                    viperSlideMotorPosition = liftDown;
-                    bucketServoPosition = bucketLoad;
-                    extendServoPosition = extendClosed;
-                    intakeServoPosition = intakeUp;
-                    clawWristServoPosition = wristDrop;
-                    clawServoPosition = clawClosed;
-
-                    if (a) {
-                        state = State.LIFTED_HIGH_BUCKET;
-                        liftedTime = runtime.seconds();
-                    } else if (b) {
-                        state = State.EXTENDED;
-                    } else if (x) {
-                        state = State.LIFTED_LOW_BUCKET;
-                    }
-                    break;
-                case LIFTED_HIGH_BUCKET:
-                    if (runtime.seconds() > liftedTime + 1) {
-                        viperSlideMotorPosition = liftTopBucket;
-                    }
-                    bucketServoPosition = bucketLoad;
-                    extendServoPosition = extendClosed;
-                    intakeServoPosition = intakeUp;
-
-                    if (runtime.seconds() > liftedTime + 0.5){
-                        clawWristServoPosition = wristLift;
-                    }
-                    clawServoPosition = clawOpen;
-
-                    if (a) {
-                        state = State.DROP_HIGH_BUCKET;
-                    }
-                    break;
-                case LIFTED_LOW_BUCKET:
-                    if (runtime.seconds() > liftedTime + 1) {
-                        viperSlideMotorPosition = liftBottomBucket;
-                    }
-                    bucketServoPosition = bucketLoad;
-                    extendServoPosition = extendClosed;
-                    intakeServoPosition = intakeUp;
-
-                    if (runtime.seconds() > liftedTime + 0.5){
-                        clawWristServoPosition = wristLift;
-                    }
-                    clawServoPosition = clawOpen;
-
-                    if (a) {
-                        state = State.DROP_LOW_BUCKET;
-                    }
-                    break;
-                case DROP_HIGH_BUCKET:
-                    viperSlideMotorPosition = liftTopBucket;
-                    bucketServoPosition = bucketDrop;
-                    extendServoPosition = extendClosed;
-                    intakeServoPosition = intakeUp;
-                    clawWristServoPosition = wristLift;
-                    clawServoPosition = clawOpen;
-
-                    if (a) {
-                        state = State.IDLE;
-                    }
-                    break;
-                case DROP_LOW_BUCKET:
-                    viperSlideMotorPosition = liftBottomBucket;
-                    bucketServoPosition = bucketDrop;
-                    extendServoPosition = extendClosed;
-                    intakeServoPosition = intakeUp;
-                    clawWristServoPosition = wristLift;
-                    clawServoPosition = clawOpen;
-
-                    if (a) {
-                        state = State.IDLE;
-                    }
-            }
-
-            // Set servo positions
-            extendServo.setPosition(extendServoPosition);
-            bucketServo.setPosition(bucketServoPosition);
-            intakeServo.setPosition(intakeServoPosition);
-            clawServo.setPosition(clawServoPosition);
-            clawWristServo.setPosition(clawWristServoPosition);
+//            switch (state) {
+//                case IDLE:
+//                    viperSlideMotorPosition = liftDown;
+//                    bucketServoPosition = bucketLoad;
+//                    extendServoPosition = extendClosed;
+//                    intakeServoPosition = intakeUp;
+//                    clawWristServoPosition = wristLift;
+//                    clawServoPosition = clawClosed;
+//
+//                    if (a) {
+//                        state = State.EXTENDED;
+//                    }
+//                    if (b) {
+//                        state = State.PLACE_SPECIMEN_HIGH_BAR;
+//                    }
+//                    if (x) {
+//                        state = State.PLACE_SPECIMEN_LOW_BAR;
+//                    }
+//                    break;
+//                case EXTENDED:
+//                    viperSlideMotorPosition = liftDown;
+//                    bucketServoPosition = bucketLoad;
+//                    extendServoPosition = extendExtended;
+//                    intakeServoPosition = intakeDown;
+//                    clawWristServoPosition = wristLoad;
+//                    clawServoPosition = clawOpen;
+//
+//                    if (a) {
+//                        state = State.IDLE;
+//                    } else if (b) {
+//                        state = State.GRABBED;
+//                    }
+//                    break;
+//                case PLACE_SPECIMEN_HIGH_BAR:
+//                    viperSlideMotorPosition = liftTopBar;
+//                    bucketServoPosition = bucketLoad;
+//                    extendServoPosition = extendExtended;
+//                    intakeServoPosition = intakeUp;
+//                    clawWristServoPosition = wristLoad;
+//                    clawServoPosition = clawClosed;
+//
+//                    if (b) {
+//                        state = State.IDLE;
+//                    }
+//                    break;
+//                case PLACE_SPECIMEN_LOW_BAR:
+//                    viperSlideMotorPosition = liftBottomBar;
+//                    bucketServoPosition = bucketLoad;
+//                    extendServoPosition = extendExtended;
+//                    intakeServoPosition = intakeUp;
+//                    clawWristServoPosition = wristLoad;
+//                    clawServoPosition = clawClosed;
+//
+//                    if (x) {
+//                        state = State.IDLE;
+//                    }
+//                    break;
+//                case GRABBED:
+//                    viperSlideMotorPosition = liftDown;
+//                    bucketServoPosition = bucketLoad;
+//                    extendServoPosition = extendExtended;
+//                    intakeServoPosition = intakeDown;
+//                    clawWristServoPosition = wristLoad;
+//                    clawServoPosition = clawClosed;
+//
+//                    if (a) {
+//                        state = State.LOADED;
+//                    } else if (b) {
+//                        state = State.EXTENDED;
+//                    }
+//                    break;
+//                case LOADED:
+//                    viperSlideMotorPosition = liftDown;
+//                    bucketServoPosition = bucketLoad;
+//                    extendServoPosition = extendClosed;
+//                    intakeServoPosition = intakeUp;
+//                    clawWristServoPosition = wristDrop;
+//                    clawServoPosition = clawClosed;
+//
+//                    if (a) {
+//                        state = State.LIFTED_HIGH_BUCKET;
+//                        liftedTime = runtime.seconds();
+//                    } else if (b) {
+//                        state = State.EXTENDED;
+//                    } else if (x) {
+//                        state = State.LIFTED_LOW_BUCKET;
+//                    }
+//                    break;
+//                case LIFTED_HIGH_BUCKET:
+//                    if (runtime.seconds() > liftedTime + 1) {
+//                        viperSlideMotorPosition = liftTopBucket;
+//                    }
+//                    bucketServoPosition = bucketLoad;
+//                    extendServoPosition = extendClosed;
+//                    intakeServoPosition = intakeUp;
+//
+//                    if (runtime.seconds() > liftedTime + 0.5){
+//                        clawWristServoPosition = wristLift;
+//                    }
+//                    clawServoPosition = clawOpen;
+//
+//                    if (a) {
+//                        state = State.DROP_HIGH_BUCKET;
+//                    }
+//                    break;
+//                case LIFTED_LOW_BUCKET:
+//                    if (runtime.seconds() > liftedTime + 1) {
+//                        viperSlideMotorPosition = liftBottomBucket;
+//                    }
+//                    bucketServoPosition = bucketLoad;
+//                    extendServoPosition = extendClosed;
+//                    intakeServoPosition = intakeUp;
+//
+//                    if (runtime.seconds() > liftedTime + 0.5){
+//                        clawWristServoPosition = wristLift;
+//                    }
+//                    clawServoPosition = clawOpen;
+//
+//                    if (a) {
+//                        state = State.DROP_LOW_BUCKET;
+//                    }
+//                    break;
+//                case DROP_HIGH_BUCKET:
+//                    viperSlideMotorPosition = liftTopBucket;
+//                    bucketServoPosition = bucketDrop;
+//                    extendServoPosition = extendClosed;
+//                    intakeServoPosition = intakeUp;
+//                    clawWristServoPosition = wristLift;
+//                    clawServoPosition = clawOpen;
+//
+//                    if (a) {
+//                        state = State.IDLE;
+//                    }
+//                    break;
+//                case DROP_LOW_BUCKET:
+//                    viperSlideMotorPosition = liftBottomBucket;
+//                    bucketServoPosition = bucketDrop;
+//                    extendServoPosition = extendClosed;
+//                    intakeServoPosition = intakeUp;
+//                    clawWristServoPosition = wristLift;
+//                    clawServoPosition = clawOpen;
+//
+//                    if (a) {
+//                        state = State.IDLE;
+//                    }
+//            }
+//
+//            // Set servo positions
+//            extendServo.setPosition(extendServoPosition);
+//            bucketServo.setPosition(bucketServoPosition);
+//            intakeServo.setPosition(intakeServoPosition);
+//            clawServo.setPosition(clawServoPosition);
+//            clawWristServo.setPosition(clawWristServoPosition);
 
              // Set (non-drive) motor power
 //            viperSlideMotor.setTargetPosition(viperSlideMotorPosition);
