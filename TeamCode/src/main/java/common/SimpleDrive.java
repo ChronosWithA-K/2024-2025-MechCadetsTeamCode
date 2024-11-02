@@ -36,42 +36,46 @@ public class SimpleDrive extends Thread{
 
         while (!opMode.isStarted()) Thread.yield();
 
-        double axial = -opMode.gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
-        double lateral = opMode.gamepad1.left_stick_x;
-        double yaw = opMode.gamepad1.right_stick_x;
+        while (opMode.opModeIsActive()) {
 
-        double axialThreshold = 0.05 * lateral;
-        double lateralThreshold = 0.05 * axial;
-        // If not steering much, assume it's because of human inaccuracy and fix it (untested)
-        if (Math.abs(axial) <= axialThreshold) {
-            axial = 0;
-        } else if (Math.abs(lateral) <= lateralThreshold) {
-            lateral = 0;
+
+            double axial = -opMode.gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
+            double lateral = opMode.gamepad1.left_stick_x;
+            double yaw = opMode.gamepad1.right_stick_x;
+
+            double axialThreshold = 0.05 * lateral;
+            double lateralThreshold = 0.05 * axial;
+            // If not steering much, assume it's because of human inaccuracy and fix it (untested)
+            if (Math.abs(axial) <= axialThreshold) {
+                axial = 0;
+            } else if (Math.abs(lateral) <= lateralThreshold) {
+                lateral = 0;
+            }
+
+            // Combine the joystick requests for each axis-motion to determine each wheel's power.
+            // Set up a variable for each drive wheel to save the power level for telemetry.
+            double leftFrontPower = axial + lateral + yaw;
+            double rightFrontPower = axial - lateral - yaw;
+            double leftBackPower = axial - lateral + yaw;
+            double rightBackPower = axial + lateral - yaw;
+
+            // Normalize the values so no wheel power exceeds 100%
+            // This ensures that the robot maintains the desired motion.
+            double max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
+            max = Math.max(max, Math.abs(leftBackPower));
+            max = Math.max(max, Math.abs(rightBackPower));
+
+            if (max > 1.0) {
+                leftFrontPower /= max;
+                rightFrontPower /= max;
+                leftBackPower /= max;
+                rightBackPower /= max;
+            }
+
+            // Send calculated power to wheels
+            leftFrontDrive.setPower(leftFrontPower);
+            rightFrontDrive.setPower(rightFrontPower);
+            leftBackDrive.setPower(leftBackPower);
         }
-
-        // Combine the joystick requests for each axis-motion to determine each wheel's power.
-        // Set up a variable for each drive wheel to save the power level for telemetry.
-        double leftFrontPower = axial + lateral + yaw;
-        double rightFrontPower = axial - lateral - yaw;
-        double leftBackPower = axial - lateral + yaw;
-        double rightBackPower = axial + lateral - yaw;
-
-        // Normalize the values so no wheel power exceeds 100%
-        // This ensures that the robot maintains the desired motion.
-        double max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
-        max = Math.max(max, Math.abs(leftBackPower));
-        max = Math.max(max, Math.abs(rightBackPower));
-
-        if (max > 1.0) {
-            leftFrontPower /= max;
-            rightFrontPower /= max;
-            leftBackPower /= max;
-            rightBackPower /= max;
-        }
-
-        // Send calculated power to wheels
-        leftFrontDrive.setPower(leftFrontPower);
-        rightFrontDrive.setPower(rightFrontPower);
-        leftBackDrive.setPower(leftBackPower);
     }
 }
