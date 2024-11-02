@@ -101,7 +101,7 @@ public class CustomHolonomicDrive extends LinearOpMode {
         double wristLift = 0.2;
 
         double clawClosed = 0;
-        double clawOpen = 0.5;
+        double clawOpen = 0.4;
 
         boolean aPrev = false;
         boolean bPrev = false;
