@@ -106,16 +106,22 @@ public class CustomHolonomicDrive extends LinearOpMode {
         boolean aPrev = false;
         boolean bPrev = false;
         boolean xPrev = false;
+        boolean yPrev = false;
+        boolean rbPrev = false;
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-
             boolean a = gamepad1.a && !aPrev;
             aPrev = gamepad1.a;
             boolean b = gamepad1.b && !bPrev;
             bPrev = gamepad1.b;
             boolean x = gamepad1.x && !xPrev;
             xPrev = gamepad1.x;
+            boolean y = gamepad1.y && !yPrev;
+            yPrev = gamepad1.y;
+            boolean rb = gamepad1.right_bumper && !rbPrev;
+            rbPrev = gamepad1.right_bumper;
+
 
             switch (state) {
                 case IDLE:
@@ -128,11 +134,9 @@ public class CustomHolonomicDrive extends LinearOpMode {
 
                     if (a) {
                         state = State.EXTENDED;
-                    }
-                    if (b) {
+                    } else if (y) {
                         state = State.PLACE_SPECIMEN_HIGH_BAR;
-                    }
-                    if (x) {
+                    } else if (x) {
                         state = State.PLACE_SPECIMEN_LOW_BAR;
                     }
                     break;
@@ -148,9 +152,9 @@ public class CustomHolonomicDrive extends LinearOpMode {
                     clawWristServoPosition = wristLoad;
 
                     if (a) {
-                        state = State.IDLE;
-                    } else if (b) {
                         state = State.GRABBED;
+                    } else if (b) {
+                        state = State.IDLE;
                     }
                     break;
                 case PLACE_SPECIMEN_HIGH_BAR:
@@ -161,7 +165,7 @@ public class CustomHolonomicDrive extends LinearOpMode {
                     clawWristServoPosition = wristLoad;
                     clawServoPosition = clawClosed;
 
-                    if (b) {
+                    if (a || b) {
                         state = State.IDLE;
                     }
                     break;
@@ -173,7 +177,7 @@ public class CustomHolonomicDrive extends LinearOpMode {
                     clawWristServoPosition = wristLoad;
                     clawServoPosition = clawClosed;
 
-                    if (x) {
+                    if (a || b) {
                         state = State.IDLE;
                     }
                     break;
@@ -189,6 +193,8 @@ public class CustomHolonomicDrive extends LinearOpMode {
                         state = State.LOADED;
                     } else if (b) {
                         state = State.EXTENDED;
+                    } else if (rb) {
+                        state = State.IDLE;
                     }
                     break;
                 case LOADED:
@@ -199,14 +205,11 @@ public class CustomHolonomicDrive extends LinearOpMode {
                     clawWristServoPosition = wristDrop;
                     clawServoPosition = clawClosed;
 
-                    if (a) {
-                        state = State.LIFTED_HIGH_BUCKET;
-                        liftedTime = runtime.seconds();
-                    } else if (b) {
-                        state = State.EXTENDED;
+                    if (b) {
+                        state = State.GRABBED;
                         wristTime = runtime.seconds();
-                    } else if (x) {
-                        state = State.LIFTED_LOW_BUCKET;
+                    } else if (rb) {
+                        state = State.IDLE;
                     }
                     break;
                 case LIFTED_HIGH_BUCKET:
@@ -225,6 +228,8 @@ public class CustomHolonomicDrive extends LinearOpMode {
 
                     if (a) {
                         state = State.DROP_HIGH_BUCKET;
+                    } else if (b) {
+                        state = State.IDLE;
                     }
                     break;
                 case LIFTED_LOW_BUCKET:
@@ -242,6 +247,8 @@ public class CustomHolonomicDrive extends LinearOpMode {
 
                     if (a) {
                         state = State.DROP_LOW_BUCKET;
+                    } else if (b) {
+                        state = State.IDLE;
                     }
                     break;
                 case DROP_HIGH_BUCKET:
@@ -254,6 +261,8 @@ public class CustomHolonomicDrive extends LinearOpMode {
 
                     if (a) {
                         state = State.IDLE;
+                    } else if (b) {
+                        state = State.LIFTED_HIGH_BUCKET;
                     }
                     break;
                 case DROP_LOW_BUCKET:
@@ -266,6 +275,9 @@ public class CustomHolonomicDrive extends LinearOpMode {
 
                     if (a) {
                         state = State.IDLE;
+                    }
+                    if (b) {
+                        state = State.LIFTED_LOW_BUCKET;
                     }
             }
 
