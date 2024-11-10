@@ -154,16 +154,17 @@ public class CustomHolonomicDrive extends LinearOpMode {
                     intakeServoPosition = intakeUp;
                     wristServoPosition = wristLift;
                     sampleClawServoPosition = sampleClawClosed;
-                    specimenClawServoPosition = specimenClawOpen;
+
+                    if (runtime.seconds() > closedTime + 0.25) {
+                        specimenClawServoPosition = specimenClawOpen;
+                    }
 
                     if (a) {
                         state = State.EXTENDED;
                     } else if (y) {
                         state = State.PLACE_SPECIMEN_HIGH_BAR;
-                        closedTime = runtime.seconds();
                     } else if (x) {
                         state = State.PLACE_SPECIMEN_LOW_BAR;
-                        closedTime = runtime.seconds();
                     }
                     break;
                 case EXTENDED:
@@ -195,6 +196,7 @@ public class CustomHolonomicDrive extends LinearOpMode {
 
                     if (a || b) {
                         state = State.IDLE;
+                        closedTime = runtime.seconds();
                     }
                     break;
                 case PLACE_SPECIMEN_LOW_BAR:
@@ -208,6 +210,7 @@ public class CustomHolonomicDrive extends LinearOpMode {
 
                     if (a || b) {
                         state = State.IDLE;
+                        closedTime = runtime.seconds();
                     }
                     break;
                 case GRABBED:
@@ -236,7 +239,13 @@ public class CustomHolonomicDrive extends LinearOpMode {
                     sampleClawServoPosition = sampleClawClosed;
                     specimenClawServoPosition = specimenClawClosed;
 
-                    if (b) {
+                    if (y) {
+                        state = State.LIFTED_HIGH_BUCKET;
+                        liftedTime = runtime.seconds();
+                    } else if (x) {
+                        state = State.LIFTED_HIGH_BUCKET;
+                        liftedTime = runtime.seconds();
+                    } else if (b) {
                         state = State.GRABBED;
                         wristTime = runtime.seconds();
                     } else if (rb) {

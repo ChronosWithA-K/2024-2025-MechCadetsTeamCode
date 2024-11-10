@@ -216,7 +216,6 @@ public class RobotAutoEncoderTest extends LinearOpMode {
                             )
                     )
             .build());
-
             follower.update();
         }
 
