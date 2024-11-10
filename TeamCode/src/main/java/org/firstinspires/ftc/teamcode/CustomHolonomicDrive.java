@@ -155,7 +155,7 @@ public class CustomHolonomicDrive extends LinearOpMode {
                     intakeServoPosition = intakeUp;
                     wristServoPosition = wristLift;
                     sampleClawServoPosition = sampleClawClosed;
-                    specimenClawServoPosition = specimenClawClosed;
+                    specimenClawServoPosition = specimenClawOpen;
 
                     if (a) {
                         state = State.EXTENDED;
@@ -186,34 +186,26 @@ public class CustomHolonomicDrive extends LinearOpMode {
                     }
                     break;
                 case PLACE_SPECIMEN_HIGH_BAR:
-                    specimenClawServoPosition = specimenClawOpen;
-                    if (runtime.seconds() > closedTime + 0.5) {
-                        specimenClawServoPosition = specimenClawClosed;
-                    }
-
                     viperSlideMotorPosition = liftTopBar;
                     bucketServoPosition = bucketLoad;
                     extendServoPosition = extendClosed;
                     intakeServoPosition = intakeUp;
                     wristServoPosition = wristLoad;
                     sampleClawServoPosition = sampleClawClosed;
+                    specimenClawServoPosition = specimenClawClosed;
 
                     if (a || b) {
                         state = State.IDLE;
                     }
                     break;
                 case PLACE_SPECIMEN_LOW_BAR:
-                    specimenClawServoPosition = specimenClawOpen;
-                    if (runtime.seconds() > closedTime + 0.5) {
-                        specimenClawServoPosition = specimenClawClosed;
-                    }
-
                     viperSlideMotorPosition = liftBottomBar;
                     bucketServoPosition = bucketLoad;
                     extendServoPosition = extendClosed;
                     intakeServoPosition = intakeUp;
                     wristServoPosition = wristLoad;
                     sampleClawServoPosition = sampleClawClosed;
+                    specimenClawServoPosition = specimenClawClosed;
 
                     if (a || b) {
                         state = State.IDLE;
@@ -226,6 +218,7 @@ public class CustomHolonomicDrive extends LinearOpMode {
                     intakeServoPosition = intakeDown;
                     wristServoPosition = wristLoad;
                     sampleClawServoPosition = sampleClawClosed;
+                    specimenClawServoPosition = specimenClawClosed;
 
                     if (a) {
                         state = State.LOADED;
@@ -242,6 +235,7 @@ public class CustomHolonomicDrive extends LinearOpMode {
                     intakeServoPosition = intakeUp;
                     wristServoPosition = wristDrop;
                     sampleClawServoPosition = sampleClawClosed;
+                    specimenClawServoPosition = specimenClawClosed;
 
                     if (b) {
                         state = State.GRABBED;
@@ -258,6 +252,7 @@ public class CustomHolonomicDrive extends LinearOpMode {
                     bucketServoPosition = bucketLoad;
                     extendServoPosition = extendClosed;
                     intakeServoPosition = intakeUp;
+                    specimenClawServoPosition = specimenClawClosed;
 
                     if (runtime.seconds() > liftedTime + 0.5){
                         wristServoPosition = wristLift;
@@ -277,6 +272,7 @@ public class CustomHolonomicDrive extends LinearOpMode {
                     bucketServoPosition = bucketLoad;
                     extendServoPosition = extendClosed;
                     intakeServoPosition = intakeUp;
+                    specimenClawServoPosition = specimenClawClosed;
 
                     if (runtime.seconds() > liftedTime + 0.5){
                         wristServoPosition = wristLift;
@@ -296,6 +292,7 @@ public class CustomHolonomicDrive extends LinearOpMode {
                     intakeServoPosition = intakeUp;
                     wristServoPosition = wristLift;
                     sampleClawServoPosition = sampleClawOpen;
+                    specimenClawServoPosition = specimenClawClosed;
 
                     if (a) {
                         state = State.IDLE;
@@ -310,6 +307,7 @@ public class CustomHolonomicDrive extends LinearOpMode {
                     intakeServoPosition = intakeUp;
                     wristServoPosition = wristLift;
                     sampleClawServoPosition = sampleClawOpen;
+                    specimenClawServoPosition = specimenClawClosed;
 
                     if (a) {
                         state = State.IDLE;
