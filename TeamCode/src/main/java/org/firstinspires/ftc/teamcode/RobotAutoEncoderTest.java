@@ -186,8 +186,8 @@ public class RobotAutoEncoderTest extends LinearOpMode {
                     .addPath(
                             new Path(
                                     new BezierLine(
-                                        new Point(startPose),
-                                        new Point(84, 36, Point.CARTESIAN) // Drive in front of scoring bar
+                                            new Point(startPose),
+                                            new Point(84, 36, Point.CARTESIAN) // Drive in front of scoring bar
                                     )
                             )
                     )
@@ -208,12 +208,23 @@ public class RobotAutoEncoderTest extends LinearOpMode {
                     .addPath(
                             new Path(
                                     new BezierLine(
-                                            new Point(132, 36, Point.CARTESIAN),
-                                            new Point(132, 36, Point.CARTESIAN) //
+                                            new Point(84, 36, Point.CARTESIAN),
+                                            new Point(132, 36, Point.CARTESIAN) // Drive to closest sample
                                     )
                             )
                     )
             .build());
+            follower.followPath(follower.pathBuilder()
+                    .addPath(
+                            new Path(
+                                    new BezierLine(
+                                            new Point(132, 36, Point.CARTESIAN),
+                                            new Point(84, 36, Point.CARTESIAN) // Drive in front of scoring bar
+                                    )
+                            )
+                    )
+            .build());
+            // Place specimen on top scoring bar
             follower.update();
         }
 
