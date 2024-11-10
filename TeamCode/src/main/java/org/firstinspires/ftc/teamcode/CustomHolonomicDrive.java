@@ -243,7 +243,7 @@ public class CustomHolonomicDrive extends LinearOpMode {
                         state = State.LIFTED_HIGH_BUCKET;
                         liftedTime = runtime.seconds();
                     } else if (x) {
-                        state = State.LIFTED_HIGH_BUCKET;
+                        state = State.LIFTED_LOW_BUCKET;
                         liftedTime = runtime.seconds();
                     } else if (b) {
                         state = State.GRABBED;
