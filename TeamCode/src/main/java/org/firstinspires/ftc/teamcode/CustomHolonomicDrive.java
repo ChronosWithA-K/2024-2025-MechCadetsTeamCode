@@ -58,7 +58,7 @@ public class CustomHolonomicDrive extends LinearOpMode {
         intakeServo = hardwareMap.get(Servo.class, "intake_servo");
         sampleClawServo = hardwareMap.get(Servo.class, "sample_claw_servo");
         wristServo = hardwareMap.get(Servo.class,  "wrist_servo");
-        specimenClawServo = hardwareMap.get(Servo.class, "specimen_servo");
+        specimenClawServo = hardwareMap.get(Servo.class, "specimen_claw_servo");
 
         viperSlideMotor = hardwareMap.get(DcMotor.class, "viper_slide_motor");
 
@@ -66,7 +66,6 @@ public class CustomHolonomicDrive extends LinearOpMode {
         viperSlideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         viperSlideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         viperSlideMotor.setPower(1);
-
         viperSlideMotor.setDirection(DcMotor.Direction.FORWARD);
 
         // Wait for the game to start (driver presses PLAY)
@@ -90,10 +89,10 @@ public class CustomHolonomicDrive extends LinearOpMode {
         int viperSlideMotorPosition = 0;
 
         int liftDown = 0;
-        int liftTopBucket = 3150;
-        int liftBottomBucket = 1745;
-        int liftTopBar = 1630;
-        int liftBottomBar = 580;
+        int liftTopBucket = 6180;
+        int liftBottomBucket = 3480;
+        int liftTopBar = 2890;
+        int liftBottomBar = 960;
 
         double bucketDrop = 0.37;
         double bucketLoad = 0.5;
