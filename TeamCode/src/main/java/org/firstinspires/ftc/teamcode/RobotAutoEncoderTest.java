@@ -48,9 +48,6 @@ public class RobotAutoEncoderTest extends LinearOpMode {
     private DcMotor rightFrontDrive = null;
     private DcMotor rightBackDrive = null;
 
-//    private DcMotor xEncoder = null;
-//    private DcMotor yEncoder = null;
-
     private IMU imu = null;
 
     private Limelight3A limelight;
@@ -86,9 +83,6 @@ public class RobotAutoEncoderTest extends LinearOpMode {
         rightFrontDrive = hardwareMap.get(DcMotor.class, "right_front");
         rightBackDrive = hardwareMap.get(DcMotor.class, "right_back");
 
-//        xEncoder = hardwareMap.get(DcMotor.class, "x_encoder");
-//        yEncoder = hardwareMap.get(DcMotor.class, "y_encoder");
-
         imu = hardwareMap.get(IMU.class, "imu");
 
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
@@ -102,7 +96,7 @@ public class RobotAutoEncoderTest extends LinearOpMode {
          * 6 is for april tag 14
          * 7 is for april tag 15
          * 8 is for april tag 16
-         * 9 is unused
+         * 9 for all at once
          */
 
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
@@ -197,7 +191,9 @@ public class RobotAutoEncoderTest extends LinearOpMode {
                                     )
                             )
                     )
-                    // Place specimen on top scoring bar
+            .build());
+            // Place specimen on top scoring bar
+            follower.followPath(follower.pathBuilder()
                     .addPath(
                             new Path(
                                     new BezierLine(
@@ -206,7 +202,9 @@ public class RobotAutoEncoderTest extends LinearOpMode {
                                     )
                             )
                     )
-                    // pick up sample
+            .build());
+            // pick up sample
+            follower.followPath(follower.pathBuilder()
                     .addPath(
                             new Path(
                                     new BezierLine(

@@ -18,9 +18,6 @@ public class CustomHolonomicDrive extends LinearOpMode {
 
     private DcMotor viperSlideMotor = null;
 
-//    private DcMotor xEncoder = null; // If uncommented and not attached to the robot, things will break
-//    private DcMotor yEncoder = null;
-
     private Servo extendServo = null;
     private Servo bucketServo = null;
     private Servo intakeServo = null;
@@ -47,9 +44,6 @@ public class CustomHolonomicDrive extends LinearOpMode {
 
         SimpleDrive drive = new SimpleDrive(this);
         drive.start();
-
-//        xEncoder = hardwareMap.get(DcMotor.class, "x_encoder");
-//        yEncoder = hardwareMap.get(DcMotor.class, "y_encoder");
 
         imu = hardwareMap.get(IMU.class, "imu");
 
@@ -338,8 +332,6 @@ public class CustomHolonomicDrive extends LinearOpMode {
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
-//            telemetry.addData("xEncoder", "%4.2f, %4.2f", xEncoder);
-//            telemetry.addData("yEncoder", "%4.2f, %4.2f", yEncoder);
             telemetry.addData("State", state);
             telemetry.addData("extendServo position: ", extendServoPosition);
             telemetry.addData("bucketServo position: ", bucketServoPosition);
