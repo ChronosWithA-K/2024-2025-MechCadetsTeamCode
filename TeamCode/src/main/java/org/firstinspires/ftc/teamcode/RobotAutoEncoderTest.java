@@ -196,7 +196,8 @@ public class RobotAutoEncoderTest extends LinearOpMode {
                                         new Point(84, 36, Point.CARTESIAN) // Drive in front of scoring bar
                                     )
                             )
-                    ) // Place specimen on top scoring bar
+                    )
+                    // Place specimen on top scoring bar
                     .addPath(
                             new Path(
                                     new BezierLine(
@@ -205,6 +206,7 @@ public class RobotAutoEncoderTest extends LinearOpMode {
                                     )
                             )
                     )
+                    // pick up sample
                     .addPath(
                             new Path(
                                     new BezierLine(
