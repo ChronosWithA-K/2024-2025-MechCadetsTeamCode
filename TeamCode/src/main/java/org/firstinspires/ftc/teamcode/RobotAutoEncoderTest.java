@@ -55,6 +55,7 @@ public class RobotAutoEncoderTest extends LinearOpMode {
     private Follower follower;
 
     private Pose startPose = new Pose(96, 12, 90);
+    private Pose faceHuman = new Pose();
 
     private ElapsedTime runtime = new ElapsedTime();
 

@@ -149,7 +149,7 @@ public class CustomHolonomicDrive extends LinearOpMode {
                     wristServoPosition = wristLift;
                     sampleClawServoPosition = sampleClawClosed;
 
-                    if (runtime.seconds() > closedTime + 0.25) {
+                    if (runtime.seconds() > closedTime + 0.5) {
                         specimenClawServoPosition = specimenClawOpen;
                     }
 
