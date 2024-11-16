@@ -21,22 +21,14 @@ import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.Point;
 
 import java.util.List;
 
-/*
- * This OpMode illustrates the concept of driving a path based on encoder counts.
- * The code is structured as a LinearOpMode
- *
- * The code REQUIRES that you DO have encoders on the wheels,
- *   otherwise you would use: RobotAutoDriveByTime;
- *
- *  This code ALSO requires that the drive Motors have been configured such that a positive
- *  power command moves them forward, and causes the encoders to count UP.
- *
- *  This method assumes that each movement is relative to the last stopping place.
- *  There are other ways to perform encoder based moves, but this method is probably the simplest.
- *  This code uses the RUN_TO_POSITION mode to enable the Motor controllers to generate the run profile
- *
- * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
- * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
+/**
+ * Plans for autonomous:
+ * place specimen on bar
+ * grab sample
+ * sample in bucket
+ * grab sample
+ * sample in pucket
+ * park
  */
 
 @Autonomous(name = "Robot: Auto Encoder Test", group = "Test")
