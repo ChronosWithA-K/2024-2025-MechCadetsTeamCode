@@ -4,10 +4,8 @@ import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.LLStatus;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -16,7 +14,6 @@ import org.firstinspires.ftc.teamcode.pedroPathing.follower.Follower;
 import org.firstinspires.ftc.teamcode.pedroPathing.localization.Pose;
 import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.BezierLine;
 import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.Path;
-import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.PathChain;
 import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.Point;
 
 import java.util.List;
@@ -31,8 +28,8 @@ import java.util.List;
  * park
  */
 
-@Autonomous(name = "Robot: Auto Encoder Test", group = "Test")
-public class RobotAutoEncoderTest extends LinearOpMode {
+@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "Robot: Auto Encoder Test", group = "Test")
+public class Autonomous extends LinearOpMode {
 
     /* Declare OpMode members. */
     private DcMotor leftFrontDrive = null;
