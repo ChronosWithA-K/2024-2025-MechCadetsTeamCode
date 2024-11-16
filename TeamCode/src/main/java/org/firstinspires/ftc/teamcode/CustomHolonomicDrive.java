@@ -316,6 +316,7 @@ public class CustomHolonomicDrive extends LinearOpMode {
                     if (b) {
                         state = State.LIFTED_LOW_BUCKET;
                     }
+                    break;
             }
 
             // Set servo positions
@@ -326,7 +327,7 @@ public class CustomHolonomicDrive extends LinearOpMode {
             wristServo.setPosition(wristServoPosition);
             specimenClawServo.setPosition(specimenClawServoPosition);
 
-             // Set (non-drive) motor power
+            // Set (non-drive) motor power
             viperSlideMotor.setTargetPosition(viperSlideMotorPosition);
             if (viperSlideMotor.isBusy()) {
                 viperSlideMotor.setPower(1);
