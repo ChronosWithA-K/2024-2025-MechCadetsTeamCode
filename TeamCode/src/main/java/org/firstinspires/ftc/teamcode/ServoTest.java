@@ -10,7 +10,7 @@ public class ServoTest extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
     private Servo activeServo = null;
     // To test more servos, add them to the below array
-    private String[] servoNames = {"extend_servo", "bucket_servo", "intake_servo", "claw_servo", "claw_wrist_servo"};
+    private String[] servoNames = {"extend_servo", "bucket_servo", "intake_servo", "sample_claw_servo", "wrist_servo", "specimen_claw_servo"};
     private int activeServoIndex = 0;
 
     private void setServo() {
