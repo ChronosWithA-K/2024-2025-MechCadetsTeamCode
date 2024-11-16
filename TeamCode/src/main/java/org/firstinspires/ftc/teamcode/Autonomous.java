@@ -28,6 +28,10 @@ import java.util.List;
  * park
  */
 
+/**
+ * Pedro pathing coordinate system: bottom left is (0, 0) top right is (144, 144) (inches)
+ */
+
 @com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "Robot: Auto Encoder Test", group = "Test")
 public class Autonomous extends LinearOpMode {
 
@@ -177,7 +181,7 @@ public class Autonomous extends LinearOpMode {
                             new Path(
                                     new BezierLine(
                                             new Point(startPose),
-                                            new Point(84, 36, Point.CARTESIAN) // Drive in front of scoring bar
+                                            new Point(, , Point.CARTESIAN) // Drive in front of scoring bar
                                     )
                             )
                     )
@@ -187,8 +191,8 @@ public class Autonomous extends LinearOpMode {
                     .addPath(
                             new Path(
                                     new BezierLine(
-                                            new Point(84, 36, Point.CARTESIAN),
-                                            new Point(132, 36, Point.CARTESIAN) // Drive to closest sample
+                                            new Point(, , Point.CARTESIAN),
+                                            new Point(, , Point.CARTESIAN) // Drive to closest sample
                                     )
                             )
                     )
@@ -198,18 +202,19 @@ public class Autonomous extends LinearOpMode {
                     .addPath(
                             new Path(
                                     new BezierLine(
-                                            new Point(84, 36, Point.CARTESIAN),
-                                            new Point(132, 36, Point.CARTESIAN) // Drive to closest sample
+                                            new Point(, , Point.CARTESIAN),
+                                            new Point(, , Point.CARTESIAN) // Drive to bucket
                                     )
                             )
                     )
             .build());
+            // Place in bucket
             follower.followPath(follower.pathBuilder()
                     .addPath(
                             new Path(
                                     new BezierLine(
-                                            new Point(132, 36, Point.CARTESIAN),
-                                            new Point(84, 36, Point.CARTESIAN) // Drive in front of scoring bar
+                                            new Point(, , Point.CARTESIAN),
+                                            new Point(, , Point.CARTESIAN) // Drive in front of scoring bar
                                     )
                             )
                     )
