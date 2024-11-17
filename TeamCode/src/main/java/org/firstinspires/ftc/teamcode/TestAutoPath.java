@@ -28,7 +28,7 @@ public class TestAutoPath extends LinearOpMode {
         rightFrontDrive = hardwareMap.get(DcMotor.class, "right_front");
         rightBackDrive = hardwareMap.get(DcMotor.class, "right_back");
         viperSlideMotor = hardwareMap.get(DcMotor.class, "viper_slide_motor"); // Initialize viper slide motor
-        specimenClaw = hardwareMap.get(Servo.class, "specimen_claw"); // Initialize specimen claw servo
+        specimenClaw = hardwareMap.get(Servo.class, "specimen_claw_servo"); // Initialize specimen claw servo
 
 
         // Set motor directions
@@ -75,7 +75,7 @@ public class TestAutoPath extends LinearOpMode {
                 leftPower = 0;
                 rightPower = 0;
             }
-            viperSlideMotor.setPower(1.0); // Set viper slide motor to full power (1.0)
+            viperSlideMotor.setPower(0.0); // Set viper slide motor to full power (1.0)
             specimenClaw.setPosition(0.5); // Set specimen claw to middle position (0.5)
 
 
@@ -94,7 +94,7 @@ public class TestAutoPath extends LinearOpMode {
 
 
         // After the movement sequence is complete, set the viper slide motor and specimen claw
-        viperSlideMotor.setPower(1.0); // Set viper slide motor to full power (1.0)
+        viperSlideMotor.setPower(0.0); // Set viper slide motor to full power (1.0)
         specimenClaw.setPosition(0.5); // Set specimen claw to middle position (0.5)
 
 
