@@ -221,7 +221,7 @@ public class Autonomous extends LinearOpMode {
 //            .build());
 //            // Place specimen on top scoring bar
 //            follower.update();
-//        }
+        }
 
         // Step through each leg of the path
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
