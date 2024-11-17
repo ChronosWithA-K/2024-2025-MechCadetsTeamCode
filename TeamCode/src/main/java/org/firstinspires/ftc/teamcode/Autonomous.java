@@ -176,52 +176,52 @@ public class Autonomous extends LinearOpMode {
         }
         telemetry.update();
         while (opModeIsActive()) {
-            follower.followPath(follower.pathBuilder()
-                    .addPath(
-                            new Path(
-                                    new BezierLine(
-                                            new Point(startPose),
-                                            new Point(, , Point.CARTESIAN) // Drive in front of scoring bar
-                                    )
-                            )
-                    )
-            .build());
-            // Place specimen on top scoring bar
-            follower.followPath(follower.pathBuilder()
-                    .addPath(
-                            new Path(
-                                    new BezierLine(
-                                            new Point(, , Point.CARTESIAN),
-                                            new Point(, , Point.CARTESIAN) // Drive to closest sample
-                                    )
-                            )
-                    )
-            .build());
-            // pick up sample
-            follower.followPath(follower.pathBuilder()
-                    .addPath(
-                            new Path(
-                                    new BezierLine(
-                                            new Point(, , Point.CARTESIAN),
-                                            new Point(, , Point.CARTESIAN) // Drive to bucket
-                                    )
-                            )
-                    )
-            .build());
-            // Place in bucket
-            follower.followPath(follower.pathBuilder()
-                    .addPath(
-                            new Path(
-                                    new BezierLine(
-                                            new Point(, , Point.CARTESIAN),
-                                            new Point(, , Point.CARTESIAN) // Drive in front of scoring bar
-                                    )
-                            )
-                    )
-            .build());
-            // Place specimen on top scoring bar
-            follower.update();
-        }
+//            follower.followPath(follower.pathBuilder()
+//                    .addPath(
+//                            new Path(
+//                                    new BezierLine(
+//                                            new Point(startPose),
+//                                            new Point(, , Point.CARTESIAN) // Drive in front of scoring bar
+//                                    )
+//                            )
+//                    )
+//            .build());
+//            // Place specimen on top scoring bar
+//            follower.followPath(follower.pathBuilder()
+//                    .addPath(
+//                            new Path(
+//                                    new BezierLine(
+//                                            new Point(, , Point.CARTESIAN),
+//                                            new Point(, , Point.CARTESIAN) // Drive to closest sample
+//                                    )
+//                            )
+//                    )
+//            .build());
+//            // Pick up sample
+//            follower.followPath(follower.pathBuilder()
+//                    .addPath(
+//                            new Path(
+//                                    new BezierLine(
+//                                            new Point(, , Point.CARTESIAN),
+//                                            new Point(, , Point.CARTESIAN) // Drive to bucket
+//                                    )
+//                            )
+//                    )
+//            .build());
+//            // Place in bucket
+//            follower.followPath(follower.pathBuilder()
+//                    .addPath(
+//                            new Path(
+//                                    new BezierLine(
+//                                            new Point(, , Point.CARTESIAN),
+//                                            new Point(, , Point.CARTESIAN) // Drive in front of scoring bar
+//                                    )
+//                            )
+//                    )
+//            .build());
+//            // Place specimen on top scoring bar
+//            follower.update();
+//        }
 
         // Step through each leg of the path
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
