@@ -47,8 +47,8 @@ public class Autonomous extends LinearOpMode {
 
     private Follower follower;
 
-    private Pose startPose = new Pose(96, 12, 90);
-    private Pose faceHuman = new Pose();
+    private Pose startPose = new Pose(144, 72, 0);
+    private Pose placeInBucket = new Pose(132, 0, 135);
 
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -176,51 +176,50 @@ public class Autonomous extends LinearOpMode {
         }
         telemetry.update();
         while (opModeIsActive()) {
-//            follower.followPath(follower.pathBuilder()
-//                    .addPath(
-//                            new Path(
-//                                    new BezierLine(
-//                                            new Point(startPose),
-//                                            new Point(, , Point.CARTESIAN) // Drive in front of scoring bar
-//                                    )
-//                            )
-//                    )
-//            .build());
-//            // Place specimen on top scoring bar
-//            follower.followPath(follower.pathBuilder()
-//                    .addPath(
-//                            new Path(
-//                                    new BezierLine(
-//                                            new Point(, , Point.CARTESIAN),
-//                                            new Point(, , Point.CARTESIAN) // Drive to closest sample
-//                                    )
-//                            )
-//                    )
-//            .build());
-//            // Pick up sample
-//            follower.followPath(follower.pathBuilder()
-//                    .addPath(
-//                            new Path(
-//                                    new BezierLine(
-//                                            new Point(, , Point.CARTESIAN),
-//                                            new Point(, , Point.CARTESIAN) // Drive to bucket
-//                                    )
-//                            )
-//                    )
-//            .build());
-//            // Place in bucket
-//            follower.followPath(follower.pathBuilder()
-//                    .addPath(
-//                            new Path(
-//                                    new BezierLine(
-//                                            new Point(, , Point.CARTESIAN),
-//                                            new Point(, , Point.CARTESIAN) // Drive in front of scoring bar
-//                                    )
-//                            )
-//                    )
-//            .build());
-//            // Place specimen on top scoring bar
-//            follower.update();
+            follower.followPath(follower.pathBuilder()
+                    .addPath(
+                            new Path(
+                                    new BezierLine(
+                                            new Point(startPose),
+                                            new Point(120, 60, Point.CARTESIAN) // Drive in front of scoring bar
+                                    )
+                            )
+                    )
+            .build());
+            // Place specimen on top scoring bar
+            follower.followPath(follower.pathBuilder()
+                    .addPath(
+                            new Path(
+                                    new BezierLine(
+                                            new Point(120, 60, Point.CARTESIAN),
+                                            new Point(144, 120, Point.CARTESIAN) // Drive to square up from startPose
+                                    )
+                            )
+                    )
+            .build());
+            follower.followPath(follower.pathBuilder()
+                    .addPath(
+                            new Path(
+                                    new BezierLine(
+                                            new Point(144, 120, Point.CARTESIAN),
+                                            new Point(120, 132, Point.CARTESIAN) // Drive to sample
+                                    )
+                            )
+                    )
+            .build());
+            // Pick up sample
+            follower.followPath(follower.pathBuilder()
+                    .addPath(
+                            new Path(
+                                    new BezierLine(
+                                            new Point(120, 132, Point.CARTESIAN),
+                                            new Point(placeInBucket) // Drive in front of bucket
+                                    )
+                            )
+                    )
+            .build());
+            // Place specimen in top bucket
+            follower.update();
         }
 
         // Step through each leg of the path
@@ -228,7 +227,6 @@ public class Autonomous extends LinearOpMode {
 //        encoderDrive(DRIVE_SPEED,  10,  10, 10, 10, 10); // S1: Forward 10 Inches with 10 Sec timeout
 //        encoderDrive(TURN_SPEED,   12, 12, -12, -12, 10); // S2: Turn Right 12 Inches with 10 Sec timeout
 //        encoderDrive(DRIVE_SPEED, -10, -10, -10, -10, 10); // S3: Reverse 10 Inches with 10 Sec timeout
-
 
         telemetry.addData("Path", "Complete");
         telemetry.update();
