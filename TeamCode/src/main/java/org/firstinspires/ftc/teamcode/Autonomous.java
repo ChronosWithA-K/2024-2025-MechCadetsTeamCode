@@ -32,7 +32,7 @@ import java.util.List;
  * Pedro pathing coordinate system: bottom left is (0, 0) top right is (144, 144) (inches)
  */
 
-@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "Robot: Auto Encoder Test", group = "Test")
+@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "Autonomous", group = "Test")
 public class Autonomous extends LinearOpMode {
 
     /* Declare OpMode members. */
