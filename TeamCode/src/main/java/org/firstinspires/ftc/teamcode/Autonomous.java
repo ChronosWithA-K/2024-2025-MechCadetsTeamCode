@@ -176,6 +176,8 @@ public class Autonomous extends LinearOpMode {
         }
         telemetry.update();
         while (opModeIsActive()) {
+            telemetry.addData("Moving to scoring bar", "");
+            telemetry.update();
             follower.followPath(follower.pathBuilder()
                     .addPath(
                             new Path(
@@ -186,7 +188,11 @@ public class Autonomous extends LinearOpMode {
                             )
                     )
             .build());
+            telemetry.addData("Placing specimen on top scoring bar", "");
+            telemetry.update();
             // Place specimen on top scoring bar
+            telemetry.addData("Moving to square up from startPose", "");
+            telemetry.update();
             follower.followPath(follower.pathBuilder()
                     .addPath(
                             new Path(
@@ -197,6 +203,8 @@ public class Autonomous extends LinearOpMode {
                             )
                     )
             .build());
+            telemetry.addData("Moving to closest sample", "");
+            telemetry.update();
             follower.followPath(follower.pathBuilder()
                     .addPath(
                             new Path(
@@ -207,7 +215,11 @@ public class Autonomous extends LinearOpMode {
                             )
                     )
             .build());
+            telemetry.addData("Picking up sample", "");
+            telemetry.update();
             // Pick up sample
+            telemetry.addData("Moving to bucket", "");
+            telemetry.update();
             follower.followPath(follower.pathBuilder()
                     .addPath(
                             new Path(
@@ -218,28 +230,25 @@ public class Autonomous extends LinearOpMode {
                             )
                     )
             .build());
+            telemetry.addData("Place specimen in top bucket", "");
+            telemetry.update();
             // Place specimen in top bucket
             follower.update();
         }
 
-        // Step through each leg of the path
-        // Note: Reverse movement is obtained by setting a negative distance (not speed)
-//        encoderDrive(DRIVE_SPEED,  10,  10, 10, 10, 10); // S1: Forward 10 Inches with 10 Sec timeout
-//        encoderDrive(TURN_SPEED,   12, 12, -12, -12, 10); // S2: Turn Right 12 Inches with 10 Sec timeout
-//        encoderDrive(DRIVE_SPEED, -10, -10, -10, -10, 10); // S3: Reverse 10 Inches with 10 Sec timeout
-
-        telemetry.addData("Path", "Complete");
-        telemetry.update();
-        sleep(1000); // Pause to display final telemetry message.
+        if (!follower.isBusy()) {
+            telemetry.addData("Path complete", "");
+            telemetry.update();
+        }
     }
 
-    /*
-     *  Method to perform a relative move, based on encoder counts.
-     *  Encoders are not reset as the move is based on the current position.
-     *  Move will stop if any of three conditions occur:
-     *  1) Move gets to the desired position
-     *  2) Move runs out of time - timeoutS param is the time the robot has to drive a leg
-     *  3) Driver stops the OpMode running.
+    /**
+     * @param speed the speed at which the wheels will drive (should never be negative)
+     * @param leftFrontInches the distance in inches the left front wheel should drive (make negative for negative distance)
+     * @param leftBackInches the distance in inches the left back wheel should drive (make negative for negative distance)
+     * @param rightFrontInches the distance in inches the right front wheel should drive (make negative for negative distance)
+     * @param rightBackInches the distance in inches the right back wheel should drive (make negative for negative distance)
+     * @param timeoutS the time the robot has to drive that leg of the path
      */
     public void encoderDrive(double speed, double leftFrontInches, double leftBackInches, double rightFrontInches, double rightBackInches, double timeoutS) {
         int newLeftFrontTarget;
@@ -280,7 +289,6 @@ public class Autonomous extends LinearOpMode {
             // However, if you require that BOTH motors have finished their moves before the robot continues
             // onto the next step, use (isBusy() || isBusy()) in the loop test.
             while (opModeIsActive() && (runtime.seconds() < timeoutS) && (leftFrontDrive.isBusy() && leftBackDrive.isBusy() && rightFrontDrive.isBusy() && rightBackDrive.isBusy())) {
-
                 // Display it for the driver.
                 telemetry.addData("Running to", " %7d :%7d", newLeftFrontTarget, newLeftBackTarget, newRightFrontTarget, newRightBackTarget);
                 telemetry.addData("Currently at", " at %7d :%7d", leftFrontDrive.getCurrentPosition(), leftBackDrive.getCurrentPosition(), rightFrontDrive.getCurrentPosition(), rightBackDrive.getCurrentPosition());
