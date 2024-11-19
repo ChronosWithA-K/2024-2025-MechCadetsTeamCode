@@ -47,7 +47,7 @@ public class Autonomous extends LinearOpMode {
 
     private Follower follower;
 
-    private Pose startPose = new Pose(144, 72, 0);
+    private Pose startPose = new Pose(144, 72, -90);
     private Pose placeInBucket = new Pose(132, 0, 135);
 
     private ElapsedTime runtime = new ElapsedTime();
@@ -176,8 +176,6 @@ public class Autonomous extends LinearOpMode {
         }
         telemetry.update();
         while (opModeIsActive()) {
-            telemetry.addData("Moving to scoring bar", "");
-            telemetry.update();
             follower.followPath(follower.pathBuilder()
                     .addPath(
                             new Path(
@@ -187,12 +185,9 @@ public class Autonomous extends LinearOpMode {
                                     )
                             )
                     )
-            .build());
-            telemetry.addData("Placing specimen on top scoring bar", "");
-            telemetry.update();
+                    .build());
+            sleep(250);
             // Place specimen on top scoring bar
-            telemetry.addData("Moving to square up from startPose", "");
-            telemetry.update();
             follower.followPath(follower.pathBuilder()
                     .addPath(
                             new Path(
@@ -202,9 +197,8 @@ public class Autonomous extends LinearOpMode {
                                     )
                             )
                     )
-            .build());
-            telemetry.addData("Moving to closest sample", "");
-            telemetry.update();
+                    .build());
+            sleep(250);
             follower.followPath(follower.pathBuilder()
                     .addPath(
                             new Path(
@@ -214,12 +208,9 @@ public class Autonomous extends LinearOpMode {
                                     )
                             )
                     )
-            .build());
-            telemetry.addData("Picking up sample", "");
-            telemetry.update();
+                    .build());
+            sleep(250);
             // Pick up sample
-            telemetry.addData("Moving to bucket", "");
-            telemetry.update();
             follower.followPath(follower.pathBuilder()
                     .addPath(
                             new Path(
@@ -229,9 +220,8 @@ public class Autonomous extends LinearOpMode {
                                     )
                             )
                     )
-            .build());
-            telemetry.addData("Place specimen in top bucket", "");
-            telemetry.update();
+                    .build());
+            sleep(250);
             // Place specimen in top bucket
             follower.update();
         }
@@ -243,13 +233,12 @@ public class Autonomous extends LinearOpMode {
     }
 
     /**
-     *
-     * @param speed the speed at which the wheels will drive (should never be negative)
-     * @param leftFrontInches the distance in inches the left front wheel should drive (make negative for negative distance)
-     * @param leftBackInches the distance in inches the left back wheel should drive (make negative for negative distance)
+     * @param speed            the speed at which the wheels will drive (should never be negative)
+     * @param leftFrontInches  the distance in inches the left front wheel should drive (make negative for negative distance)
+     * @param leftBackInches   the distance in inches the left back wheel should drive (make negative for negative distance)
      * @param rightFrontInches the distance in inches the right front wheel should drive (make negative for negative distance)
-     * @param rightBackInches the distance in inches the right back wheel should drive (make negative for negative distance)
-     * @param timeoutS the time the robot has to drive that leg of the path
+     * @param rightBackInches  the distance in inches the right back wheel should drive (make negative for negative distance)
+     * @param timeoutS         the time the robot has to drive that leg of the path
      */
     public void encoderDrive(double speed, double leftFrontInches, double leftBackInches, double rightFrontInches, double rightBackInches, double timeoutS) {
         int newLeftFrontTarget;
@@ -257,9 +246,7 @@ public class Autonomous extends LinearOpMode {
         int newRightFrontTarget;
         int newRightBackTarget;
 
-        // Ensure that the OpMode is still active
         if (opModeIsActive()) {
-
             // Determine new target position, and pass to motor controller
             newLeftFrontTarget = leftFrontDrive.getCurrentPosition() + (int) (leftFrontInches * COUNTS_PER_INCH);
             newLeftBackTarget = leftBackDrive.getCurrentPosition() + (int) (leftBackInches * COUNTS_PER_INCH);
