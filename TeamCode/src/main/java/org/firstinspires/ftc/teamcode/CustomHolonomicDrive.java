@@ -101,8 +101,8 @@ public class CustomHolonomicDrive extends LinearOpMode {
         double wristServoPosition = 0.0;
         double specimenClawServoPosition = 0.0;
 
-        double hangingServoPosition = 0.0;
-        double
+        double rightHangingServoPosition = 0.0;
+        double leftHangingServoPosition = 0.0;
 
         int viperSlideMotorPosition = 0;
 
@@ -120,6 +120,12 @@ public class CustomHolonomicDrive extends LinearOpMode {
 
         int hangingMotorDown = 0;
         int hangingMotorOut = ;
+
+        double leftHangingServoBack = ;
+        double leftHangingServoForward = ;
+
+        double rightHangingServoBack = 0.0;
+        double leftHangingServoForward = 0.05;
 
         double extendClosed = 0.0;
         double extendExtended = 1.0;
