@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import common.SimpleDrive;
 
-@TeleOp(name="Basic: Custom Holonomic Drive", group="Linear OpMode")
+@TeleOp(name = "Basic: Custom Holonomic Drive", group = "Linear OpMode")
 public class CustomHolonomicDrive extends LinearOpMode {
     // Declare OpMode members for each of the 4 motors.
     private ElapsedTime runtime = new ElapsedTime();
@@ -18,12 +18,17 @@ public class CustomHolonomicDrive extends LinearOpMode {
 
     private DcMotor viperSlideMotor = null;
 
+    private DcMotor leftHangingMotor = null;
+    private DcMotor rightHangingMotor = null;
+
     private Servo extendServo = null;
     private Servo bucketServo = null;
     private Servo intakeServo = null;
     private Servo sampleClawServo = null;
     private Servo wristServo = null;
     private Servo specimenClawServo = null;
+    private Servo leftHangingServo = null;
+    private Servo rightHangingServo = null;
 
     enum State {
         IDLE,
@@ -36,12 +41,13 @@ public class CustomHolonomicDrive extends LinearOpMode {
         LIFTED_LOW_BUCKET,
         DROP_HIGH_BUCKET,
         DROP_LOW_BUCKET,
+        HANGING,
     }
+
     private State state = State.IDLE;
 
     @Override
     public void runOpMode() {
-
         SimpleDrive drive = new SimpleDrive(this);
         drive.start();
 
@@ -51,16 +57,31 @@ public class CustomHolonomicDrive extends LinearOpMode {
         bucketServo = hardwareMap.get(Servo.class, "bucket_servo");
         intakeServo = hardwareMap.get(Servo.class, "intake_servo");
         sampleClawServo = hardwareMap.get(Servo.class, "sample_claw_servo");
-        wristServo = hardwareMap.get(Servo.class,  "wrist_servo");
+        wristServo = hardwareMap.get(Servo.class, "wrist_servo");
         specimenClawServo = hardwareMap.get(Servo.class, "specimen_claw_servo");
+        leftHangingServo = hardwareMap.get(Servo.class, "left_hanging_servo");
+        rightHangingServo = hardwareMap.get(Servo.class, "right_hanging_servo");
 
         viperSlideMotor = hardwareMap.get(DcMotor.class, "viper_slide_motor");
+        leftHangingMotor = hardwareMap.get(DcMotor.class, "left_hanging_motor");
+        rightHangingMotor = hardwareMap.get(DcMotor.class, "right_hanging_motor");
 
         viperSlideMotor.setTargetPosition(0);
         viperSlideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         viperSlideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         viperSlideMotor.setPower(1);
         viperSlideMotor.setDirection(DcMotor.Direction.FORWARD);
+
+        leftHangingMotor.setTargetPosition(0);
+        leftHangingMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftHangingMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftHangingMotor.setPower(1);
+        leftHangingMotor.setDirection(DcMotor.Direction.FORWARD);
+        rightHangingMotor.setTargetPosition(0);
+        rightHangingMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightHangingMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightHangingMotor.setPower(1);
+        rightHangingMotor.setDirection(DcMotor.Direction.FORWARD);
 
         // Wait for the game to start (driver presses PLAY)
         telemetry.addData("Status", "Initialized");
@@ -80,6 +101,9 @@ public class CustomHolonomicDrive extends LinearOpMode {
         double wristServoPosition = 0.0;
         double specimenClawServoPosition = 0.0;
 
+        double hangingServoPosition = 0.0;
+        double
+
         int viperSlideMotorPosition = 0;
 
         int liftDown = 0;
@@ -91,8 +115,14 @@ public class CustomHolonomicDrive extends LinearOpMode {
         double bucketDrop = 0.37;
         double bucketLoad = 0.5;
 
-        double extendClosed = 0;
-        double extendExtended = 1;
+        int leftHangingMotorPosition = 0;
+        int rightHangingMotorPosition = 0;
+
+        int hangingMotorDown = 0;
+        int hangingMotorOut = ;
+
+        double extendClosed = 0.0;
+        double extendExtended = 1.0;
 
         double intakeDown = 0.26;
         double intakeUp = 1;
@@ -255,7 +285,7 @@ public class CustomHolonomicDrive extends LinearOpMode {
                     intakeServoPosition = intakeUp;
                     specimenClawServoPosition = specimenClawClosed;
 
-                    if (runtime.seconds() > liftedTime + 0.5){
+                    if (runtime.seconds() > liftedTime + 0.5) {
                         wristServoPosition = wristLift;
                     }
                     sampleClawServoPosition = sampleClawOpen;
@@ -275,7 +305,7 @@ public class CustomHolonomicDrive extends LinearOpMode {
                     intakeServoPosition = intakeUp;
                     specimenClawServoPosition = specimenClawClosed;
 
-                    if (runtime.seconds() > liftedTime + 0.5){
+                    if (runtime.seconds() > liftedTime + 0.5) {
                         wristServoPosition = wristLift;
                     }
                     sampleClawServoPosition = sampleClawOpen;
@@ -316,6 +346,9 @@ public class CustomHolonomicDrive extends LinearOpMode {
                     if (b) {
                         state = State.LIFTED_LOW_BUCKET;
                     }
+                    break;
+                case HANGING:
+
                     break;
             }
 
