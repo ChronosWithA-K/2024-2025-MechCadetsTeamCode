@@ -94,6 +94,7 @@ public class CustomHolonomicDrive extends LinearOpMode {
         double wristTime = 0;
         double closedTime = 0;
 
+        // Declare initial positions for parts
         double extendServoPosition = 0.0;
         double bucketServoPosition = 0.0;
         double intakeServoPosition = 0.0;
@@ -101,11 +102,14 @@ public class CustomHolonomicDrive extends LinearOpMode {
         double wristServoPosition = 0.0;
         double specimenClawServoPosition = 0.0;
 
-        double rightHangingServoPosition = 0.0;
         double leftHangingServoPosition = 0.0;
+        double rightHangingServoPosition = 0.0;
 
         int viperSlideMotorPosition = 0;
 
+        int hangingMotorPosition = 0;
+
+        // Declare positions for parts to move to
         int liftDown = 0;
         int liftTopBucket = 6180;
         int liftBottomBucket = 3480;
@@ -115,17 +119,13 @@ public class CustomHolonomicDrive extends LinearOpMode {
         double bucketDrop = 0.37;
         double bucketLoad = 0.5;
 
-        int leftHangingMotorPosition = 0;
-        int rightHangingMotorPosition = 0;
-
-        int hangingMotorDown = 0;
+        int hangingMotorIn = 0;
         int hangingMotorOut = ;
 
-        double leftHangingServoBack = ;
-        double leftHangingServoForward = ;
-
-        double rightHangingServoBack = 0.0;
-        double leftHangingServoForward = 0.05;
+        double leftHangingServoUp = 1.0;
+        double rightHangingServoUp = 0.0;
+        double leftHangingServoForward = 0.5;
+        double rightHangingServoForward = 0.5;
 
         double extendClosed = 0.0;
         double extendExtended = 1.0;
@@ -150,9 +150,7 @@ public class CustomHolonomicDrive extends LinearOpMode {
         boolean rbPrev = false;
 
         boolean dpadUpPrev = false;
-        boolean dpadRightPrev = false;
         boolean dpadDownPrev = false;
-        boolean dpadLeftPrev = false;
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
@@ -169,12 +167,8 @@ public class CustomHolonomicDrive extends LinearOpMode {
 
             boolean dpadUp = gamepad1.dpad_up && !dpadUpPrev;
             dpadUpPrev = gamepad1.dpad_up;
-            boolean dpadRight = gamepad1.dpad_right && !dpadRightPrev;
-            dpadRightPrev = gamepad1.dpad_right;
             boolean dpadDown = gamepad1.dpad_down && !dpadDownPrev;
             dpadDownPrev = gamepad1.dpad_down;
-            boolean dpadLeft = gamepad1.dpad_left && !dpadLeftPrev;
-            dpadLeftPrev = gamepad1.dpad_left;
 
             switch (state) {
                 case IDLE:
