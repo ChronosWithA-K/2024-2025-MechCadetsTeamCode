@@ -2,10 +2,12 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous(name="Test Path")
+
+
+@Autonomous(name="Test Path", group="Linear OpMode")
 public class TestAutoPath extends LinearOpMode {
 
 
@@ -28,7 +30,7 @@ public class TestAutoPath extends LinearOpMode {
         rightFrontDrive = hardwareMap.get(DcMotor.class, "right_front");
         rightBackDrive = hardwareMap.get(DcMotor.class, "right_back");
         viperSlideMotor = hardwareMap.get(DcMotor.class, "viper_slide_motor"); // Initialize viper slide motor
-        specimenClaw = hardwareMap.get(Servo.class, "specimen_claw_servo"); // Initialize specimen claw servo
+        specimenClaw = hardwareMap.get(Servo.class, "specimen_claw"); // Initialize specimen claw servo
 
 
         // Set motor directions
@@ -53,30 +55,30 @@ public class TestAutoPath extends LinearOpMode {
 
             // Move forward for 1 second
             if (runtime.milliseconds() < 1000) {
-                leftPower = 1;
-                rightPower = 1;
+                leftPower = 0.2;
+                rightPower = 0.2;
             }
             // Turn left for 1 second
             else if (runtime.milliseconds() < 2000) {
-                leftPower = -1;
-                rightPower = 1;
+                leftPower = -0.2;
+                rightPower = 0.2;
             }
             // Move forward again for 1 second
             else if (runtime.milliseconds() < 3000) {
-                leftPower = 1;
-                rightPower = 1;
+                leftPower = 0.2;
+                rightPower = 0.2;
             }
             // Turn right for 1 second
             else if (runtime.milliseconds() < 4000) {
-                leftPower = 1;
-                rightPower = -1;
+                leftPower = 0.2;
+                rightPower = -0.2;
             } else {
                 // Stop after completing the movements
-                leftPower = 0;
-                rightPower = 0;
+                leftPower = 0.2;
+                rightPower = 0.2;
             }
-            viperSlideMotor.setPower(0.0); // Set viper slide motor to full power (1.0)
-            specimenClaw.setPosition(0.5); // Set specimen claw to middle position (0.5)
+           // viperSlideMotor.setPower(1.0); // Set viper slide motor to full power (1.0)
+            //specimenClaw.setPosition(0.5); // Set specimen claw to middle position (0.5)
 
 
             // Send calculated power to wheels
@@ -94,8 +96,8 @@ public class TestAutoPath extends LinearOpMode {
 
 
         // After the movement sequence is complete, set the viper slide motor and specimen claw
-        viperSlideMotor.setPower(0.0); // Set viper slide motor to full power (1.0)
-        specimenClaw.setPosition(0.5); // Set specimen claw to middle position (0.5)
+      //  viperSlideMotor.setPower(1.0); // Set viper slide motor to full power (1.0)
+       // specimenClaw.setPosition(0.5); // Set specimen claw to middle position (0.5)
 
 
         // Show status on telemetry
