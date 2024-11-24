@@ -120,7 +120,7 @@ public class CustomHolonomicDrive extends LinearOpMode {
         double bucketLoad = 0.5;
 
         int hangingMotorIn = 0;
-        int hangingMotorOut = ;
+//        int hangingMotorOut = ;
 
         double leftHangingServoUp = 1.0;
         double rightHangingServoUp = 0.0;
