@@ -3,8 +3,6 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -14,8 +12,6 @@ import common.SimpleDrive;
 public class CustomHolonomicDrive extends LinearOpMode {
     // Declare OpMode members for each of the 4 motors.
     private ElapsedTime runtime = new ElapsedTime();
-
-    private IMU imu = null;
 
     private DcMotor viperSlideMotor = null;
 
@@ -52,8 +48,6 @@ public class CustomHolonomicDrive extends LinearOpMode {
     public void runOpMode() {
         SimpleDrive drive = new SimpleDrive(this);
         drive.start();
-
-        imu = hardwareMap.get(IMU.class, "imu");
 
         extendServo = hardwareMap.get(Servo.class, "extend_servo");
         bucketServo = hardwareMap.get(Servo.class, "bucket_servo");
@@ -154,7 +148,6 @@ public class CustomHolonomicDrive extends LinearOpMode {
         boolean rbPrev = false;
 
         boolean dpadUpPrev = false;
-        boolean dpadDownPrev = false;
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
