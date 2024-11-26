@@ -66,7 +66,7 @@ public class CustomHolonomicDrive extends LinearOpMode {
         viperSlideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         viperSlideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         viperSlideMotor.setPower(1);
-        viperSlideMotor.setDirection(DcMotor.Direction.FORWARD);
+        viperSlideMotor.setDirection(DcMotor.Direction.REVERSE);
 
         leftHangingMotor.setTargetPosition(0);
         leftHangingMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
