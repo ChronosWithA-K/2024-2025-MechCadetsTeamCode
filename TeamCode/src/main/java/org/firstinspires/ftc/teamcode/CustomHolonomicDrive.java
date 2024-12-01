@@ -129,7 +129,7 @@ public class CustomHolonomicDrive extends LinearOpMode {
 
         double intakeDown = 0.26;
         double intakeUp = 1;
-        double intakeIdle = 0.7;
+        double intakeIdle = 0.65;
 
         double wristLoad = 0.5;
         double wristDrop = 1;
@@ -377,12 +377,12 @@ public class CustomHolonomicDrive extends LinearOpMode {
                     }
                     break;
                 case HANGING_ARMS_OUT:
-                    viperSlideMotorPosition = liftBottomBucket;
+                    viperSlideMotorPosition = liftDown;
                     bucketServoPosition = bucketDrop;
                     extendServoPosition = extendClosed;
                     intakeServoPosition = intakeUp;
                     wristServoPosition = wristLift;
-                    sampleClawServoPosition = sampleClawOpen;
+                    sampleClawServoPosition = sampleClawClosed;
                     specimenClawServoPosition = specimenClawClosed;
                     leftHangingServoPosition = leftHangingServoForward;
                     rightHangingServoPosition = rightHangingServoForward;
@@ -399,12 +399,12 @@ public class CustomHolonomicDrive extends LinearOpMode {
                     }
                     break;
                 case PULL_UP_ROBOT:
-                    viperSlideMotorPosition = liftBottomBucket;
+                    viperSlideMotorPosition = liftDown;
                     bucketServoPosition = bucketDrop;
                     extendServoPosition = extendClosed;
                     intakeServoPosition = intakeUp;
                     wristServoPosition = wristLift;
-                    sampleClawServoPosition = sampleClawOpen;
+                    sampleClawServoPosition = sampleClawClosed;
                     specimenClawServoPosition = specimenClawClosed;
                     hangingMotorPosition = hangingMotorIn;
 
@@ -445,7 +445,7 @@ public class CustomHolonomicDrive extends LinearOpMode {
             rightHangingMotor.setTargetPosition(hangingMotorPosition);
             if (rightHangingMotor.isBusy()) {
                 rightHangingMotor.setPower(1);
-            } else if (!rightHangingMotor.isBusy() && leftHangingServoPosition == 0) {
+            } else if (!rightHangingMotor.isBusy() && hangingMotorPosition == 0) {
                 rightHangingMotor.setPower(0);
             }
 
@@ -460,6 +460,7 @@ public class CustomHolonomicDrive extends LinearOpMode {
             telemetry.addData("specimenClawServo position", specimenClawServoPosition);
             telemetry.addData("leftHangingMotor position", leftHangingServoPosition);
             telemetry.addData("rightHangingServo position", rightHangingServoPosition);
+            telemetry.addData("hangingMotorPosition", hangingMotorPosition);
             telemetry.addData("Viper encoder", viperSlideMotor.getCurrentPosition());
             telemetry.addData("Left hanging motor encoder", leftHangingMotor.getCurrentPosition());
             telemetry.addData("Right hanging motor encoder", rightHangingMotor.getCurrentPosition());
