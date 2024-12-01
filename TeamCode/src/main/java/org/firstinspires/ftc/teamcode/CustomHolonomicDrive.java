@@ -129,6 +129,7 @@ public class CustomHolonomicDrive extends LinearOpMode {
 
         double intakeDown = 0.26;
         double intakeUp = 1;
+        double intakeIdle = 0.7;
 
         double wristLoad = 0.5;
         double wristDrop = 1;
@@ -170,7 +171,7 @@ public class CustomHolonomicDrive extends LinearOpMode {
                     viperSlideMotorPosition = liftDown;
                     bucketServoPosition = bucketLoad;
                     extendServoPosition = extendClosed;
-                    intakeServoPosition = intakeUp;
+                    intakeServoPosition = intakeIdle;
                     wristServoPosition = wristLoad;
                     sampleClawServoPosition = sampleClawClosed;
                     leftHangingServoPosition = leftHangingServoUp;
