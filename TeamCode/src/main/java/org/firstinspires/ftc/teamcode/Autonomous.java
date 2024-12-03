@@ -175,59 +175,61 @@ public class Autonomous extends LinearOpMode {
         }
         telemetry.update();
 
-        follower.followPath(follower.pathBuilder()
-                .addPath(
-                        new Path(
-                                new BezierLine(
-                                        new Point(startPose),
-                                        new Point(35.000, 70.000, Point.CARTESIAN) // Drive to chamber
-                                )
-                        )
-                )
-                .setConstantHeadingInterpolation(Math.toRadians(0))
-                .build());
-        sleep(250);
-        // Place specimen on top scoring bar
-        follower.followPath(follower.pathBuilder()
-                .addPath(
-                        new Path(
-                                new BezierLine(
-                                        new Point(35.000, 70.000, Point.CARTESIAN),
-                                        new Point(13.000, 19.000, Point.CARTESIAN) // Drive to closest sample
-                                )
-                        )
-                )
-                .setConstantHeadingInterpolation(Math.toRadians(0))
-                .build());
-        sleep(250);
-        // Pick up sample
-        follower.followPath(follower.pathBuilder()
-                .addPath(
-                        new Path(
-                                new BezierLine(
-                                        new Point(13.000, 19.000, Point.CARTESIAN),
-                                        new Point(19.995, 124.173, Point.CARTESIAN) // Drive to bucket
-                                )
-                        )
-                )
-                .setConstantHeadingInterpolation(Math.toRadians(135))
-                .build());
-        // Place sample in bucket
-        sleep(250);
-        // Pick up sample
-        follower.followPath(follower.pathBuilder()
-                .addPath(
-                        new Path(
-                                new BezierLine(
-                                        new Point(19.995, 124.173, Point.CARTESIAN),
-                                        new Point(10.922, 7.561, Point.CARTESIAN) // Park
-                                )
-                        )
-                )
-                .setConstantHeadingInterpolation(Math.toRadians(-90))
-                .build());
-        sleep(250);
-        follower.update();
+        while(OpModeIsActive) {
+            follower.followPath(follower.pathBuilder()
+                    .addPath(
+                            new Path(
+                                    new BezierLine(
+                                            new Point(startPose),
+                                            new Point(35.000, 70.000, Point.CARTESIAN) // Drive to chamber
+                                    )
+                            )
+                    )
+                    .setConstantHeadingInterpolation(Math.toRadians(180))
+                    .build());
+            sleep(250);
+            // Place specimen on top scoring bar
+            follower.followPath(follower.pathBuilder()
+                    .addPath(
+                            new Path(
+                                    new BezierLine(
+                                            new Point(35.000, 70.000, Point.CARTESIAN),
+                                            new Point(13.000, 19.000, Point.CARTESIAN) // Drive to closest sample
+                                    )
+                            )
+                    )
+                    .setConstantHeadingInterpolation(Math.toRadians(0))
+                    .build());
+            sleep(250);
+            // Pick up sample
+            follower.followPath(follower.pathBuilder()
+                    .addPath(
+                            new Path(
+                                    new BezierLine(
+                                            new Point(13.000, 19.000, Point.CARTESIAN),
+                                            new Point(19.995, 124.173, Point.CARTESIAN) // Drive to bucket
+                                    )
+                            )
+                    )
+                    .setConstantHeadingInterpolation(Math.toRadians(135))
+                    .build());
+            // Place sample in bucket
+            sleep(250);
+            // Pick up sample
+            follower.followPath(follower.pathBuilder()
+                    .addPath(
+                            new Path(
+                                    new BezierLine(
+                                            new Point(19.995, 124.173, Point.CARTESIAN),
+                                            new Point(10.922, 7.561, Point.CARTESIAN) // Park
+                                    )
+                            )
+                    )
+                    .setConstantHeadingInterpolation(Math.toRadians(-90))
+                    .build());
+            sleep(250);
+            follower.update();
+        }
     }
 }
 
