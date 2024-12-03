@@ -175,7 +175,7 @@ public class Autonomous extends LinearOpMode {
         }
         telemetry.update();
 
-        while(OpModeIsActive) {
+        while(opModeIsActive()) {
             follower.followPath(follower.pathBuilder()
                     .addPath(
                             new Path(
