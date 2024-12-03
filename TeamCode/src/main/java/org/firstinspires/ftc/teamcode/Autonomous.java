@@ -47,8 +47,7 @@ public class Autonomous extends LinearOpMode {
 
     private Follower follower;
 
-    private Pose startPose = new Pose(144, 72, -90);
-    private Pose placeInBucket = new Pose(132, 0, 135);
+    private Pose startPose = new Pose(10.000, 58.000, Point.CARTESIAN);
 
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -180,7 +179,7 @@ public class Autonomous extends LinearOpMode {
                 .addPath(
                         new Path(
                                 new BezierLine(
-                                        new Point(10.000, 65.000, Point.CARTESIAN),
+                                        new Point(startPose),
                                         new Point(35.000, 70.000, Point.CARTESIAN) // Drive to chamber
                                 )
                         )
