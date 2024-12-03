@@ -175,127 +175,60 @@ public class Autonomous extends LinearOpMode {
             telemetry.addData("Limelight", "No data available");
         }
         telemetry.update();
-        while (opModeIsActive()) {
-            follower.followPath(follower.pathBuilder()
-                    .addPath(
-                            new Path(
-                                    new BezierLine(
-                                            new Point(startPose),
-                                            new Point(120, 60, Point.CARTESIAN) // Drive in front of scoring bar
-                                    )
-                            )
-                    )
-                    .build());
-            sleep(250);
-            // Place specimen on top scoring bar
-            follower.followPath(follower.pathBuilder()
-                    .addPath(
-                            new Path(
-                                    new BezierLine(
-                                            new Point(120, 60, Point.CARTESIAN),
-                                            new Point(144, 120, Point.CARTESIAN) // Drive to square up from startPose
-                                    )
-                            )
-                    )
-                    .build());
-            sleep(250);
-            follower.followPath(follower.pathBuilder()
-                    .addPath(
-                            new Path(
-                                    new BezierLine(
-                                            new Point(144, 120, Point.CARTESIAN),
-                                            new Point(120, 132, Point.CARTESIAN) // Drive to sample
-                                    )
-                            )
-                    )
-                    .build());
-            sleep(250);
-            // Pick up sample
-            follower.followPath(follower.pathBuilder()
-                    .addPath(
-                            new Path(
-                                    new BezierLine(
-                                            new Point(120, 132, Point.CARTESIAN),
-                                            new Point(placeInBucket) // Drive in front of bucket
-                                    )
-                            )
-                    )
-                    .build());
-            sleep(250);
-            // Place specimen in top bucket
-            follower.update();
-        }
 
-        if (!follower.isBusy()) {
-            telemetry.addData("Path complete", "");
-            telemetry.update();
-        }
-    }
-
-    /**
-     * @param speed            the speed at which the wheels will drive (should never be negative)
-     * @param leftFrontInches  the distance in inches the left front wheel should drive (make negative for negative distance)
-     * @param leftBackInches   the distance in inches the left back wheel should drive (make negative for negative distance)
-     * @param rightFrontInches the distance in inches the right front wheel should drive (make negative for negative distance)
-     * @param rightBackInches  the distance in inches the right back wheel should drive (make negative for negative distance)
-     * @param timeoutS         the time the robot has to drive that leg of the path
-     */
-    public void encoderDrive(double speed, double leftFrontInches, double leftBackInches, double rightFrontInches, double rightBackInches, double timeoutS) {
-        int newLeftFrontTarget;
-        int newLeftBackTarget;
-        int newRightFrontTarget;
-        int newRightBackTarget;
-
-        if (opModeIsActive()) {
-            // Determine new target position, and pass to motor controller
-            newLeftFrontTarget = leftFrontDrive.getCurrentPosition() + (int) (leftFrontInches * COUNTS_PER_INCH);
-            newLeftBackTarget = leftBackDrive.getCurrentPosition() + (int) (leftBackInches * COUNTS_PER_INCH);
-            newRightFrontTarget = rightFrontDrive.getCurrentPosition() + (int) (rightFrontInches * COUNTS_PER_INCH);
-            newRightBackTarget = rightBackDrive.getCurrentPosition() + (int) (rightBackInches * COUNTS_PER_INCH);
-            leftFrontDrive.setTargetPosition(newLeftFrontTarget);
-            leftBackDrive.setTargetPosition(newLeftBackTarget);
-            rightFrontDrive.setTargetPosition(newRightFrontTarget);
-            rightBackDrive.setTargetPosition(newRightBackTarget);
-
-            // Turn On RUN_TO_POSITION
-            leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            leftBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            rightFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-            // reset the timeout time and start motion.
-            runtime.reset();
-            leftFrontDrive.setPower(Math.abs(speed));
-            leftBackDrive.setPower(Math.abs(speed));
-            rightFrontDrive.setPower(Math.abs(speed));
-            rightBackDrive.setPower(Math.abs(speed));
-
-            // keep looping while we are still active, and there is time left, and both motors are running.
-            // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
-            // its target position, the motion will stop.  This is "safer" in the event that the robot will
-            // always end the motion as soon as possible.
-            // However, if you require that BOTH motors have finished their moves before the robot continues
-            // onto the next step, use (isBusy() || isBusy()) in the loop test.
-            while (opModeIsActive() && (runtime.seconds() < timeoutS) && (leftFrontDrive.isBusy() && leftBackDrive.isBusy() && rightFrontDrive.isBusy() && rightBackDrive.isBusy())) {
-                // Display it for the driver.
-                telemetry.addData("Running to", " %7d :%7d", newLeftFrontTarget, newLeftBackTarget, newRightFrontTarget, newRightBackTarget);
-                telemetry.addData("Currently at", " at %7d :%7d", leftFrontDrive.getCurrentPosition(), leftBackDrive.getCurrentPosition(), rightFrontDrive.getCurrentPosition(), rightBackDrive.getCurrentPosition());
-                telemetry.update();
-            }
-
-            // Stop all motion;
-            leftFrontDrive.setPower(0);
-            leftBackDrive.setPower(0);
-            rightFrontDrive.setPower(0);
-            rightBackDrive.setPower(0);
-
-            // Turn off RUN_TO_POSITION
-            leftFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            leftBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            rightFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            rightBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-            sleep(250);   // optional pause after each move.
-        }
+        follower.followPath(follower.pathBuilder()
+                .addPath(
+                        new Path(
+                                new BezierLine(
+                                        new Point(10.000, 65.000, Point.CARTESIAN),
+                                        new Point(35.000, 70.000, Point.CARTESIAN) // Drive to chamber
+                                )
+                        )
+                )
+                .setConstantHeadingInterpolation(Math.toRadians(0))
+                .build());
+        sleep(250);
+        // Place specimen on top scoring bar
+        follower.followPath(follower.pathBuilder()
+                .addPath(
+                        new Path(
+                                new BezierLine(
+                                        new Point(35.000, 70.000, Point.CARTESIAN),
+                                        new Point(13.000, 19.000, Point.CARTESIAN) // Drive to closest sample
+                                )
+                        )
+                )
+                .setConstantHeadingInterpolation(Math.toRadians(0))
+                .build());
+        sleep(250);
+        // Pick up sample
+        follower.followPath(follower.pathBuilder()
+                .addPath(
+                        new Path(
+                                new BezierLine(
+                                        new Point(13.000, 19.000, Point.CARTESIAN),
+                                        new Point(19.995, 124.173, Point.CARTESIAN) // Drive to bucket
+                                )
+                        )
+                )
+                .setConstantHeadingInterpolation(Math.toRadians(135))
+                .build());
+        // Place sample in bucket
+        sleep(250);
+        // Pick up sample
+        follower.followPath(follower.pathBuilder()
+                .addPath(
+                        new Path(
+                                new BezierLine(
+                                        new Point(19.995, 124.173, Point.CARTESIAN),
+                                        new Point(10.922, 7.561, Point.CARTESIAN) // Park
+                                )
+                        )
+                )
+                .setConstantHeadingInterpolation(Math.toRadians(-90))
+                .build());
+        sleep(250);
+        follower.update();
     }
 }
+
