@@ -32,6 +32,7 @@ public class TestAutoPath extends LinearOpMode {
 
     int moveForward = -1;
     int moveBack = 1;
+    int strafe = 24;
 
     @Override
     public void runOpMode() {
@@ -98,7 +99,7 @@ public class TestAutoPath extends LinearOpMode {
                 encoderDrive(DRIVE_SPEED, moveBack, moveBack, moveBack, moveBack);
             } else if (runtime.seconds() < 14 && runtime.seconds() >= 12) {
                 telemetry.addLine("Stage 4");
-                encoderDrive(DRIVE_SPEED, -24, 24, 24, -24); // Strafe right 2 squares
+                encoderDrive(DRIVE_SPEED, -strafe, strafe, strafe, -strafe); // Strafe right 2 squares
             } else {
                 telemetry.addLine("Finished");
             }
