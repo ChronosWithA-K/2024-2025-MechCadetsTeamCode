@@ -6,8 +6,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-
 @Autonomous(name = "Test Path", group = "Linear OpMode")
 public class TestAutoPath extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
@@ -30,7 +28,10 @@ public class TestAutoPath extends LinearOpMode {
     static final double TURN_SPEED = 0.5;
 
     int liftTopBar = 2890;
-    int engageClaw = 2290;
+    int engageClaw = 1990;
+
+    int moveForward = -1;
+    int moveBack = 1;
 
     @Override
     public void runOpMode() {
@@ -84,7 +85,7 @@ public class TestAutoPath extends LinearOpMode {
                 specimenClawServo.setPosition(specimenClawClosed);
                 viperSlideMotor.setTargetPosition(liftTopBar);
                 intakeServo.setPosition(intakeIdle);
-                encoderDrive(DRIVE_SPEED, -4, -4, -4, -4);
+                encoderDrive(DRIVE_SPEED, moveForward, moveForward, moveForward, moveForward);
             } else if (runtime.seconds() < 5 && runtime.seconds() >= 3) {
                 telemetry.addLine("Stage 2");
                 viperSlideMotor.setTargetPosition(engageClaw);
@@ -94,7 +95,7 @@ public class TestAutoPath extends LinearOpMode {
                 telemetry.addLine("Stage 3");
                 specimenClawServo.setPosition(specimenClawOpen);
                 viperSlideMotor.setTargetPosition(0);
-                encoderDrive(DRIVE_SPEED, 4, 4, 4, 4);
+                encoderDrive(DRIVE_SPEED, moveBack, moveBack, moveBack, moveBack);
             } else if (runtime.seconds() < 14 && runtime.seconds() >= 12) {
                 telemetry.addLine("Stage 4");
                 encoderDrive(DRIVE_SPEED, -24, 24, 24, -24); // Strafe right 2 squares
@@ -112,7 +113,6 @@ public class TestAutoPath extends LinearOpMode {
         rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
-
 
     public void encoderDrive(double speed, double leftFrontInches, double leftBackInches, double rightFrontInches, double rightBackInches) {
         int newLeftFrontTarget;
