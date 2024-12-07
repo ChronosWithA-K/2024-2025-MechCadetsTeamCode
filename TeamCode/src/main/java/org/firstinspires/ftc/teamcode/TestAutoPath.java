@@ -94,6 +94,7 @@ public class TestAutoPath extends LinearOpMode {
                 telemetry.addLine("Stage 3");
                 specimenClawServo.setPosition(specimenClawOpen);
                 viperSlideMotor.setTargetPosition(0);
+                encoderDrive(DRIVE_SPEED, 4, 4, 4, 4);
             } else if (runtime.seconds() < 14 && runtime.seconds() >= 12) {
                 telemetry.addLine("Stage 4");
                 encoderDrive(DRIVE_SPEED, -24, 24, 24, -24); // Strafe right 2 squares
