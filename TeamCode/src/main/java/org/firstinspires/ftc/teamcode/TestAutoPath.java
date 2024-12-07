@@ -90,7 +90,7 @@ public class TestAutoPath extends LinearOpMode {// Declare OpMode members.
                     viperSlideMotor.setPower(0);
                 }
             } else if (runtime.seconds() < 14 && runtime.seconds() >= 12) {
-                encoderDrive(DRIVE_SPEED, 48, -48, -48, 48, 10); // Strafe left 2 squares
+                encoderDrive(DRIVE_SPEED, -48, 48, 48, -48, 10); // Strafe right 2 squares
             }
 
 //            viperSlideMotor.setTargetPosition(engage_claw);
