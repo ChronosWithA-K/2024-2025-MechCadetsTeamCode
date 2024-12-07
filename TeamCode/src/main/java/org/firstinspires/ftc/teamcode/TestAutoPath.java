@@ -21,15 +21,19 @@ public class TestAutoPath extends LinearOpMode {// Declare OpMode members.
     static final double TURN_SPEED = 0.5;
     private DcMotor viperSlideMotor = null;
     private Servo specimenClawServo = null;
-    private Servo scs = null;
+    private Servo Bucketservo = null;
+
+
 
     int liftTopBar = 2890;
-    int engage_claw = 2790;
+    int engage_claw = 2390;
 
     @Override
     public void runOpMode() {
         double specimenClawClosed = 0;
         double specimenClawOpen = 0.5;
+        double bucketLoad = 0.5;
+
         // Initialize the hardware variables. Note that the strings used here must correspond
         // to the names assigned during the robot configuration step on the DS or RC devices.
         leftFrontDrive = hardwareMap.get(DcMotor.class, "left_front");
@@ -60,22 +64,31 @@ public class TestAutoPath extends LinearOpMode {// Declare OpMode members.
         rightBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         specimenClawServo = hardwareMap.get(Servo.class, "specimen_claw_servo");
-        scs = hardwareMap.get(Servo.class, "intake_servo");
+        Bucketservo = hardwareMap.get(Servo.class, "bucket_servo");
+
 
 
         // Wait for the game to start (driver presses START)
         waitForStart();
         runtime.reset();
-        scs.setPosition(0);
+
         //encoderDrive(DRIVE_SPEED, 22, 22, 22, 22, 10); // Forward 1 square
 
         while (opModeIsActive()) {
-            if (runtime.seconds() < 2){
+            if (runtime.seconds() < 5){
                 specimenClawServo.setPosition(specimenClawClosed);
                 viperSlideMotor.setTargetPosition(liftTopBar);
             }
-            else if (runtime.seconds() < 5){
-                specimenClawServo.setPosition(specimenClawClosed);
+            else if (runtime.seconds() < 7){
+                viperSlideMotor.setTargetPosition(engage_claw);
+                specimenClawServo.setPosition(specimenClawOpen);
+                Bucketservo.setPosition(bucketLoad);
+            }
+            else if (runtime.seconds() < 10){
+
+                viperSlideMotor.setTargetPosition(0);
+                viperSlideMotor.setPower(0);
+
             }
 //            viperSlideMotor.setTargetPosition(engage_claw);
             if (viperSlideMotor.isBusy()) {
