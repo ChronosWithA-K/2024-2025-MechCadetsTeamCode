@@ -6,34 +6,42 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 @Autonomous(name = "Test Path", group = "Linear OpMode")
-public class TestAutoPath extends LinearOpMode {// Declare OpMode members.
+public class TestAutoPath extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
+
     private DcMotor leftFrontDrive = null;
     private DcMotor leftBackDrive = null;
     private DcMotor rightFrontDrive = null;
     private DcMotor rightBackDrive = null;
-    static final double COUNTS_PER_MOTOR_REV = 435;
-    static final double DRIVE_GEAR_REDUCTION = 1.0;     // No External Gearing.
-    static final double WHEEL_DIAMETER_INCHES = 4.09449; // For figuring circumference
-    static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * 3.1415);
-    static final double DRIVE_SPEED = 0.4;
-    static final double TURN_SPEED = 0.5;
     private DcMotor viperSlideMotor = null;
+
     private Servo specimenClawServo = null;
-    private Servo Bucketservo = null;
+    private Servo bucketServo = null;
+    private Servo intakeServo = null;
+
+    static final double COUNTS_PER_MOTOR_REV = 435;
+    static final double DRIVE_GEAR_REDUCTION = 1.0; // No External Gearing.
+    static final double WHEEL_DIAMETER_INCHES = 4.09449; // For figuring circumference
+    static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * Math.PI);
+    static final double DRIVE_SPEED = 0.2;
+    static final double TURN_SPEED = 0.5;
 
     int liftTopBar = 2890;
-    int engage_claw = 2390;
+    int engageClaw = 2290;
+
+    boolean runAuto = true;
 
     @Override
     public void runOpMode() {
         double specimenClawClosed = 0;
         double specimenClawOpen = 0.5;
         double bucketLoad = 0.5;
+        double intakeIdle = 0.65;
 
-        // Initialize the hardware variables. Note that the strings used here must correspond
-        // to the names assigned during the robot configuration step on the DS or RC devices.
+        // Initialize the hardware variables
         leftFrontDrive = hardwareMap.get(DcMotor.class, "left_front");
         leftBackDrive = hardwareMap.get(DcMotor.class, "left_back");
         rightFrontDrive = hardwareMap.get(DcMotor.class, "right_front");
@@ -62,110 +70,93 @@ public class TestAutoPath extends LinearOpMode {// Declare OpMode members.
         rightBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         specimenClawServo = hardwareMap.get(Servo.class, "specimen_claw_servo");
-        Bucketservo = hardwareMap.get(Servo.class, "bucket_servo");
+        bucketServo = hardwareMap.get(Servo.class, "bucket_servo");
+        intakeServo = hardwareMap.get(Servo.class, "intake_servo");
 
-        // Wait for the game to start (driver presses START)
+        bucketServo.setPosition(bucketLoad);
+
         waitForStart();
         runtime.reset();
 
-        encoderDrive(DRIVE_SPEED, 45, 45, 45, 45, 10); // Forward 2ish square
-
         while (opModeIsActive()) {
-            if (runtime.seconds() < 5) {
+            bucketServo.setPosition(bucketLoad);
+
+            if (runtime.seconds() < 3) {
+                telemetry.addLine("Stage 1");
                 specimenClawServo.setPosition(specimenClawClosed);
                 viperSlideMotor.setPower(1.0);
                 viperSlideMotor.setTargetPosition(liftTopBar);
-            } else if (runtime.seconds() < 7 && runtime.seconds() >= 5) {
-                viperSlideMotor.setPower(1.0);
-                viperSlideMotor.setTargetPosition(engage_claw);
-                specimenClawServo.setPosition(specimenClawOpen);
-                encoderDrive(DRIVE_SPEED, -45, -45, -45, -45, 10); // Backward 2ish square
+                intakeServo.setPosition(intakeIdle);
+                encoderDrive(DRIVE_SPEED, -8, -8, -8, -8); // Move forward 2 squares
 
-                Bucketservo.setPosition(bucketLoad);
-            } else if (runtime.seconds() < 10 && runtime.seconds() >= 7) {
+            } else if (runtime.seconds() < 5 && runtime.seconds() >= 3) {
+                telemetry.addLine("Stage 2");
+                viperSlideMotor.setPower(1.0);
+                viperSlideMotor.setTargetPosition(engageClaw);
+
+                bucketServo.setPosition(bucketLoad);
+                resetEncoders();
+            } else if (runtime.seconds() < 8 && runtime.seconds() >= 5) {
+                telemetry.addLine("Stage 3");
+                specimenClawServo.setPosition(specimenClawOpen);
                 viperSlideMotor.setPower(1.0);
                 viperSlideMotor.setTargetPosition(0);
-
-                if (runtime.seconds() < 12 && runtime.seconds() >= 10) {
+                if (runtime.seconds() < 12 && runtime.seconds() >= 8) {
                     viperSlideMotor.setPower(0);
                 }
+
             } else if (runtime.seconds() < 14 && runtime.seconds() >= 12) {
-                encoderDrive(DRIVE_SPEED, -48, 48, 48, -48, 10); // Strafe right 2 squares
-            }
 
-//            viperSlideMotor.setTargetPosition(engage_claw);
-            if (viperSlideMotor.isBusy()) {
-                telemetry.addLine("Viper Enabled");
-                viperSlideMotor.setPower(1);
-            } else if (!viperSlideMotor.isBusy() && viperSlideMotor.getCurrentPosition() == 0) {
-                telemetry.addLine("Viper Disabled");
-                viperSlideMotor.setPower(0);
+                telemetry.addLine("Stage 4");
+                encoderDrive(DRIVE_SPEED, -24, 24, 24, -24); // Strafe right 2 squares
+            } else {
+                telemetry.addLine("Stage 5");
             }
-
-            telemetry.addData("Viper Target: ", liftTopBar);
-            telemetry.addData("Viper Position: ", viperSlideMotor.getCurrentPosition());
+            telemetry.addData("runtime.Seconds(): ", runtime.seconds());
             telemetry.update();
         }
     }
 
-    public void encoderDrive(double speed, double leftFrontInches, double leftBackInches, double rightFrontInches, double rightBackInches, double timeoutS) {
+    public void resetEncoders(){
+
+        leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    }
+
+
+    public void encoderDrive(double speed, double leftFrontInches, double leftBackInches, double rightFrontInches, double rightBackInches) {
         int newLeftFrontTarget;
         int newLeftBackTarget;
         int newRightFrontTarget;
         int newRightBackTarget;
 
-        if (opModeIsActive()) {
-            // Determine new target position, and pass to motor controller
-            newLeftFrontTarget = leftFrontDrive.getCurrentPosition() + (int) (leftFrontInches * COUNTS_PER_INCH);
-            newLeftBackTarget = leftBackDrive.getCurrentPosition() + (int) (leftBackInches * COUNTS_PER_INCH);
-            newRightFrontTarget = rightFrontDrive.getCurrentPosition() + (int) (rightFrontInches * COUNTS_PER_INCH);
-            newRightBackTarget = rightBackDrive.getCurrentPosition() + (int) (rightBackInches * COUNTS_PER_INCH);
+        // Determine new target position and pass to motor controller
+        newLeftFrontTarget = leftFrontDrive.getCurrentPosition() + (int) (leftFrontInches * COUNTS_PER_INCH);
+        newLeftBackTarget = leftBackDrive.getCurrentPosition() + (int) (leftBackInches * COUNTS_PER_INCH);
+        newRightFrontTarget = rightFrontDrive.getCurrentPosition() + (int) (rightFrontInches * COUNTS_PER_INCH);
+        newRightBackTarget = rightBackDrive.getCurrentPosition() + (int) (rightBackInches * COUNTS_PER_INCH);
 
-            leftFrontDrive.setTargetPosition(newLeftFrontTarget);
-            leftBackDrive.setTargetPosition(newLeftBackTarget);
-            rightFrontDrive.setTargetPosition(newRightFrontTarget);
-            rightBackDrive.setTargetPosition(newRightBackTarget);
+        // Set target positions
+        leftFrontDrive.setTargetPosition(newLeftFrontTarget);
+        leftBackDrive.setTargetPosition(newLeftBackTarget);
+        rightFrontDrive.setTargetPosition(newRightFrontTarget);
+        rightBackDrive.setTargetPosition(newRightBackTarget);
 
-            // Turn on RUN_TO_POSITION
-            leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            leftBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            rightFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        // Turn on RUN_TO_POSITION mode
+        leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-            // Reset the timeout time and start motion.
-            runtime.reset();
-            leftFrontDrive.setPower(Math.abs(speed));
-            leftBackDrive.setPower(Math.abs(speed));
-            rightFrontDrive.setPower(Math.abs(speed));
-            rightBackDrive.setPower(Math.abs(speed));
-
-            // keep looping while we are still active, and there is time left, and both motors are running.
-            // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
-            // its target position, the motion will stop.  This is "safer" in the event that the robot will
-            // always end the motion as soon as possible.
-            // However, if you require that BOTH motors have finished their moves before the robot continues
-            // onto the next step, use (isBusy() || isBusy()) in the loop test.
-            while (opModeIsActive() && (runtime.seconds() < timeoutS) && (leftFrontDrive.isBusy() && leftBackDrive.isBusy() && rightFrontDrive.isBusy() && rightBackDrive.isBusy())) {
-                telemetry.addData("Running to", " %7d :%7d", newLeftFrontTarget, newLeftBackTarget, newRightFrontTarget, newRightBackTarget);
-                telemetry.addData("Currently at", " at %7d :%7d", leftFrontDrive.getCurrentPosition(), leftBackDrive.getCurrentPosition(), rightFrontDrive.getCurrentPosition(), rightBackDrive.getCurrentPosition());
-                telemetry.update();
+        // Reset the timeout time and start motion
+        leftFrontDrive.setPower(Math.abs(speed));
+        leftBackDrive.setPower(Math.abs(speed));
+        rightFrontDrive.setPower(Math.abs(speed));
+        rightBackDrive.setPower(Math.abs(speed));
 
 
-            }
 
-            // Stop all motion;
-            leftFrontDrive.setPower(0);
-            leftBackDrive.setPower(0);
-            rightFrontDrive.setPower(0);
-            rightBackDrive.setPower(0);
-
-            // Turn off RUN_TO_POSITION
-            leftFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            leftBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            rightFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            rightBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-            sleep(250);   // optional pause after each move.
-        }
     }
 }
