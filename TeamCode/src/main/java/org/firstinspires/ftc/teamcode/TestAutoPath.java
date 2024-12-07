@@ -23,8 +23,6 @@ public class TestAutoPath extends LinearOpMode {// Declare OpMode members.
     private Servo specimenClawServo = null;
     private Servo Bucketservo = null;
 
-
-
     int liftTopBar = 2890;
     int engage_claw = 2390;
 
@@ -66,30 +64,35 @@ public class TestAutoPath extends LinearOpMode {// Declare OpMode members.
         specimenClawServo = hardwareMap.get(Servo.class, "specimen_claw_servo");
         Bucketservo = hardwareMap.get(Servo.class, "bucket_servo");
 
-
-
         // Wait for the game to start (driver presses START)
         waitForStart();
         runtime.reset();
 
-        //encoderDrive(DRIVE_SPEED, 22, 22, 22, 22, 10); // Forward 1 square
+        encoderDrive(DRIVE_SPEED, 45, 45, 45, 45, 10); // Forward 2ish square
 
         while (opModeIsActive()) {
-            if (runtime.seconds() < 5){
+            if (runtime.seconds() < 5) {
                 specimenClawServo.setPosition(specimenClawClosed);
+                viperSlideMotor.setPower(1.0);
                 viperSlideMotor.setTargetPosition(liftTopBar);
-            }
-            else if (runtime.seconds() < 7){
+            } else if (runtime.seconds() < 7 && runtime.seconds() >= 5) {
+                viperSlideMotor.setPower(1.0);
                 viperSlideMotor.setTargetPosition(engage_claw);
                 specimenClawServo.setPosition(specimenClawOpen);
+                encoderDrive(DRIVE_SPEED, -45, -45, -45, -45, 10); // Backward 2ish square
+
                 Bucketservo.setPosition(bucketLoad);
-            }
-            else if (runtime.seconds() < 10){
-
+            } else if (runtime.seconds() < 10 && runtime.seconds() >= 7) {
+                viperSlideMotor.setPower(1.0);
                 viperSlideMotor.setTargetPosition(0);
-                viperSlideMotor.setPower(0);
 
+                if (runtime.seconds() < 12 && runtime.seconds() >= 10) {
+                    viperSlideMotor.setPower(0);
+                }
+            } else if (runtime.seconds() < 14 && runtime.seconds() >= 12) {
+                encoderDrive(DRIVE_SPEED, 48, -48, -48, 48, 10); // Strafe left 2 squares
             }
+
 //            viperSlideMotor.setTargetPosition(engage_claw);
             if (viperSlideMotor.isBusy()) {
                 telemetry.addLine("Viper Enabled");
@@ -98,6 +101,7 @@ public class TestAutoPath extends LinearOpMode {// Declare OpMode members.
                 telemetry.addLine("Viper Disabled");
                 viperSlideMotor.setPower(0);
             }
+
             telemetry.addData("Viper Target: ", liftTopBar);
             telemetry.addData("Viper Position: ", viperSlideMotor.getCurrentPosition());
             telemetry.update();
@@ -110,7 +114,6 @@ public class TestAutoPath extends LinearOpMode {// Declare OpMode members.
         int newRightFrontTarget;
         int newRightBackTarget;
 
-        // Ensure that the OpMode is still active
         if (opModeIsActive()) {
             // Determine new target position, and pass to motor controller
             newLeftFrontTarget = leftFrontDrive.getCurrentPosition() + (int) (leftFrontInches * COUNTS_PER_INCH);
