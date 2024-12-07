@@ -32,8 +32,6 @@ public class TestAutoPath extends LinearOpMode {
     int liftTopBar = 2890;
     int engageClaw = 2290;
 
-    boolean runAuto = true;
-
     @Override
     public void runOpMode() {
         double specimenClawClosed = 0;
@@ -84,33 +82,23 @@ public class TestAutoPath extends LinearOpMode {
             if (runtime.seconds() < 3) {
                 telemetry.addLine("Stage 1");
                 specimenClawServo.setPosition(specimenClawClosed);
-                viperSlideMotor.setPower(1.0);
                 viperSlideMotor.setTargetPosition(liftTopBar);
                 intakeServo.setPosition(intakeIdle);
-                encoderDrive(DRIVE_SPEED, -8, -8, -8, -8); // Move forward 2 squares
-
+                encoderDrive(DRIVE_SPEED, -4, -4, -4, -4);
             } else if (runtime.seconds() < 5 && runtime.seconds() >= 3) {
                 telemetry.addLine("Stage 2");
-                viperSlideMotor.setPower(1.0);
                 viperSlideMotor.setTargetPosition(engageClaw);
-
                 bucketServo.setPosition(bucketLoad);
                 resetEncoders();
             } else if (runtime.seconds() < 8 && runtime.seconds() >= 5) {
                 telemetry.addLine("Stage 3");
                 specimenClawServo.setPosition(specimenClawOpen);
-                viperSlideMotor.setPower(1.0);
                 viperSlideMotor.setTargetPosition(0);
-                if (runtime.seconds() < 12 && runtime.seconds() >= 8) {
-                    viperSlideMotor.setPower(0);
-                }
-
             } else if (runtime.seconds() < 14 && runtime.seconds() >= 12) {
-
                 telemetry.addLine("Stage 4");
                 encoderDrive(DRIVE_SPEED, -24, 24, 24, -24); // Strafe right 2 squares
             } else {
-                telemetry.addLine("Stage 5");
+                telemetry.addLine("Finished");
             }
             telemetry.addData("runtime.Seconds(): ", runtime.seconds());
             telemetry.update();
@@ -118,7 +106,6 @@ public class TestAutoPath extends LinearOpMode {
     }
 
     public void resetEncoders(){
-
         leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -155,8 +142,5 @@ public class TestAutoPath extends LinearOpMode {
         leftBackDrive.setPower(Math.abs(speed));
         rightFrontDrive.setPower(Math.abs(speed));
         rightBackDrive.setPower(Math.abs(speed));
-
-
-
     }
 }
