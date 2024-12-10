@@ -15,8 +15,10 @@ import org.firstinspires.ftc.teamcode.pedroPathing.follower.Follower;
 import org.firstinspires.ftc.teamcode.pedroPathing.localization.Pose;
 import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.BezierLine;
 import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.Path;
+import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.PathChain;
 import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.Point;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "Autonomous", group = "Test")
@@ -35,6 +37,9 @@ public class Autonomous extends LinearOpMode {
     private Follower follower;
 
     private Pose startPose = new Pose(10.000, 58.000, Point.CARTESIAN);
+
+    private int pathIndex = 0;
+    private ArrayList<PathChain> pathChains = new ArrayList<PathChain>();
 
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -111,7 +116,52 @@ public class Autonomous extends LinearOpMode {
         // Send telemetry message to indicate successful Encoder reset
         telemetry.addData("Starting at", "%7d :%7d", leftFrontDrive.getCurrentPosition(), leftBackDrive.getCurrentPosition(), rightFrontDrive.getCurrentPosition(), rightBackDrive.getCurrentPosition());
         telemetry.update();
-
+        pathChains.add(follower.pathBuilder()
+                .addPath(
+                        new Path(
+                                new BezierLine(
+                                        new Point(startPose),
+                                        new Point(35.000, 70.000, Point.CARTESIAN) // Drive to chamber
+                                )
+                        )
+                )
+                .setConstantHeadingInterpolation(Math.toRadians(180))
+                .build());
+        pathChains.add(follower.pathBuilder()
+                .addPath(
+                        new Path(
+                                new BezierLine(
+                                        new Point(35.000, 70.000, Point.CARTESIAN),
+                                        new Point(13.000, 19.000, Point.CARTESIAN) // Drive to closest sample
+                                )
+                        )
+                )
+                .setConstantHeadingInterpolation(Math.toRadians(0))
+                .build());
+        pathChains.add(follower.pathBuilder()
+                .addPath(
+                        new Path(
+                                new BezierLine(
+                                        new Point(13.000, 19.000, Point.CARTESIAN),
+                                        new Point(19.995, 124.173, Point.CARTESIAN) // Drive to bucket
+                                )
+                        )
+                )
+                .setConstantHeadingInterpolation(Math.toRadians(135))
+                .build());
+        pathChains.add(follower.pathBuilder()
+                .addPath(
+                        new Path(
+                                new BezierLine(
+                                        new Point(19.995, 124.173, Point.CARTESIAN),
+                                        new Point(10.922, 7.561, Point.CARTESIAN) // Park
+                                )
+                        )
+                )
+                .setConstantHeadingInterpolation(Math.toRadians(-90))
+                .build());
+        pathIndex = 0;
+        follower.followPath(pathChains.get(pathIndex));
         waitForStart();
         runtime.reset();
 
@@ -204,62 +254,30 @@ public class Autonomous extends LinearOpMode {
         } else {
             telemetry.addData("Limelight", "No data available");
         }
-        telemetry.update();
 
         while(opModeIsActive()) {
-            follower.followPath(follower.pathBuilder()
-                    .addPath(
-                            new Path(
-                                    new BezierLine(
-                                            new Point(startPose),
-                                            new Point(35.000, 70.000, Point.CARTESIAN) // Drive to chamber
-                                    )
-                            )
-                    )
-                    .setConstantHeadingInterpolation(Math.toRadians(180))
-                    .build());
-            sleep(250);
-            // Place specimen on top scoring bar
-            follower.followPath(follower.pathBuilder()
-                    .addPath(
-                            new Path(
-                                    new BezierLine(
-                                            new Point(35.000, 70.000, Point.CARTESIAN),
-                                            new Point(13.000, 19.000, Point.CARTESIAN) // Drive to closest sample
-                                    )
-                            )
-                    )
-                    .setConstantHeadingInterpolation(Math.toRadians(0))
-                    .build());
-            sleep(250);
-            // Pick up sample
-            follower.followPath(follower.pathBuilder()
-                    .addPath(
-                            new Path(
-                                    new BezierLine(
-                                            new Point(13.000, 19.000, Point.CARTESIAN),
-                                            new Point(19.995, 124.173, Point.CARTESIAN) // Drive to bucket
-                                    )
-                            )
-                    )
-                    .setConstantHeadingInterpolation(Math.toRadians(135))
-                    .build());
-            // Place sample in bucket
-            sleep(250);
-            // Pick up sample
-            follower.followPath(follower.pathBuilder()
-                    .addPath(
-                            new Path(
-                                    new BezierLine(
-                                            new Point(19.995, 124.173, Point.CARTESIAN),
-                                            new Point(10.922, 7.561, Point.CARTESIAN) // Park
-                                    )
-                            )
-                    )
-                    .setConstantHeadingInterpolation(Math.toRadians(-90))
-                    .build());
-            sleep(250);
             follower.update();
+            if (follower.atParametricEnd()){
+                if (pathIndex < pathChains.size() - 1){
+                    pathIndex++;
+                    follower.followPath(pathChains.get(pathIndex));
+                }
+            }
+            switch (pathIndex){
+                case 0:
+
+                    break;
+                case 1:
+
+                    break;
+                case 2:
+
+                    break;
+                case 3:
+
+                    break;
+            }
+            telemetry.update();
         }
     }
 }
