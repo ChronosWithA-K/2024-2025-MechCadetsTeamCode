@@ -7,6 +7,7 @@ import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
@@ -17,20 +18,6 @@ import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.Path;
 import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.Point;
 
 import java.util.List;
-
-/**
- * Plans for autonomous:
- * place specimen on bar
- * grab sample
- * sample in bucket
- * grab sample
- * sample in pucket
- * park
- */
-
-/**
- * Pedro pathing coordinate system: bottom left is (0, 0) top right is (144, 144) (inches)
- */
 
 @com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "Autonomous", group = "Test")
 public class Autonomous extends LinearOpMode {
@@ -51,22 +38,17 @@ public class Autonomous extends LinearOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
 
-    // Calculate the COUNTS_PER_INCH for your specific drive train.
-    // Go to your motor vendor website to determine your motor's COUNTS_PER_MOTOR_REV
-    // For external drive gearing, set DRIVE_GEAR_REDUCTION as needed.
-    // For example, use a value of 2.0 for a 12-tooth spur gear driving a 24-tooth spur gear.
-    // This is gearing DOWN for less speed and more torque.
-    // For gearing UP, use a gear ratio less than 1.0. Note this will affect the direction of wheel rotation.
-    static final double COUNTS_PER_MOTOR_REV = 435;
-    static final double DRIVE_GEAR_REDUCTION = 1.0;     // No External Gearing.
-    static final double WHEEL_DIAMETER_INCHES = 4.09449; // For figuring circumference
-    static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * 3.1415);
-    static final double DRIVE_SPEED = 0.6;
-    static final double TURN_SPEED = 0.5;
+    private DcMotor viperSlideMotor = null;
+
+    private Servo extendServo = null;
+    private Servo bucketServo = null;
+    private Servo intakeServo = null;
+    private Servo sampleClawServo = null;
+    private Servo wristServo = null;
+    private Servo specimenClawServo = null;
 
     @Override
     public void runOpMode() {
-
         follower = new Follower(hardwareMap);
         follower.setStartingPose(startPose);
 
@@ -75,6 +57,8 @@ public class Autonomous extends LinearOpMode {
         leftBackDrive = hardwareMap.get(DcMotor.class, "left_back");
         rightFrontDrive = hardwareMap.get(DcMotor.class, "right_front");
         rightBackDrive = hardwareMap.get(DcMotor.class, "right_back");
+
+        viperSlideMotor = hardwareMap.get(DcMotor.class, "viper_slide_motor");
 
         imu = hardwareMap.get(IMU.class, "imu");
 
@@ -92,9 +76,13 @@ public class Autonomous extends LinearOpMode {
          * 9 for all at once
          */
 
-        // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
-        // When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.
-        // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips
+        extendServo = hardwareMap.get(Servo.class, "extend_servo");
+        bucketServo = hardwareMap.get(Servo.class, "bucket_servo");
+        intakeServo = hardwareMap.get(Servo.class, "intake_servo");
+        sampleClawServo = hardwareMap.get(Servo.class, "sample_claw_servo");
+        wristServo = hardwareMap.get(Servo.class, "wrist_servo");
+        specimenClawServo = hardwareMap.get(Servo.class, "specimen_claw_servo");
+
         leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
         rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
@@ -110,6 +98,12 @@ public class Autonomous extends LinearOpMode {
         rightFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+        viperSlideMotor.setTargetPosition(0);
+        viperSlideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        viperSlideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        viperSlideMotor.setPower(1);
+        viperSlideMotor.setDirection(DcMotor.Direction.REVERSE);
+
         // Start the limelight polling for data (getLatestResult() will return null without this)
         limelight.start();
         limelight.pipelineSwitch(9);
@@ -118,8 +112,45 @@ public class Autonomous extends LinearOpMode {
         telemetry.addData("Starting at", "%7d :%7d", leftFrontDrive.getCurrentPosition(), leftBackDrive.getCurrentPosition(), rightFrontDrive.getCurrentPosition(), rightBackDrive.getCurrentPosition());
         telemetry.update();
 
-        // Wait for the game to start (driver presses PLAY)
         waitForStart();
+        runtime.reset();
+
+        // Declare initial positions for parts
+        double extendServoPosition = 0.0;
+        double bucketServoPosition = 0.0;
+        double intakeServoPosition = 0.0;
+        double sampleClawServoPosition = 0.0;
+        double wristServoPosition = 0.0;
+        double specimenClawServoPosition = 0.0;
+
+        int viperSlideMotorPosition = 0;
+
+        // Declare positions for parts to move to
+        int liftDown = 0;
+        int liftTopBucket = 6180;
+        int liftBottomBucket = 3480;
+        int liftTopBar = 2890;
+        int liftBottomBar = 960;
+
+        double bucketDrop = 0.37;
+        double bucketLoad = 0.5;
+
+        double extendClosed = 0.0;
+        double extendExtended = 1.0;
+
+        double intakeDown = 0.26;
+        double intakeUp = 1;
+        double intakeIdle = 0.65;
+
+        double wristLoad = 0.5;
+        double wristDrop = 1;
+        double wristLift = 0.2;
+
+        double sampleClawClosed = 0;
+        double sampleClawOpen = 0.4;
+
+        double specimenClawClosed = 0;
+        double specimenClawOpen = 0.5;
 
         LLStatus limelightStatus = limelight.getStatus();
         telemetry.addData("Pipeline", "Index: %d, Type: %s", limelightStatus.getPipelineIndex(), limelightStatus.getPipelineType());
@@ -232,4 +263,3 @@ public class Autonomous extends LinearOpMode {
         }
     }
 }
-
