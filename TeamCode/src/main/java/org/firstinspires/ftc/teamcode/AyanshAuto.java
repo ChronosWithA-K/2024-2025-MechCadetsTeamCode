@@ -31,6 +31,10 @@ public class AyanshAuto extends LinearOpMode {
     private Follower follower;
 
     private Pose startPose = new Pose(0, 0, 0);
+    private Pose nextPose1 = new Pose(12,0,0);
+    private Pose nextPose2 = new Pose(12,48,-90);
+
+
 
     private int pathIndex = 0;
     private ArrayList<PathChain> pathChains = new ArrayList<PathChain>();
@@ -51,6 +55,7 @@ public class AyanshAuto extends LinearOpMode {
 
         follower = new Follower(hardwareMap);
         follower.setStartingPose(startPose);
+
 
 
         viperSlideMotor = hardwareMap.get(DcMotor.class, "viper_slide_motor");
@@ -95,7 +100,18 @@ public class AyanshAuto extends LinearOpMode {
                         new Path(
                                 new BezierLine(
                                         new Point(startPose),
-                                        new Point(24,0, Point.CARTESIAN) // Drive to chamber
+                                        new Point(12,0, Point.CARTESIAN) // Drive to chamber
+
+                                    )
+                        )
+                )
+                .build());
+        pathChains.add(follower.pathBuilder()
+                .addPath(
+                        new Path(
+                                new BezierLine(
+                                        new Point(nextPose1),
+                                        new Point(0,48, Point.CARTESIAN) // move left 2 block right
                                 )
                         )
                 )
@@ -104,8 +120,8 @@ public class AyanshAuto extends LinearOpMode {
                 .addPath(
                         new Path(
                                 new BezierLine(
-                                        new Point(startPose),
-                                        new Point(0,48, Point.CARTESIAN) // Drive to chamber
+                                        new Point(nextPose2),
+                                        new Point(-12,0, Point.CARTESIAN) // Drive to chamber
                                 )
                         )
                 )
