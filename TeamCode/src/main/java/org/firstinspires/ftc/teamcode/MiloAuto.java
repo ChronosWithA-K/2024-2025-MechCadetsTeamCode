@@ -37,6 +37,8 @@ public class MiloAuto extends LinearOpMode {
     private Follower follower;
 
     private Pose startPose = new Pose(10.000, 58.000, Point.CARTESIAN);
+    private Pose specimenPose = new Pose(35, 72, Point.CARTESIAN);
+    private Pose pickUpPose = new Pose(10, 24, Point.CARTESIAN);
 
     private int pathIndex = 0;
     private ArrayList<PathChain> pathChains = new ArrayList<PathChain>();
@@ -121,7 +123,7 @@ public class MiloAuto extends LinearOpMode {
                         new Path(
                                 new BezierLine(
                                         new Point(startPose),
-                                        new Point(35.000, 70.000, Point.CARTESIAN) // Drive to chamber
+                                        new Point(specimenPose) // Drive to chamber
                                 )
                         )
                 )
@@ -131,34 +133,45 @@ public class MiloAuto extends LinearOpMode {
                 .addPath(
                         new Path(
                                 new BezierLine(
-                                        new Point(35.000, 70.000, Point.CARTESIAN),
-                                        new Point(13.000, 19.000, Point.CARTESIAN) // Drive to closest sample
+                                        new Point(specimenPose),
+                                        new Point(pickUpPose)
                                 )
                         )
                 )
-                .setConstantHeadingInterpolation(Math.toRadians(0))
+                .setConstantHeadingInterpolation(Math.toRadians(-180))
                 .build());
         pathChains.add(follower.pathBuilder()
                 .addPath(
                         new Path(
                                 new BezierLine(
-                                        new Point(13.000, 19.000, Point.CARTESIAN),
-                                        new Point(19.995, 124.173, Point.CARTESIAN) // Drive to bucket
+                                        new Point(pickUpPose),
+                                        new Point(specimenPose)
                                 )
                         )
                 )
-                .setConstantHeadingInterpolation(Math.toRadians(135))
+                .setConstantHeadingInterpolation(Math.toRadians(180))
                 .build());
         pathChains.add(follower.pathBuilder()
                 .addPath(
                         new Path(
                                 new BezierLine(
-                                        new Point(19.995, 124.173, Point.CARTESIAN),
-                                        new Point(10.922, 7.561, Point.CARTESIAN) // Park
+                                        new Point(specimenPose),
+                                        new Point(pickUpPose)
                                 )
                         )
                 )
-                .setConstantHeadingInterpolation(Math.toRadians(-90))
+                .setConstantHeadingInterpolation(Math.toRadians(-180))
+                .build());
+        pathChains.add(follower.pathBuilder()
+                .addPath(
+                        new Path(
+                                new BezierLine(
+                                        new Point(pickUpPose),
+                                        new Point(specimenPose)
+                                )
+                        )
+                )
+                .setConstantHeadingInterpolation(Math.toRadians(180))
                 .build());
         pathIndex = 0;
         follower.followPath(pathChains.get(pathIndex));
