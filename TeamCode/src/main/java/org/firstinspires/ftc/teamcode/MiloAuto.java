@@ -21,7 +21,7 @@ import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.Point;
 import java.util.ArrayList;
 import java.util.List;
 
-@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "Autonomous", group = "Test")
+@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "MiloAuto", group = "Test")
 public class MiloAuto extends LinearOpMode {
 
     /* Declare OpMode members. */
