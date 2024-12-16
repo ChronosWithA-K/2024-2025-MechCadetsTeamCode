@@ -31,15 +31,16 @@ public class AyanshAuto extends LinearOpMode {
     private Follower follower;
 
     private Pose startPose = new Pose(0, 0, 0);
-    private Pose nextPose1 = new Pose(12,0,0);
-    private Pose nextPose2 = new Pose(12,48,-90);
-
-
+    private Pose nextPose1 = new Pose(29,0,0);
+    private Pose nextPose2 = new Pose(21,0,0);
+    private Pose nextPose3 = new Pose(21, -54, 0);
+    private Pose nextPose4 = new Pose(0, -54, 0);
 
     private int pathIndex = 0;
     private ArrayList<PathChain> pathChains = new ArrayList<PathChain>();
 
     private ElapsedTime runtime = new ElapsedTime();
+    private double waitTime = 0;
 
     private DcMotor viperSlideMotor = null;
 
@@ -52,11 +53,8 @@ public class AyanshAuto extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-
         follower = new Follower(hardwareMap);
         follower.setStartingPose(startPose);
-
-
 
         viperSlideMotor = hardwareMap.get(DcMotor.class, "viper_slide_motor");
 
@@ -100,7 +98,7 @@ public class AyanshAuto extends LinearOpMode {
                         new Path(
                                 new BezierLine(
                                         new Point(startPose),
-                                        new Point(12,0, Point.CARTESIAN) // Drive to chamber
+                                        new Point(nextPose1) // Drive to chamber
 
                                     )
                         )
@@ -111,7 +109,7 @@ public class AyanshAuto extends LinearOpMode {
                         new Path(
                                 new BezierLine(
                                         new Point(nextPose1),
-                                        new Point(0,48, Point.CARTESIAN) // move left 2 block right
+                                        new Point(nextPose2) // move left 2 block right
                                 )
                         )
                 )
@@ -121,7 +119,17 @@ public class AyanshAuto extends LinearOpMode {
                         new Path(
                                 new BezierLine(
                                         new Point(nextPose2),
-                                        new Point(-12,0, Point.CARTESIAN) // Drive to chamber
+                                        new Point(nextPose3) // Drive to chamber
+                                )
+                        )
+                )
+                .build());
+        pathChains.add(follower.pathBuilder()
+                .addPath(
+                        new Path(
+                                new BezierLine(
+                                        new Point(nextPose3),
+                                        new Point(nextPose4) // Drive to chamber
                                 )
                         )
                 )
@@ -226,6 +234,7 @@ public class AyanshAuto extends LinearOpMode {
             if (follower.atParametricEnd()){
                 if (pathIndex < pathChains.size() - 1){
                     pathIndex++;
+                    waitTime += 1;
                     follower.followPath(pathChains.get(pathIndex));
                 }
             }
