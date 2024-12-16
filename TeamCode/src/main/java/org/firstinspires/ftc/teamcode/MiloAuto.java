@@ -21,7 +21,7 @@ import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.Point;
 import java.util.ArrayList;
 import java.util.List;
 
-@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "Autonomous", group = "Test")
+@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "MiloAuto", group = "Test")
 public class MiloAuto extends LinearOpMode {
 
     /* Declare OpMode members. */
@@ -37,6 +37,8 @@ public class MiloAuto extends LinearOpMode {
     private Follower follower;
 
     private Pose startPose = new Pose(10.000, 58.000, Point.CARTESIAN);
+    private Pose specimenPose = new Pose(35, 72, Point.CARTESIAN);
+    private Pose pickUpPose = new Pose(10, 24, Point.CARTESIAN);
 
     private int pathIndex = 0;
     private ArrayList<PathChain> pathChains = new ArrayList<PathChain>();
@@ -51,6 +53,45 @@ public class MiloAuto extends LinearOpMode {
     private Servo sampleClawServo = null;
     private Servo wristServo = null;
     private Servo specimenClawServo = null;
+
+    double secs = 0;
+
+    // Declare initial positions for parts
+    double extendServoPosition = 0.0;
+    double bucketServoPosition = 0.0;
+    double intakeServoPosition = 0.0;
+    double sampleClawServoPosition = 0.0;
+    double wristServoPosition = 0.0;
+    double specimenClawServoPosition = 0.0;
+
+    int viperSlideMotorPosition = 0;
+
+    // Declare positions for parts to move to
+    int liftDown = 0;
+    int liftTopBucket = 6180;
+    int liftBottomBucket = 3480;
+    int liftTopBar = 2890;
+    int liftBottomBar = 960;
+
+    double bucketDrop = 0.37;
+    double bucketLoad = 0.5;
+
+    double extendClosed = 0.0;
+    double extendExtended = 1.0;
+
+    double intakeDown = 0.26;
+    double intakeUp = 1;
+    double intakeIdle = 0.65;
+
+    double wristLoad = 0.5;
+    double wristDrop = 1;
+    double wristLift = 0.2;
+
+    double sampleClawClosed = 0;
+    double sampleClawOpen = 0.4;
+
+    double specimenClawClosed = 0;
+    double specimenClawOpen = 0.5;
 
     @Override
     public void runOpMode() {
@@ -109,6 +150,8 @@ public class MiloAuto extends LinearOpMode {
         viperSlideMotor.setPower(1);
         viperSlideMotor.setDirection(DcMotor.Direction.REVERSE);
 
+        specimenClawServo.setPosition(specimenClawClosed); // Close servo initially
+
         // Start the limelight polling for data (getLatestResult() will return null without this)
         limelight.start();
         limelight.pipelineSwitch(9);
@@ -121,7 +164,7 @@ public class MiloAuto extends LinearOpMode {
                         new Path(
                                 new BezierLine(
                                         new Point(startPose),
-                                        new Point(35.000, 70.000, Point.CARTESIAN) // Drive to chamber
+                                        new Point(specimenPose) // Drive to chamber
                                 )
                         )
                 )
@@ -131,76 +174,50 @@ public class MiloAuto extends LinearOpMode {
                 .addPath(
                         new Path(
                                 new BezierLine(
-                                        new Point(35.000, 70.000, Point.CARTESIAN),
-                                        new Point(13.000, 19.000, Point.CARTESIAN) // Drive to closest sample
+                                        new Point(specimenPose),
+                                        new Point(pickUpPose)
                                 )
                         )
                 )
-                .setConstantHeadingInterpolation(Math.toRadians(0))
+                .setConstantHeadingInterpolation(Math.toRadians(-180))
                 .build());
         pathChains.add(follower.pathBuilder()
                 .addPath(
                         new Path(
                                 new BezierLine(
-                                        new Point(13.000, 19.000, Point.CARTESIAN),
-                                        new Point(19.995, 124.173, Point.CARTESIAN) // Drive to bucket
+                                        new Point(pickUpPose),
+                                        new Point(specimenPose)
                                 )
                         )
                 )
-                .setConstantHeadingInterpolation(Math.toRadians(135))
+                .setConstantHeadingInterpolation(Math.toRadians(180))
                 .build());
         pathChains.add(follower.pathBuilder()
                 .addPath(
                         new Path(
                                 new BezierLine(
-                                        new Point(19.995, 124.173, Point.CARTESIAN),
-                                        new Point(10.922, 7.561, Point.CARTESIAN) // Park
+                                        new Point(specimenPose),
+                                        new Point(pickUpPose)
                                 )
                         )
                 )
-                .setConstantHeadingInterpolation(Math.toRadians(-90))
+                .setConstantHeadingInterpolation(Math.toRadians(-180))
+                .build());
+        pathChains.add(follower.pathBuilder()
+                .addPath(
+                        new Path(
+                                new BezierLine(
+                                        new Point(pickUpPose),
+                                        new Point(specimenPose)
+                                )
+                        )
+                )
+                .setConstantHeadingInterpolation(Math.toRadians(180))
                 .build());
         pathIndex = 0;
         follower.followPath(pathChains.get(pathIndex));
         waitForStart();
         runtime.reset();
-
-        // Declare initial positions for parts
-        double extendServoPosition = 0.0;
-        double bucketServoPosition = 0.0;
-        double intakeServoPosition = 0.0;
-        double sampleClawServoPosition = 0.0;
-        double wristServoPosition = 0.0;
-        double specimenClawServoPosition = 0.0;
-
-        int viperSlideMotorPosition = 0;
-
-        // Declare positions for parts to move to
-        int liftDown = 0;
-        int liftTopBucket = 6180;
-        int liftBottomBucket = 3480;
-        int liftTopBar = 2890;
-        int liftBottomBar = 960;
-
-        double bucketDrop = 0.37;
-        double bucketLoad = 0.5;
-
-        double extendClosed = 0.0;
-        double extendExtended = 1.0;
-
-        double intakeDown = 0.26;
-        double intakeUp = 1;
-        double intakeIdle = 0.65;
-
-        double wristLoad = 0.5;
-        double wristDrop = 1;
-        double wristLift = 0.2;
-
-        double sampleClawClosed = 0;
-        double sampleClawOpen = 0.4;
-
-        double specimenClawClosed = 0;
-        double specimenClawOpen = 0.5;
 
         LLStatus limelightStatus = limelight.getStatus();
         telemetry.addData("Pipeline", "Index: %d, Type: %s", limelightStatus.getPipelineIndex(), limelightStatus.getPipelineType());
@@ -256,6 +273,7 @@ public class MiloAuto extends LinearOpMode {
         }
 
         while(opModeIsActive()) {
+            secs = runtime.seconds();
             follower.update();
             if (follower.atParametricEnd()){
                 if (pathIndex < pathChains.size() - 1){
@@ -263,20 +281,36 @@ public class MiloAuto extends LinearOpMode {
                     follower.followPath(pathChains.get(pathIndex));
                 }
             }
-            switch (pathIndex){
-                case 0:
-
-                    break;
-                case 1:
-
-                    break;
-                case 2:
-
-                    break;
-                case 3:
-
-                    break;
-            }
+//            switch (pathIndex){
+//                case 0:
+//                    secs = runtime.seconds();
+//                    specimenClawServo.setPosition(specimenClawClosed);
+//                    viperSlideMotor.setTargetPosition(liftTopBar);
+//                    telemetry.addLine("Stage 0 finished");
+//                    break;
+//                case 1:
+//                    secs = runtime.seconds();
+//                    viperSlideMotor.setTargetPosition(liftDown);
+//                    specimenClawServo.setPosition(specimenClawOpen);
+//
+//                    if (secs < runtime.seconds() + 1) {
+//                        specimenClawServo.setPosition(specimenClawClosed);
+//                    }
+//                    telemetry.addLine("Stage 1 finished");
+//                    break;
+//                case 2:
+//                    secs = runtime.seconds();
+//                    telemetry.addLine("Stage 2 finished");
+//                    break;
+//                case 3:
+//                    secs = runtime.seconds();
+//                    telemetry.addLine("Stage 3 finished");
+//                    break;
+//                case 4:
+//                    secs = runtime.seconds();
+//                    telemetry.addLine("Stage 4 finished");
+//                    break;
+//            }
             telemetry.update();
         }
     }
