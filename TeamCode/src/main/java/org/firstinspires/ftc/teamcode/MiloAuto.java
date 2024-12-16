@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "Autonomous", group = "Test")
-public class Autonomous extends LinearOpMode {
+public class MiloAuto extends LinearOpMode {
 
     /* Declare OpMode members. */
     private DcMotor leftFrontDrive = null;
