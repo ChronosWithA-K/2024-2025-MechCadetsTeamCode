@@ -29,12 +29,12 @@ public class AyanshAuto extends LinearOpMode {
     private Limelight3A limelight;
 
     private Follower follower;
-
+ // x is forward/backward y is left/right heading is the position the robot will face.
     private Pose startPose = new Pose(0, 0, 0);
     private Pose nextPose1 = new Pose(29,0,0);
-    private Pose nextPose2 = new Pose(21,0,0);
-    private Pose nextPose3 = new Pose(21, -54, 0);
-    private Pose nextPose4 = new Pose(0, -54, 0);
+    private Pose nextPose2 = new Pose(0,-54,-180);
+ //   private Pose nextPose3 = new Pose(21, -54, 0);
+//    private Pose nextPose4 = new Pose(0, -54, 0);
 
     private int pathIndex = 0;
     private ArrayList<PathChain> pathChains = new ArrayList<PathChain>();
@@ -51,10 +51,13 @@ public class AyanshAuto extends LinearOpMode {
     private Servo wristServo = null;
     private Servo specimenClawServo = null;
 
+    double secs =0;
+
     @Override
     public void runOpMode() {
         follower = new Follower(hardwareMap);
         follower.setStartingPose(startPose);
+        follower.setMaxPower(0.5);
 
         viperSlideMotor = hardwareMap.get(DcMotor.class, "viper_slide_motor");
 
@@ -114,26 +117,6 @@ public class AyanshAuto extends LinearOpMode {
                         )
                 )
                 .build());
-        pathChains.add(follower.pathBuilder()
-                .addPath(
-                        new Path(
-                                new BezierLine(
-                                        new Point(nextPose2),
-                                        new Point(nextPose3) // Drive to chamber
-                                )
-                        )
-                )
-                .build());
-        pathChains.add(follower.pathBuilder()
-                .addPath(
-                        new Path(
-                                new BezierLine(
-                                        new Point(nextPose3),
-                                        new Point(nextPose4) // Drive to chamber
-                                )
-                        )
-                )
-                .build());
         pathIndex = 0;
         follower.followPath(pathChains.get(pathIndex));
         waitForStart();
@@ -154,6 +137,8 @@ public class AyanshAuto extends LinearOpMode {
         int liftTopBucket = 6180;
         int liftBottomBucket = 3480;
         int liftTopBar = 2890;
+        int engaged = 2390;
+
         int liftBottomBar = 960;
 
         double bucketDrop = 0.37;
@@ -240,10 +225,20 @@ public class AyanshAuto extends LinearOpMode {
             }
             switch (pathIndex){
                 case 0:
-
+                    secs = runtime.seconds();
+                    specimenClawServo.setPosition(specimenClawClosed);
+                    viperSlideMotor.setTargetPosition(liftTopBar);
+                    telemetry.addLine("Stage Prep Finished");
                     break;
                 case 1:
-
+                    if(secs < runtime.seconds()+3){
+                        viperSlideMotor.setTargetPosition(engaged);
+                        telemetry.addLine("Stage Initiation finishied");
+                    }
+                   else if(secs < runtime.seconds()+5){
+                        viperSlideMotor.setTargetPosition(engaged);
+                        telemetry.addLine("Stage Initiation finishied");
+                    }
                     break;
                 case 2:
 
