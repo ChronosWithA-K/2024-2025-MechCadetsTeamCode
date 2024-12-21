@@ -30,9 +30,9 @@ public class AyanshAuto extends LinearOpMode {
 
     private Follower follower;
  // x is forward/backward y is left/right heading is the position the robot will face.
-    private Pose startPose = new Pose(0, 0, 0);
-    private Pose nextPose1 = new Pose(29,0,0);
-    private Pose nextPose2 = new Pose(0,-54,-180);
+    private Pose startPose = new Pose(0, 0);
+    private Pose nextPose1 = new Pose(29,0);
+    private Pose nextPose2 = new Pose(-10,-60);
  //   private Pose nextPose3 = new Pose(21, -54, 0);
 //    private Pose nextPose4 = new Pose(0, -54, 0);
 
@@ -116,7 +116,30 @@ public class AyanshAuto extends LinearOpMode {
                                 )
                         )
                 )
+                        .setConstantHeadingInterpolation(0)
                 .build());
+        pathChains.add(follower.pathBuilder()
+                .addPath(
+                        new Path(
+                                new BezierLine(
+                                        new Point(nextPose1),
+                                        new Point(nextPose2) // move left 2 block right
+                                )
+                        )
+                )
+                        .setConstantHeadingInterpolation(180)
+                .build());
+        pathChains.add(follower.pathBuilder()
+                .addPath(
+                        new Path(
+                                new BezierLine(
+                                        new Point(nextPose1),
+                                        new Point(nextPose2) // move left 2 block right
+                                )
+                        )
+                )
+                .build());
+
         pathIndex = 0;
         follower.followPath(pathChains.get(pathIndex));
         waitForStart();
@@ -225,20 +248,24 @@ public class AyanshAuto extends LinearOpMode {
             }
             switch (pathIndex){
                 case 0:
-                    secs = runtime.seconds();
-                    specimenClawServo.setPosition(specimenClawClosed);
-                    viperSlideMotor.setTargetPosition(liftTopBar);
-                    telemetry.addLine("Stage Prep Finished");
-                    break;
+//                    secs = runtime.seconds();
+//                    specimenClawServo.setPosition(specimenClawClosed);
+//                    viperSlideMotor.setTargetPosition(liftTopBar);
+//                    telemetry.addLine("Stage Prep Finished");
+//                    break;
                 case 1:
-                    if(secs < runtime.seconds()+3){
-                        viperSlideMotor.setTargetPosition(engaged);
-                        telemetry.addLine("Stage Initiation finishied");
-                    }
-                   else if(secs < runtime.seconds()+5){
-                        viperSlideMotor.setTargetPosition(engaged);
-                        telemetry.addLine("Stage Initiation finishied");
-                    }
+//                    if(secs < runtime.seconds()+3){
+//                        viperSlideMotor.setTargetPosition(engaged);
+//                        telemetry.addLine("Stage Initiation finishied");
+//                    }
+//                   else if(secs < runtime.seconds()+5){
+//                        viperSlideMotor.setTargetPosition(engaged);
+//                        telemetry.addLine("Stage Initiation finishied");
+//                    }
+//                   else if(secs < runtime.seconds()+7){
+//                        specimenClawServo.setPosition(specimenClawOpen);
+//                        telemetry.addLine("Stage drop finished");
+//                    }
                     break;
                 case 2:
 
