@@ -33,7 +33,7 @@ public class AyanshAuto extends LinearOpMode {
     private Pose startPose = new Pose(0, 0);
     private Pose nextPose1 = new Pose(29,0);
     private Pose nextPose2 = new Pose(-10,-60);
- //   private Pose nextPose3 = new Pose(21, -54, 0);
+    private Pose nextPose3 = new Pose(21, 54, 0);
 //    private Pose nextPose4 = new Pose(0, -54, 0);
 
     private int pathIndex = 0;
@@ -133,12 +133,22 @@ public class AyanshAuto extends LinearOpMode {
                 .addPath(
                         new Path(
                                 new BezierLine(
-                                        new Point(nextPose1),
-                                        new Point(nextPose2) // move left 2 block right
+                                        new Point(nextPose2),
+                                        new Point(nextPose3) // move to original position to drop
                                 )
                         )
                 )
                 .build());
+//        pathChains.add(follower.pathBuilder()
+//                .addPath(
+//                        new Path(
+//                                new BezierLine(
+//                                        new Point(nextPose1),
+//                                        new Point(nextPose2) // move left 2 block right
+//                                )
+//                        )
+//                )
+//                .build());
 
         pathIndex = 0;
         follower.followPath(pathChains.get(pathIndex));
@@ -249,6 +259,7 @@ public class AyanshAuto extends LinearOpMode {
             switch (pathIndex){
                 case 0:
 //                    secs = runtime.seconds();
+                    //intakeServo.setPosition(0.2);
 //                    specimenClawServo.setPosition(specimenClawClosed);
 //                    viperSlideMotor.setTargetPosition(liftTopBar);
 //                    telemetry.addLine("Stage Prep Finished");
