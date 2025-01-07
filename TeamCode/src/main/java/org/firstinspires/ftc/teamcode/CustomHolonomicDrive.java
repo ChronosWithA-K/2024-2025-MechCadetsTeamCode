@@ -127,11 +127,11 @@ public class CustomHolonomicDrive extends LinearOpMode {
         double extendClosed = 0.0;
         double extendExtended = 1.0;
 
-        double intakeDown = 0.22;
+        double intakeDown = 0;
         double intakeUp = 1;
-        double intakeIdle = 0.65;
+        double intakeIdle = 0.45;
 
-        double wristLoad = 0.6;
+        double wristLoad = 0;
         double wristDrop = 1;
         double wristLift = 0.2;
 
@@ -171,19 +171,20 @@ public class CustomHolonomicDrive extends LinearOpMode {
                     viperSlideMotorPosition = liftDown;
                     bucketServoPosition = bucketLoad;
                     extendServoPosition = extendClosed;
-                    intakeServoPosition = intakeIdle;
-                    wristServoPosition = wristLoad;
+                    intakeServoPosition = intakeUp;
+                    wristServoPosition = wristLift;
                     sampleClawServoPosition = sampleClawClosed;
                     leftHangingServoPosition = leftHangingServoUp;
                     rightHangingServoPosition = rightHangingServoUp;
                     hangingMotorPosition = hangingMotorIn;
 
-                    if (runtime.seconds() > closedTime + 0.5) {
+                    if (runtime.seconds() > closedTime + 0.25) {
                         specimenClawServoPosition = specimenClawOpen;
                     }
 
                     if (a) {
                         state = State.EXTENDED;
+                        wristTime = runtime.seconds();
                     } else if (y) {
                         state = State.PLACE_SPECIMEN_HIGH_BAR;
                     } else if (x) {
@@ -194,7 +195,7 @@ public class CustomHolonomicDrive extends LinearOpMode {
                     }
                     break;
                 case EXTENDED:
-                    if (runtime.seconds() > wristTime + 0.5) {
+                    if (runtime.seconds() > wristTime + 0.25) {
                         sampleClawServoPosition = sampleClawOpen;
                     }
                     viperSlideMotorPosition = liftDown;
