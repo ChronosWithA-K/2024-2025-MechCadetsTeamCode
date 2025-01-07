@@ -127,7 +127,7 @@ public class AyanshAuto extends LinearOpMode {
                                 )
                         )
                 )
-                        .setConstantHeadingInterpolation(180)
+                        .setConstantHeadingInterpolation(Math.PI)
                 .build());
         pathChains.add(follower.pathBuilder()
                 .addPath(
