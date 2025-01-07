@@ -139,16 +139,16 @@ public class AyanshAuto extends LinearOpMode {
                         )
                 )
                 .build());
-//        pathChains.add(follower.pathBuilder()
-//                .addPath(
-//                        new Path(
-//                                new BezierLine(
-//                                        new Point(nextPose1),
-//                                        new Point(nextPose2) // move left 2 block right
-//                                )
-//                        )
-//                )
-//                .build());
+        pathChains.add(follower.pathBuilder()
+                .addPath(
+                        new Path(
+                                new BezierLine(
+                                        new Point(nextPose1),
+                                        new Point(nextPose2) // move left 2 block right
+                                )
+                        )
+                )
+                .build());
 
         pathIndex = 0;
         follower.followPath(pathChains.get(pathIndex));
@@ -290,7 +290,7 @@ public class AyanshAuto extends LinearOpMode {
 //                case 3:
 //  //                  if(secs < runtime.seconds()+25){
 ////                        viperSlideMotor.setTargetPosition(engaged);
-////                        telemetry.addLine("Stage Initiation finishied");
+////                        telemetry.addLine("Stage Initiation finished");
 ////                    }
 ////                   else if(secs < runtime.seconds()+30){
 ////                        specimenClawServo.setPosition(specimenClawOpen);
