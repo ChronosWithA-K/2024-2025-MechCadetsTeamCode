@@ -254,25 +254,38 @@ public class AyanshAuto extends LinearOpMode {
 //                    telemetry.addLine("Stage Prep Finished");
 //                    break;
                 case 1:
-//                    if(secs < runtime.seconds()+3){
-//                        viperSlideMotor.setTargetPosition(engaged);
-//                        telemetry.addLine("Stage Initiation finishied");
-//                    }
-//                   else if(secs < runtime.seconds()+5){
+//                    if(secs < runtime.seconds()+5){
 //                        viperSlideMotor.setTargetPosition(engaged);
 //                        telemetry.addLine("Stage Initiation finishied");
 //                    }
 //                   else if(secs < runtime.seconds()+7){
 //                        specimenClawServo.setPosition(specimenClawOpen);
-//                        telemetry.addLine("Stage drop finished");
+////                        telemetry.addLine("Stage drop finished");
+////                    }
+//                    break;
+//                case 2:
+//                    if(secs < runtime.seconds()+15){
+//                        specimenClawServo.setPosition(specimenClawClosed);
+//                        viperSlideMotor.setTargetPosition(0);
 //                    }
-                    break;
-                case 2:
-
-                    break;
-                case 3:
-
-                    break;
+//                   else if(secs <runtime.seconds()+20){
+//                        specimenClawServo.setPosition(specimenClawOpen);
+//                    }
+//                    else if(secs <runtime.seconds()+23){
+//                        specimenClawServo.setPosition(specimenClawClosed);
+//                        viperSlideMotor.setTargetPosition(liftTopBar);
+//                    }
+//                    break;
+//                case 3:
+//  //                  if(secs < runtime.seconds()+25){
+////                        viperSlideMotor.setTargetPosition(engaged);
+////                        telemetry.addLine("Stage Initiation finishied");
+////                    }
+////                   else if(secs < runtime.seconds()+30){
+////                        specimenClawServo.setPosition(specimenClawOpen);
+////                        telemetry.addLine("Stage drop finished");
+////                    }
+//                    break;
             }
             telemetry.update();
         }
