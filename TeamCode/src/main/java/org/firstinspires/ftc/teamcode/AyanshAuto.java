@@ -30,10 +30,10 @@ public class AyanshAuto extends LinearOpMode {
 
     private Follower follower;
  // x is forward/backward y is left/right heading is the position the robot will face.
-    private Pose startPose = new Pose(0, 0);
-    private Pose nextPose1 = new Pose(29,0);
-    private Pose nextPose2 = new Pose(-10,-60);
-    private Pose nextPose3 = new Pose(21, 54, 0);
+    private Pose startPose = new Pose(0, 0, 0);
+    private Pose nextPose1 = new Pose(25,0, Math.PI);
+    private Pose nextPose2 = new Pose(0,-60, 0);
+    private Pose nextPose3 = new Pose(-21, -54, 0);
 //    private Pose nextPose4 = new Pose(0, -54, 0);
 
     private int pathIndex = 0;
@@ -52,6 +52,21 @@ public class AyanshAuto extends LinearOpMode {
     private Servo specimenClawServo = null;
 
     double secs =0;
+
+    private void addLine(Pose start, Pose end){
+        pathChains.add(follower.pathBuilder()
+                .addPath(
+                        new Path(
+                                new BezierLine(
+                                        new Point(start),
+                                        new Point(end) // Drive to chamber
+
+                                )
+                        )
+                )
+                .setLinearHeadingInterpolation(start.getHeading(), end.getHeading())
+                .build());
+    }
 
     @Override
     public void runOpMode() {
@@ -96,59 +111,9 @@ public class AyanshAuto extends LinearOpMode {
 
         // Send telemetry message to indicate successful Encoder reset
         telemetry.update();
-        pathChains.add(follower.pathBuilder()
-                .addPath(
-                        new Path(
-                                new BezierLine(
-                                        new Point(startPose),
-                                        new Point(nextPose1) // Drive to chamber
-
-                                    )
-                        )
-                )
-                .build());
-        pathChains.add(follower.pathBuilder()
-                .addPath(
-                        new Path(
-                                new BezierLine(
-                                        new Point(nextPose1),
-                                        new Point(nextPose2) // move left 2 block right
-                                )
-                        )
-                )
-                        .setConstantHeadingInterpolation(0)
-                .build());
-        pathChains.add(follower.pathBuilder()
-                .addPath(
-                        new Path(
-                                new BezierLine(
-                                        new Point(nextPose1),
-                                        new Point(nextPose2) // move left 2 block right
-                                )
-                        )
-                )
-                        .setConstantHeadingInterpolation(Math.PI)
-                .build());
-        pathChains.add(follower.pathBuilder()
-                .addPath(
-                        new Path(
-                                new BezierLine(
-                                        new Point(nextPose2),
-                                        new Point(nextPose3) // move to original position to drop
-                                )
-                        )
-                )
-                .build());
-        pathChains.add(follower.pathBuilder()
-                .addPath(
-                        new Path(
-                                new BezierLine(
-                                        new Point(nextPose1),
-                                        new Point(nextPose2) // move left 2 block right
-                                )
-                        )
-                )
-                .build());
+        addLine(startPose, nextPose1);
+        addLine(nextPose1, nextPose2);
+        addLine(nextPose2, nextPose1);
 
         pathIndex = 0;
         follower.followPath(pathChains.get(pathIndex));
@@ -257,22 +222,22 @@ public class AyanshAuto extends LinearOpMode {
                 }
             }
             switch (pathIndex){
-                case 0:
+//                case 0:
 //                    secs = runtime.seconds();
-                    //intakeServo.setPosition(0.2);
+//                    intakeServo.setPosition(0.2);
 //                    specimenClawServo.setPosition(specimenClawClosed);
 //                    viperSlideMotor.setTargetPosition(liftTopBar);
 //                    telemetry.addLine("Stage Prep Finished");
 //                    break;
-                case 1:
+//                case 1:
 //                    if(secs < runtime.seconds()+5){
 //                        viperSlideMotor.setTargetPosition(engaged);
 //                        telemetry.addLine("Stage Initiation finishied");
 //                    }
 //                   else if(secs < runtime.seconds()+7){
 //                        specimenClawServo.setPosition(specimenClawOpen);
-////                        telemetry.addLine("Stage drop finished");
-////                    }
+//                        telemetry.addLine("Stage drop finished");
+//                  }
 //                    break;
 //                case 2:
 //                    if(secs < runtime.seconds()+15){
