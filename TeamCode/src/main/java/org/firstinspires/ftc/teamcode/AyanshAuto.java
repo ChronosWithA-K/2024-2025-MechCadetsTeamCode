@@ -114,12 +114,12 @@ public class AyanshAuto extends LinearOpMode {
 
         // Send telemetry message to indicate successful Encoder reset
         telemetry.update();
-        addLine(startPose, preHangSpecimenPose);
-        addLine(preHangSpecimenPose, hangSpecimenPose);
-        addLine(hangSpecimenPose, prePickUpSpecimenPose);
-        addLine(prePickUpSpecimenPose, pickUpSpecimenPose);
-        addLine(pickUpSpecimenPose, preHangSpecimenPose);
-        addLine(preHangSpecimenPose, hangSpecimenPose);
+        addLine(startPose, preHangSpecimenPose); // origin to pre
+        addLine(preHangSpecimenPose, hangSpecimenPose); // pre to hang
+//        addLine(hangSpecimenPose, prePickUpSpecimenPose); // hang to pre
+//        addLine(prePickUpSpecimenPose, pickUpSpecimenPose); // pre to pick
+//        addLine(pickUpSpecimenPose, preHangSpecimenPose); // pick to  pre
+//        addLine(preHangSpecimenPose, hangSpecimenPose); // pre to hang
 
         pathIndex = 0;
         follower.followPath(pathChains.get(pathIndex));
@@ -228,36 +228,25 @@ public class AyanshAuto extends LinearOpMode {
                 }
             }
             switch (pathIndex){
-//                case 0:
-//                    secs = runtime.seconds();
-//                    intakeServo.setPosition(0.2);
-//                    specimenClawServo.setPosition(specimenClawClosed);
-//                    viperSlideMotor.setTargetPosition(liftTopBar);
-//                    telemetry.addLine("Stage Prep Finished");
-//                    break;
-//                case 1:
-//                    if(secs < runtime.seconds()+5){
-//                        viperSlideMotor.setTargetPosition(engaged);
-//                        telemetry.addLine("Stage Initiation finishied");
-//                    }
-//                   else if(secs < runtime.seconds()+7){
-//                        specimenClawServo.setPosition(specimenClawOpen);
-//                        telemetry.addLine("Stage drop finished");
-//                  }
-//                    break;
-//                case 2:
-//                    if(secs < runtime.seconds()+15){
-//                        specimenClawServo.setPosition(specimenClawClosed);
-//                        viperSlideMotor.setTargetPosition(0);
-//                    }
-//                   else if(secs <runtime.seconds()+20){
-//                        specimenClawServo.setPosition(specimenClawOpen);
-//                    }
-//                    else if(secs <runtime.seconds()+23){
-//                        specimenClawServo.setPosition(specimenClawClosed);
-//                        viperSlideMotor.setTargetPosition(liftTopBar);
-//                    }
-//                    break;
+                case 0:
+                   secs = runtime.seconds();
+                   intakeServo.setPosition(0.2);
+                  specimenClawServo.setPosition(specimenClawClosed);
+                 viperSlideMotor.setTargetPosition(liftTopBar);
+                  telemetry.addLine("Stage Prep Finished");
+                  break;
+               case 1:
+                   if(secs < runtime.seconds()+5){
+                       viperSlideMotor.setTargetPosition(engaged);
+                      telemetry.addLine("Stage Initiation finishied");
+                    }
+                   else if(secs < runtime.seconds()+7){
+                        specimenClawServo.setPosition(specimenClawOpen);
+                        telemetry.addLine("Stage drop finished");
+                  }
+                   break;
+                case 2:
+
 //                case 3:
 //  //                  if(secs < runtime.seconds()+25){
 ////                        viperSlideMotor.setTargetPosition(engaged);
