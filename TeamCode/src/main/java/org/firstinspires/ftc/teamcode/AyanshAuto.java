@@ -230,13 +230,14 @@ public class AyanshAuto extends LinearOpMode {
             switch (pathIndex){
                 case 0:
                    secs = runtime.seconds();
-                   intakeServo.setPosition(0.2);
                   specimenClawServo.setPosition(specimenClawClosed);
                  viperSlideMotor.setTargetPosition(liftTopBar);
+                 bucketServo.setPosition(liftTopBucket);
                   telemetry.addLine("Stage Prep Finished");
                   break;
                case 1:
                    if(secs < runtime.seconds()+5){
+                       intakeServo.setPosition(0.2);
                        viperSlideMotor.setTargetPosition(engaged);
                       telemetry.addLine("Stage Initiation finishied");
                     }
