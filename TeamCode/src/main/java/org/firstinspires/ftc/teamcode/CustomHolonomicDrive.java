@@ -179,9 +179,9 @@ public class CustomHolonomicDrive extends LinearOpMode {
                     rightHangingServoPosition = rightHangingServoUp;
                     hangingMotorPosition = hangingMotorIn;
 
-                    if (runtime.seconds() > closedTime + 0.25) {
-                        specimenClawServoPosition = specimenClawOpen;
-                    }
+//                    if (runtime.seconds() > closedTime + 0.25) {
+//                        specimenClawServoPosition = specimenClawOpen;
+//                    }
 
                     if (a) {
                         state = State.EXTENDED;
