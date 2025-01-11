@@ -233,31 +233,49 @@ public class AyanshAuto extends LinearOpMode {
                   specimenClawServo.setPosition(specimenClawClosed);
                  viperSlideMotor.setTargetPosition(liftTopBar);
                  bucketServo.setPosition(liftTopBucket);
-                  telemetry.addLine("Stage Prep Finished");
+                  telemetry.addLine("Stage Initiation Finished");
                   break;
                case 1:
                    if(secs < runtime.seconds()+5){
-                       intakeServo.setPosition(0.2);
+                       intakeServo.setPosition(0.8);
                        viperSlideMotor.setTargetPosition(engaged);
-                      telemetry.addLine("Stage Initiation finishied");
+                      telemetry.addLine("Stage Prep finishied");
                     }
                    else if(secs < runtime.seconds()+7){
                         specimenClawServo.setPosition(specimenClawOpen);
-                        telemetry.addLine("Stage drop finished");
+                        telemetry.addLine("Stage Hang finished");
                   }
                    break;
                 case 2:
 
-//                case 3:
-//  //                  if(secs < runtime.seconds()+25){
-////                        viperSlideMotor.setTargetPosition(engaged);
-////                        telemetry.addLine("Stage Initiation finished");
-////                    }
-////                   else if(secs < runtime.seconds()+30){
-////                        specimenClawServo.setPosition(specimenClawOpen);
-////                        telemetry.addLine("Stage drop finished");
-////                    }
-//                    break;
+                case 3:
+                  if(secs < runtime.seconds()+15){
+                        viperSlideMotor.setTargetPosition(0);
+                        telemetry.addLine("Stage Prep finished");
+                    }
+                  break;
+                     case 4:
+                  if(secs < runtime.seconds()+20){
+                        specimenClawServo.setPosition(specimenClawClosed);
+                        telemetry.addLine("Stage Pick finished");
+                    }
+                  break;
+                       case 5:
+                  if(secs < runtime.seconds()+25){
+                     viperSlideMotor.setTargetPosition(liftTopBar);
+                        telemetry.addLine("Stage Prep finished");
+                    }
+                  break;
+                      case 6:
+                  if(secs < runtime.seconds()+30){
+                     viperSlideMotor.setTargetPosition(engaged);
+                        telemetry.addLine("Stage Hang finished");
+                    }
+                    else if(secs < runtime.seconds()+35){
+                    specimenClawServo.setPosition("Auto Finished");
+
+                    }
+                  break;
             }
             telemetry.update();
         }
