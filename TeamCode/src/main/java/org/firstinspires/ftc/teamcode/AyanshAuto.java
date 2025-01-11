@@ -30,10 +30,13 @@ public class AyanshAuto extends LinearOpMode {
 
     private Follower follower;
  // x is forward/backward y is left/right heading is the position the robot will face.
-    private Pose startPose = new Pose(0, 0, 0);
-    private Pose nextPose1 = new Pose(25,0, Math.PI);
-    private Pose nextPose2 = new Pose(0,-60, 0);
-    private Pose nextPose3 = new Pose(-21, -54, 0);
+    private Pose startPose = new Pose(63, 24);
+    private Pose preHangSpecimenPose = new Pose(35,0);
+    private Pose hangSpecimenPose = new Pose(33,0);
+    private Pose prePickUpSpecimenPose = new Pose(61,48, Math.PI);
+    private Pose pickUpSpecimenPose = new Pose(63,48, Math.PI);
+    private Pose hangSpecimen2Pose = new Pose(33,2);
+    private Pose nextPose4 = new Pose(-21, -54, 0);
 //    private Pose nextPose4 = new Pose(0, -54, 0);
 
     private int pathIndex = 0;
@@ -111,9 +114,12 @@ public class AyanshAuto extends LinearOpMode {
 
         // Send telemetry message to indicate successful Encoder reset
         telemetry.update();
-        addLine(startPose, nextPose1);
-        addLine(nextPose1, nextPose2);
-        addLine(nextPose2, nextPose1);
+        addLine(startPose, preHangSpecimenPose);
+        addLine(preHangSpecimenPose, hangSpecimenPose);
+        addLine(hangSpecimenPose, prePickUpSpecimenPose);
+        addLine(prePickUpSpecimenPose, pickUpSpecimenPose);
+        addLine(pickUpSpecimenPose, preHangSpecimenPose);
+        addLine(preHangSpecimenPose, hangSpecimenPose);
 
         pathIndex = 0;
         follower.followPath(pathChains.get(pathIndex));
