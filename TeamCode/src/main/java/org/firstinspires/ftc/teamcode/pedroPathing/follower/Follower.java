@@ -349,6 +349,8 @@ public class Follower {
         poseUpdater.resetOffset();
     }
 
+    public void resetCurrentPath() {currentPath = null; }
+
     /**
      * This holds a Point.
      *
