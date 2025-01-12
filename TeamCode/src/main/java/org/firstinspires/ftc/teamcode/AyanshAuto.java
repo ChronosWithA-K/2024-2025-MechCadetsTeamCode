@@ -62,8 +62,7 @@ public class AyanshAuto extends LinearOpMode {
                         new Path(
                                 new BezierLine(
                                         new Point(start),
-                                        new Point(end) // Drive to chamber
-
+                                        new Point(end)
                                 )
                         )
                 )
@@ -92,7 +91,7 @@ public class AyanshAuto extends LinearOpMode {
          * 6 is for april tag 14
          * 7 is for april tag 15
          * 8 is for april tag 16
-         * 9 for all at once
+         * 9 for all april tags (including those not named) at once
          */
 
         extendServo = hardwareMap.get(Servo.class, "extend_servo");
@@ -114,7 +113,12 @@ public class AyanshAuto extends LinearOpMode {
 
         // Send telemetry message to indicate successful Encoder reset
         telemetry.update();
+
         addLine(startPose, preHangSpecimenPose); // origin to pre
+        addLine(preHangSpecimenPose, hangSpecimenPose); // pre to hang
+        addLine(hangSpecimenPose, prePickUpSpecimenPose); // hang to pre
+        addLine(prePickUpSpecimenPose, pickUpSpecimenPose); // pre to pick
+        addLine(pickUpSpecimenPose, preHangSpecimenPose); // pick to  pre
         addLine(preHangSpecimenPose, hangSpecimenPose); // pre to hang
         addLine(hangSpecimenPose, prePickUpSpecimenPose); // hang to pre
         addLine(prePickUpSpecimenPose, pickUpSpecimenPose); // pre to pick
@@ -126,7 +130,7 @@ public class AyanshAuto extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
-        // Declare initial positions for parts
+        // Declare initial positions for parts (OUT OF DATE)
         double extendServoPosition = 0.0;
         double bucketServoPosition = 0.0;
         double intakeServoPosition = 0.0;
@@ -220,6 +224,7 @@ public class AyanshAuto extends LinearOpMode {
 
         while (opModeIsActive()) {
             follower.update();
+
             if (follower.atParametricEnd()) {
                 if (pathIndex < pathChains.size() - 1) {
                     pathIndex++;
@@ -239,13 +244,13 @@ public class AyanshAuto extends LinearOpMode {
                     if (secs < runtime.seconds() + 5) {
                         intakeServo.setPosition(0.8);
                         viperSlideMotor.setTargetPosition(engaged);
-                        telemetry.addLine("Stage Prep finishied");
+                        telemetry.addLine("Stage Prep finished");
                     } else if (secs < runtime.seconds() + 7) {
                         specimenClawServo.setPosition(specimenClawOpen);
                         telemetry.addLine("Stage Hang finished");
                     }
                     break;
-                case 2:
+                case 2: // This is needed, leave it empty and don't delete
 
                 case 3:
                     if (secs < runtime.seconds() + 15) {
@@ -257,6 +262,13 @@ public class AyanshAuto extends LinearOpMode {
                     if (secs < runtime.seconds() + 20) {
                         specimenClawServo.setPosition(specimenClawClosed);
                         telemetry.addLine("Stage Pick finished");
+
+                        // Wait for two seconds
+                        try {
+                            Thread.sleep(2000);
+                        } catch (InterruptedException e) {
+                            Thread.currentThread().interrupt();
+                        }
                     }
                     break;
                 case 5:
