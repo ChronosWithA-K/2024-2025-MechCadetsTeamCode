@@ -116,10 +116,10 @@ public class AyanshAuto extends LinearOpMode {
         telemetry.update();
         addLine(startPose, preHangSpecimenPose); // origin to pre
         addLine(preHangSpecimenPose, hangSpecimenPose); // pre to hang
-//        addLine(hangSpecimenPose, prePickUpSpecimenPose); // hang to pre
-//        addLine(prePickUpSpecimenPose, pickUpSpecimenPose); // pre to pick
-//        addLine(pickUpSpecimenPose, preHangSpecimenPose); // pick to  pre
-//        addLine(preHangSpecimenPose, hangSpecimenPose); // pre to hang
+        addLine(hangSpecimenPose, prePickUpSpecimenPose); // hang to pre
+        addLine(prePickUpSpecimenPose, pickUpSpecimenPose); // pre to pick
+        addLine(pickUpSpecimenPose, preHangSpecimenPose); // pick to  pre
+        addLine(preHangSpecimenPose, hangSpecimenPose); // pre to hang
 
         pathIndex = 0;
         follower.followPath(pathChains.get(pathIndex));
@@ -272,7 +272,7 @@ public class AyanshAuto extends LinearOpMode {
                         telemetry.addLine("Stage Hang finished");
                     }
                     else if(secs < runtime.seconds()+35){
-                    specimenClawServo.setPosition("Auto Finished");
+                    specimenClawServo.setPosition(specimenClawOpen);
 
                     }
                   break;
