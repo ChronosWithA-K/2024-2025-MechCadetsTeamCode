@@ -130,7 +130,7 @@ public class AyanshAuto extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
-        // Declare initial positions for parts (OUT OF DATE)
+        // Declare initial positions for parts
         double extendServoPosition = 0.0;
         double bucketServoPosition = 0.0;
         double intakeServoPosition = 0.0;
@@ -140,14 +140,13 @@ public class AyanshAuto extends LinearOpMode {
 
         int viperSlideMotorPosition = 0;
 
-        // Declare positions for parts to move to
+        // Declare positions for parts to move to (OUT OF DATE)
         int liftDown = 0;
         int liftTopBucket = 6180;
         int liftBottomBucket = 3480;
         int liftTopBar = 2890;
-        int engaged = 2390;
-
         int liftBottomBar = 960;
+        int engaged = 2390;
 
         double bucketDrop = 0.37;
         double bucketLoad = 0.5;
@@ -155,16 +154,16 @@ public class AyanshAuto extends LinearOpMode {
         double extendClosed = 0.0;
         double extendExtended = 1.0;
 
-        double intakeDown = 0.26;
+        double intakeDown = 0.2;
         double intakeUp = 1;
-        double intakeIdle = 0.65;
+        double intakeOutOfWay = 0.3;
 
-        double wristLoad = 0.5;
+        double wristLoad = 0;
         double wristDrop = 1;
         double wristLift = 0.2;
 
-        double sampleClawClosed = 0;
-        double sampleClawOpen = 0.4;
+        double sampleClawClosed = 0.5;
+        double sampleClawOpen = 0;
 
         double specimenClawClosed = 0;
         double specimenClawOpen = 0.5;
