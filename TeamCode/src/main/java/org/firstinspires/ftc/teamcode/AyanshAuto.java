@@ -29,13 +29,13 @@ public class AyanshAuto extends LinearOpMode {
     private Limelight3A limelight;
 
     private Follower follower;
- // x is forward/backward y is left/right heading is the position the robot will face.
+    // x is forward/backward y is left/right heading is the position the robot will face.
     private Pose startPose = new Pose(63, 24);
-    private Pose preHangSpecimenPose = new Pose(35,0);
-    private Pose hangSpecimenPose = new Pose(33,0);
-    private Pose prePickUpSpecimenPose = new Pose(61,48, Math.PI);
-    private Pose pickUpSpecimenPose = new Pose(63,48, Math.PI);
-    private Pose hangSpecimen2Pose = new Pose(33,2);
+    private Pose preHangSpecimenPose = new Pose(35, 0);
+    private Pose hangSpecimenPose = new Pose(33, 0);
+    private Pose prePickUpSpecimenPose = new Pose(61, 48, Math.PI);
+    private Pose pickUpSpecimenPose = new Pose(63, 48, Math.PI);
+    private Pose hangSpecimen2Pose = new Pose(33, 2);
     private Pose nextPose4 = new Pose(-21, -54, 0);
 //    private Pose nextPose4 = new Pose(0, -54, 0);
 
@@ -54,9 +54,9 @@ public class AyanshAuto extends LinearOpMode {
     private Servo wristServo = null;
     private Servo specimenClawServo = null;
 
-    double secs =0;
+    double secs = 0;
 
-    private void addLine(Pose start, Pose end){
+    private void addLine(Pose start, Pose end) {
         pathChains.add(follower.pathBuilder()
                 .addPath(
                         new Path(
@@ -218,64 +218,62 @@ public class AyanshAuto extends LinearOpMode {
             telemetry.addData("Limelight", "No data available");
         }
 
-        while(opModeIsActive()) {
+        while (opModeIsActive()) {
             follower.update();
-            if (follower.atParametricEnd()){
-                if (pathIndex < pathChains.size() - 1){
+            if (follower.atParametricEnd()) {
+                if (pathIndex < pathChains.size() - 1) {
                     pathIndex++;
                     waitTime += 1;
                     follower.followPath(pathChains.get(pathIndex));
                 }
             }
-            switch (pathIndex){
+            switch (pathIndex) {
                 case 0:
-                   secs = runtime.seconds();
-                  specimenClawServo.setPosition(specimenClawClosed);
-                 viperSlideMotor.setTargetPosition(liftTopBar);
-                 bucketServo.setPosition(liftTopBucket);
-                  telemetry.addLine("Stage Initiation Finished");
-                  break;
-               case 1:
-                   if(secs < runtime.seconds()+5){
-                       intakeServo.setPosition(0.8);
-                       viperSlideMotor.setTargetPosition(engaged);
-                      telemetry.addLine("Stage Prep finishied");
-                    }
-                   else if(secs < runtime.seconds()+7){
+                    secs = runtime.seconds();
+                    specimenClawServo.setPosition(specimenClawClosed);
+                    viperSlideMotor.setTargetPosition(liftTopBar);
+                    bucketServo.setPosition(liftTopBucket);
+                    telemetry.addLine("Stage Initiation Finished");
+                    break;
+                case 1:
+                    if (secs < runtime.seconds() + 5) {
+                        intakeServo.setPosition(0.8);
+                        viperSlideMotor.setTargetPosition(engaged);
+                        telemetry.addLine("Stage Prep finishied");
+                    } else if (secs < runtime.seconds() + 7) {
                         specimenClawServo.setPosition(specimenClawOpen);
                         telemetry.addLine("Stage Hang finished");
-                  }
-                   break;
+                    }
+                    break;
                 case 2:
 
                 case 3:
-                  if(secs < runtime.seconds()+15){
+                    if (secs < runtime.seconds() + 15) {
                         viperSlideMotor.setTargetPosition(0);
                         telemetry.addLine("Stage Prep finished");
                     }
-                  break;
-                     case 4:
-                  if(secs < runtime.seconds()+20){
+                    break;
+                case 4:
+                    if (secs < runtime.seconds() + 20) {
                         specimenClawServo.setPosition(specimenClawClosed);
                         telemetry.addLine("Stage Pick finished");
                     }
-                  break;
-                       case 5:
-                  if(secs < runtime.seconds()+25){
-                     viperSlideMotor.setTargetPosition(liftTopBar);
+                    break;
+                case 5:
+                    if (secs < runtime.seconds() + 25) {
+                        viperSlideMotor.setTargetPosition(liftTopBar);
                         telemetry.addLine("Stage Prep finished");
                     }
-                  break;
-                      case 6:
-                  if(secs < runtime.seconds()+30){
-                     viperSlideMotor.setTargetPosition(engaged);
+                    break;
+                case 6:
+                    if (secs < runtime.seconds() + 30) {
+                        viperSlideMotor.setTargetPosition(engaged);
                         telemetry.addLine("Stage Hang finished");
-                    }
-                    else if(secs < runtime.seconds()+35){
-                    specimenClawServo.setPosition(specimenClawOpen);
+                    } else if (secs < runtime.seconds() + 35) {
+                        specimenClawServo.setPosition(specimenClawOpen);
 
                     }
-                  break;
+                    break;
             }
             telemetry.update();
         }
