@@ -23,8 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Config
-@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "AyanshAuto", group = "Test")
-public class AyanshAuto extends LinearOpMode {
+@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "Autonomous", group = "Test")
+public class Autonomous extends LinearOpMode {
 
     private IMU imu = null;
 
