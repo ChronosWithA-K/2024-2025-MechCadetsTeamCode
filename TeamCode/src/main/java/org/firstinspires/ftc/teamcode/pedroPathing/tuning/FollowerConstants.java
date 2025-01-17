@@ -23,15 +23,15 @@ import org.firstinspires.ftc.teamcode.pedroPathing.util.KalmanFilterParameters;
 public class FollowerConstants {
 
     // This section is for configuring your motors
-    public static String leftFrontMotorName = "left_front";
-    public static String leftRearMotorName = "left_back";
-    public static String rightFrontMotorName = "right_front";
-    public static String rightRearMotorName = "right_back";
+    public static String leftFrontMotorName = common.Config.LEFT_FRONT;
+    public static String leftRearMotorName = common.Config.LEFT_BACK;
+    public static String rightFrontMotorName = common.Config.RIGHT_FRONT;
+    public static String rightRearMotorName = common.Config.RIGHT_BACK;
 
     // This section is for setting the actual drive vector for the front left wheel, if the robot
     // is facing a heading of 0 radians with the wheel centered at (0,0)
-    private static double xMovement = 81.34056;
-    private static double yMovement = 65.43028;
+    private static double xMovement = 70.3514;
+    private static double yMovement = 60.0329;
     private static double[] convertToPolar = Point.cartesianToPolar(xMovement, -yMovement);
     public static Vector frontLeftVector = MathFunctions.normalizeVector(new Vector(convertToPolar[0],convertToPolar[1]));
 
@@ -67,9 +67,9 @@ public class FollowerConstants {
 
     // Drive PIDF coefficients
     public static CustomFilteredPIDFCoefficients drivePIDFCoefficients = new CustomFilteredPIDFCoefficients(
-            0.025,
+            0.005,
             0,
-            0.00001,
+            0.0001,
             0.6,
             0);
 
@@ -91,11 +91,11 @@ public class FollowerConstants {
 
     // Acceleration of the drivetrain when power is cut in inches/second^2 (should be negative)
     // if not negative, then the robot thinks that its going to go faster under 0 power
-    public static double forwardZeroPowerAcceleration = -34.62719;
+    public static double forwardZeroPowerAcceleration = -38;
 
     // Acceleration of the drivetrain when power is cut in inches/second^2 (should be negative)
     // if not negative, then the robot thinks that its going to go faster under 0 power
-    public static double lateralZeroPowerAcceleration = -78.15554;
+    public static double lateralZeroPowerAcceleration = -800;
 
     // A multiplier for the zero power acceleration to change the speed the robot decelerates at
     // the end of paths.

@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.LLStatus;
@@ -7,6 +8,7 @@ import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
@@ -14,68 +16,72 @@ import org.firstinspires.ftc.teamcode.pedroPathing.follower.Follower;
 import org.firstinspires.ftc.teamcode.pedroPathing.localization.Pose;
 import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.BezierLine;
 import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.Path;
+import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.PathChain;
 import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.Point;
 
+import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Plans for autonomous:
- * place specimen on bar
- * grab sample
- * sample in bucket
- * grab sample
- * sample in pucket
- * park
- */
-
-/**
- * Pedro pathing coordinate system: bottom left is (0, 0) top right is (144, 144) (inches)
- */
-
-@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "Robot: Auto Encoder Test", group = "Test")
+@Config
+@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "Autonomous", group = "Test")
 public class Autonomous extends LinearOpMode {
-
-    /* Declare OpMode members. */
-    private DcMotor leftFrontDrive = null;
-    private DcMotor leftBackDrive = null;
-    private DcMotor rightFrontDrive = null;
-    private DcMotor rightBackDrive = null;
 
     private IMU imu = null;
 
     private Limelight3A limelight;
 
     private Follower follower;
+    // x is forward/backward y is left/right heading is the position the robot will face.
+    private Pose startPose = new Pose(63, 24);
+    private Pose preHangSpecimenPose = new Pose(35, 0);
+    private Pose hangSpecimenPose = new Pose(31, 0);
+    private Pose prePickUpSpecimenPose = new Pose(63, 48, Math.PI);
+    private Pose pickUpSpecimenPose = new Pose(63, 48, Math.PI);
+    private Pose hangSpecimen2Pose = new Pose(33, -2);
+    private Pose hangSpecimen3Pose = new Pose(33, 0);
 
-    private Pose startPose = new Pose(96, 12, 90);
-    private Pose faceHuman = new Pose();
+    private int pathIndex = 0;
+    private ArrayList<PathChain> pathChains = new ArrayList<PathChain>();
 
     private ElapsedTime runtime = new ElapsedTime();
+    private double waitTime = 0;
 
-    // Calculate the COUNTS_PER_INCH for your specific drive train.
-    // Go to your motor vendor website to determine your motor's COUNTS_PER_MOTOR_REV
-    // For external drive gearing, set DRIVE_GEAR_REDUCTION as needed.
-    // For example, use a value of 2.0 for a 12-tooth spur gear driving a 24-tooth spur gear.
-    // This is gearing DOWN for less speed and more torque.
-    // For gearing UP, use a gear ratio less than 1.0. Note this will affect the direction of wheel rotation.
-    static final double COUNTS_PER_MOTOR_REV = 435;
-    static final double DRIVE_GEAR_REDUCTION = 1.0;     // No External Gearing.
-    static final double WHEEL_DIAMETER_INCHES = 4.09449; // For figuring circumference
-    static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * 3.1415);
-    static final double DRIVE_SPEED = 0.6;
-    static final double TURN_SPEED = 0.5;
+    private DcMotor viperSlideMotor = null;
+
+    private Servo extendServo = null;
+    private Servo bucketServo = null;
+    private Servo intakeServo = null;
+    private Servo sampleClawServo = null;
+    private Servo wristServo = null;
+    private Servo specimenClawServo = null;
+
+    public static double hangDelay = 0.5;
+    public static double hangDelay2 = 0.5;
+
+
+    private void addLine(Pose start, Pose end) {
+        pathChains.add(follower.pathBuilder()
+                .addPath(
+                        new Path(
+                                new BezierLine(
+                                        new Point(start),
+                                        new Point(end) // Drive to chamber
+
+                                )
+                        )
+                )
+                .setLinearHeadingInterpolation(start.getHeading(), end.getHeading())
+                .build());
+    }
+
 
     @Override
     public void runOpMode() {
-
         follower = new Follower(hardwareMap);
         follower.setStartingPose(startPose);
+        follower.setMaxPower(0.5);
 
-        // Initialize the drive system variables.
-        leftFrontDrive = hardwareMap.get(DcMotor.class, "left_front");
-        leftBackDrive = hardwareMap.get(DcMotor.class, "left_back");
-        rightFrontDrive = hardwareMap.get(DcMotor.class, "right_front");
-        rightBackDrive = hardwareMap.get(DcMotor.class, "right_back");
+        viperSlideMotor = hardwareMap.get(DcMotor.class, "viper_slide_motor");
 
         imu = hardwareMap.get(IMU.class, "imu");
 
@@ -93,34 +99,75 @@ public class Autonomous extends LinearOpMode {
          * 9 for all at once
          */
 
-        // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
-        // When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.
-        // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips
-        leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
-        leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
-        rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
-        rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
+        extendServo = hardwareMap.get(Servo.class, "extend_servo");
+        bucketServo = hardwareMap.get(Servo.class, "bucket_servo");
+        intakeServo = hardwareMap.get(Servo.class, "intake_servo");
+        sampleClawServo = hardwareMap.get(Servo.class, "sample_claw_servo");
+        wristServo = hardwareMap.get(Servo.class, "wrist_servo");
+        specimenClawServo = hardwareMap.get(Servo.class, "specimen_claw_servo");
 
-        leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        leftFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        leftBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        viperSlideMotor.setTargetPosition(0);
+        viperSlideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        viperSlideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        viperSlideMotor.setPower(1);
+        viperSlideMotor.setDirection(DcMotor.Direction.REVERSE);
 
         // Start the limelight polling for data (getLatestResult() will return null without this)
         limelight.start();
         limelight.pipelineSwitch(9);
 
         // Send telemetry message to indicate successful Encoder reset
-        telemetry.addData("Starting at", "%7d :%7d", leftFrontDrive.getCurrentPosition(), leftBackDrive.getCurrentPosition(), rightFrontDrive.getCurrentPosition(), rightBackDrive.getCurrentPosition());
         telemetry.update();
+        addLine(startPose, preHangSpecimenPose); // origin to pre
+        addLine(preHangSpecimenPose, hangSpecimenPose); // pre to hang
+        addLine(hangSpecimenPose, prePickUpSpecimenPose); // hang to pre
+        addLine(prePickUpSpecimenPose, pickUpSpecimenPose); // pre to pick
+        addLine(pickUpSpecimenPose, preHangSpecimenPose); // pick to  pre
+        addLine(preHangSpecimenPose, hangSpecimen2Pose); // pre to hang
 
-        // Wait for the game to start (driver presses PLAY)
+        pathIndex = 0;
+        follower.followPath(pathChains.get(pathIndex));
         waitForStart();
+        runtime.reset();
+
+        // Declare initial positions for parts
+        double extendServoPosition = 0.0;
+        double bucketServoPosition = 0.0;
+        double intakeServoPosition = 0.0;
+        double sampleClawServoPosition = 0.0;
+        double wristServoPosition = 0.0;
+        double specimenClawServoPosition = 0.0;
+
+        int viperSlideMotorPosition = 0;
+
+        // Declare positions for parts to move to
+        int liftDown = 0;
+        int liftTopBucket = 6180;
+        int liftBottomBucket = 3480;
+        int liftTopBar = 2890;
+        int engaged = 1900;
+
+        int liftBottomBar = 960;
+
+        double bucketDrop = 0.37;
+        double bucketLoad = 0.5;
+
+        double extendClosed = 0.0;
+        double extendExtended = 1.0;
+
+        double intakeDown = 0.26;
+        double intakeUp = 1;
+        double intakeIdle = 0.65;
+
+        double wristLoad = 0.5;
+        double wristDrop = 1;
+        double wristLift = 0.2;
+
+        double sampleClawClosed = 0;
+        double sampleClawOpen = 0.4;
+
+        double specimenClawClosed = 0;
+        double specimenClawOpen = 0.5;
 
         LLStatus limelightStatus = limelight.getStatus();
         telemetry.addData("Pipeline", "Index: %d, Type: %s", limelightStatus.getPipelineIndex(), limelightStatus.getPipelineType());
@@ -174,134 +221,78 @@ public class Autonomous extends LinearOpMode {
         } else {
             telemetry.addData("Limelight", "No data available");
         }
-        telemetry.update();
+        double currentStageStartTime = runtime.seconds();
         while (opModeIsActive()) {
-//            follower.followPath(follower.pathBuilder()
-//                    .addPath(
-//                            new Path(
-//                                    new BezierLine(
-//                                            new Point(startPose),
-//                                            new Point(, , Point.CARTESIAN) // Drive in front of scoring bar
-//                                    )
-//                            )
-//                    )
-//            .build());
-//            // Place specimen on top scoring bar
-//            follower.followPath(follower.pathBuilder()
-//                    .addPath(
-//                            new Path(
-//                                    new BezierLine(
-//                                            new Point(, , Point.CARTESIAN),
-//                                            new Point(, , Point.CARTESIAN) // Drive to closest sample
-//                                    )
-//                            )
-//                    )
-//            .build());
-//            // Pick up sample
-//            follower.followPath(follower.pathBuilder()
-//                    .addPath(
-//                            new Path(
-//                                    new BezierLine(
-//                                            new Point(, , Point.CARTESIAN),
-//                                            new Point(, , Point.CARTESIAN) // Drive to bucket
-//                                    )
-//                            )
-//                    )
-//            .build());
-//            // Place in bucket
-//            follower.followPath(follower.pathBuilder()
-//                    .addPath(
-//                            new Path(
-//                                    new BezierLine(
-//                                            new Point(, , Point.CARTESIAN),
-//                                            new Point(, , Point.CARTESIAN) // Drive in front of scoring bar
-//                                    )
-//                            )
-//                    )
-//            .build());
-//            // Place specimen on top scoring bar
-//            follower.update();
-        }
-
-        // Step through each leg of the path
-        // Note: Reverse movement is obtained by setting a negative distance (not speed)
-//        encoderDrive(DRIVE_SPEED,  10,  10, 10, 10, 10); // S1: Forward 10 Inches with 10 Sec timeout
-//        encoderDrive(TURN_SPEED,   12, 12, -12, -12, 10); // S2: Turn Right 12 Inches with 10 Sec timeout
-//        encoderDrive(DRIVE_SPEED, -10, -10, -10, -10, 10); // S3: Reverse 10 Inches with 10 Sec timeout
-
-
-        telemetry.addData("Path", "Complete");
-        telemetry.update();
-        sleep(1000); // Pause to display final telemetry message.
-    }
-
-    /*
-     *  Method to perform a relative move, based on encoder counts.
-     *  Encoders are not reset as the move is based on the current position.
-     *  Move will stop if any of three conditions occur:
-     *  1) Move gets to the desired position
-     *  2) Move runs out of time - timeoutS param is the time the robot has to drive a leg
-     *  3) Driver stops the OpMode running.
-     */
-    public void encoderDrive(double speed, double leftFrontInches, double leftBackInches, double rightFrontInches, double rightBackInches, double timeoutS) {
-        int newLeftFrontTarget;
-        int newLeftBackTarget;
-        int newRightFrontTarget;
-        int newRightBackTarget;
-
-        // Ensure that the OpMode is still active
-        if (opModeIsActive()) {
-
-            // Determine new target position, and pass to motor controller
-            newLeftFrontTarget = leftFrontDrive.getCurrentPosition() + (int) (leftFrontInches * COUNTS_PER_INCH);
-            newLeftBackTarget = leftBackDrive.getCurrentPosition() + (int) (leftBackInches * COUNTS_PER_INCH);
-            newRightFrontTarget = rightFrontDrive.getCurrentPosition() + (int) (rightFrontInches * COUNTS_PER_INCH);
-            newRightBackTarget = rightBackDrive.getCurrentPosition() + (int) (rightBackInches * COUNTS_PER_INCH);
-            leftFrontDrive.setTargetPosition(newLeftFrontTarget);
-            leftBackDrive.setTargetPosition(newLeftBackTarget);
-            rightFrontDrive.setTargetPosition(newRightFrontTarget);
-            rightBackDrive.setTargetPosition(newRightBackTarget);
-
-            // Turn On RUN_TO_POSITION
-            leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            leftBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            rightFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-            // reset the timeout time and start motion.
-            runtime.reset();
-            leftFrontDrive.setPower(Math.abs(speed));
-            leftBackDrive.setPower(Math.abs(speed));
-            rightFrontDrive.setPower(Math.abs(speed));
-            rightBackDrive.setPower(Math.abs(speed));
-
-            // keep looping while we are still active, and there is time left, and both motors are running.
-            // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
-            // its target position, the motion will stop.  This is "safer" in the event that the robot will
-            // always end the motion as soon as possible.
-            // However, if you require that BOTH motors have finished their moves before the robot continues
-            // onto the next step, use (isBusy() || isBusy()) in the loop test.
-            while (opModeIsActive() && (runtime.seconds() < timeoutS) && (leftFrontDrive.isBusy() && leftBackDrive.isBusy() && rightFrontDrive.isBusy() && rightBackDrive.isBusy())) {
-
-                // Display it for the driver.
-                telemetry.addData("Running to", " %7d :%7d", newLeftFrontTarget, newLeftBackTarget, newRightFrontTarget, newRightBackTarget);
-                telemetry.addData("Currently at", " at %7d :%7d", leftFrontDrive.getCurrentPosition(), leftBackDrive.getCurrentPosition(), rightFrontDrive.getCurrentPosition(), rightBackDrive.getCurrentPosition());
-                telemetry.update();
+            follower.update();
+            if (follower.getCurrentPath() != null && follower.atParametricEnd()) {
+                if (pathIndex < pathChains.size() - 1) {
+                    pathIndex++;
+                    currentStageStartTime = runtime.seconds();
+                    waitTime += 1;
+                    follower.resetCurrentPath();
+                }
             }
+            telemetry.addData("currentStageStartTime : ", currentStageStartTime);
+            telemetry.addData("runtime.seconds() : ", runtime.seconds());
+            switch (pathIndex) {
+                case 0:
+                    specimenClawServo.setPosition(specimenClawClosed);
+                    viperSlideMotor.setTargetPosition(liftTopBar);
+                    bucketServo.setPosition(liftTopBucket);
+                    intakeServo.setPosition(0.8);
+                    telemetry.addLine("Stage Initiation Finished");
+                    if (follower.getCurrentPath() == null) {
+                        follower.followPath(pathChains.get(pathIndex));
+                    }
+                    break;
+                case 1:
+                    if (follower.getCurrentPath() == null) {
+                        follower.followPath(pathChains.get(pathIndex));
+                    }
+                    break;
+                case 2:
+                    if (currentStageStartTime > runtime.seconds() - hangDelay) {
+                        viperSlideMotor.setTargetPosition(engaged);
+                        telemetry.addLine("Stage Prep finished");
+                        telemetry.addData("runtime.seconds() + hangDelay", runtime.seconds() - hangDelay);
+                    } else {
+                        specimenClawServo.setPosition(specimenClawOpen);
+                        viperSlideMotor.setTargetPosition(0);
+                        telemetry.addLine("Stage Hang and 3 finished");
+                        if (follower.getCurrentPath() == null) {
+                            follower.followPath(pathChains.get(pathIndex));
+                        }
+                    }
+                    break;
+                case 3:
 
-            // Stop all motion;
-            leftFrontDrive.setPower(0);
-            leftBackDrive.setPower(0);
-            rightFrontDrive.setPower(0);
-            rightBackDrive.setPower(0);
-
-            // Turn off RUN_TO_POSITION
-            leftFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            leftBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            rightFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            rightBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-            sleep(250);   // optional pause after each move.
+                case 4:
+                    specimenClawServo.setPosition(specimenClawClosed);
+                    telemetry.addLine("Stage Pick finished");
+                    if (follower.getCurrentPath() == null) {
+                        follower.followPath(pathChains.get(pathIndex));
+                    }
+                    break;
+                case 5:
+                    viperSlideMotor.setTargetPosition(liftTopBar);
+                    telemetry.addLine("Stage 5 finished");
+                    if (follower.getCurrentPath() == null) {
+                        follower.followPath(pathChains.get(pathIndex));
+                    }
+                    break;
+                case 6:
+                    if (currentStageStartTime < runtime.seconds() + 2) {
+                        viperSlideMotor.setTargetPosition(engaged);
+                        telemetry.addLine("Stage Hang finished");
+                    } else {
+                        specimenClawServo.setPosition(specimenClawOpen);
+                        if (follower.getCurrentPath() == null) {
+                            follower.followPath(pathChains.get(pathIndex));
+                        }
+                    }
+                    break;
+            }
+            telemetry.update();
         }
     }
 }
