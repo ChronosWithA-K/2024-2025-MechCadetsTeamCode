@@ -296,7 +296,7 @@ public class AutoNew extends LinearOpMode {
 
                     break;
                 case 7:
-                    if (currentStageStartTime > runtime.seconds() + hangDelay) {
+                    if (currentStageStartTime > runtime.seconds() - hangDelay) {
                         viperSlideMotor.setTargetPosition(engaged);
                         telemetry.addLine("Stage Hang2 finished");
                     } else {

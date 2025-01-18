@@ -179,10 +179,6 @@ public class CustomHolonomicDrive extends LinearOpMode {
                     rightHangingServoPosition = rightHangingServoUp;
                     hangingMotorPosition = hangingMotorIn;
 
-//                    if (runtime.seconds() > closedTime + 0.25) {
-//                        specimenClawServoPosition = specimenClawOpen;
-//                    }
-
                     if (a) {
                         state = State.EXTENDED;
                         wristTime = runtime.seconds();
@@ -196,19 +192,18 @@ public class CustomHolonomicDrive extends LinearOpMode {
                     }
                     break;
                 case EXTENDED:
-                    if (runtime.seconds() > wristTime + 0.25) {
+                    if (runtime.seconds() > wristTime + 0.5) {
+                        viperSlideMotorPosition = liftDown;
+                        bucketServoPosition = bucketLoad;
+                        extendServoPosition = extendExtended;
+                        intakeServoPosition = intakeDown;
                         sampleClawServoPosition = sampleClawOpen;
+                        specimenClawServoPosition = specimenClawClosed;
+                        leftHangingServoPosition = leftHangingServoUp;
+                        rightHangingServoPosition = rightHangingServoUp;
+                        hangingMotorPosition = hangingMotorIn;
                     }
-                    viperSlideMotorPosition = liftDown;
-                    bucketServoPosition = bucketLoad;
-                    extendServoPosition = extendExtended;
-                    intakeServoPosition = intakeDown;
                     wristServoPosition = wristLoad;
-                    sampleClawServoPosition = sampleClawOpen;
-                    specimenClawServoPosition = specimenClawClosed;
-                    leftHangingServoPosition = leftHangingServoUp;
-                    rightHangingServoPosition = rightHangingServoUp;
-                    hangingMotorPosition = hangingMotorIn;
 
                     if (a) {
                         state = State.GRABBED;
