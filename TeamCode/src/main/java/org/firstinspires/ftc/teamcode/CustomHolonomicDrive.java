@@ -130,8 +130,8 @@ public class CustomHolonomicDrive extends LinearOpMode {
 
         double intakeDown = 0.15;
         double intakeUp = 1;
-        double intakeStale = 0.8;
-        double intakeOutOfWay = 0.3;
+        double intakeStale = 0.3;
+        double intakeOutOfWay = 0.5;
 
         double wristLoad = 0;
         double wristDrop = 1;
@@ -190,8 +190,12 @@ public class CustomHolonomicDrive extends LinearOpMode {
                         wristTime = runtime.seconds();
                     } else if (y) {
                         state = State.PLACE_SPECIMEN_HIGH_BAR;
+                        safeTime=runtime.seconds();
                     } else if (x) {
                         state = State.PLACE_SPECIMEN_LOW_BAR;
+                        safeTime=runtime.seconds();
+
+
                     } else if (dpadUp) {
                         state = State.HANGING_ARMS_OUT;
                         hangingTime = runtime.seconds();
@@ -203,7 +207,6 @@ public class CustomHolonomicDrive extends LinearOpMode {
                         bucketServoPosition = bucketLoad;
                         extendServoPosition = extendExtended;
                         intakeServoPosition = intakeDown;
-                        wristServoPosition = wristLoad;
                         sampleClawServoPosition = sampleClawOpen;
                         specimenClawServoPosition = specimenClawClosed;
                         leftHangingServoPosition = leftHangingServoUp;
@@ -219,16 +222,19 @@ public class CustomHolonomicDrive extends LinearOpMode {
                     }
                     break;
                 case PLACE_SPECIMEN_HIGH_BAR:
-                    viperSlideMotorPosition = liftTopBar;
-                    bucketServoPosition = bucketLoad;
-                    extendServoPosition = extendClosed;
-                    intakeServoPosition = intakeStale;
+                    if (runtime.seconds() > safeTime+0.5) {
+                        viperSlideMotorPosition = liftTopBar;
+                        bucketServoPosition = bucketLoad;
+                        extendServoPosition = extendClosed;
+                        sampleClawServoPosition = sampleClawClosed;
+                        specimenClawServoPosition = specimenClawOpen;
+                        leftHangingServoPosition = leftHangingServoUp;
+                        rightHangingServoPosition = rightHangingServoUp;
+                        hangingMotorPosition = hangingMotorIn;
+                    }
+                    intakeServoPosition = intakeOutOfWay;
                     wristServoPosition = wristLoad;
-                    sampleClawServoPosition = sampleClawClosed;
-                    specimenClawServoPosition = specimenClawClosed;
-                    leftHangingServoPosition = leftHangingServoUp;
-                    rightHangingServoPosition = rightHangingServoUp;
-                    hangingMotorPosition = hangingMotorIn;
+
 
                     if (a || b) {
                         state = State.IDLE;
@@ -236,17 +242,19 @@ public class CustomHolonomicDrive extends LinearOpMode {
                     }
                     break;
                 case PLACE_SPECIMEN_LOW_BAR:
-                    if (runtime.seconds() > safeTime + 2.5) {
+                    if (runtime.seconds() > safeTime + 0.5) {
                         viperSlideMotorPosition = liftBottomBar;
                         bucketServoPosition = bucketLoad;
                         extendServoPosition = extendClosed;
                         sampleClawServoPosition = sampleClawClosed;
-                        specimenClawServoPosition = specimenClawClosed;
+                        specimenClawServoPosition = specimenClawOpen;
                         leftHangingServoPosition = leftHangingServoUp;
                         rightHangingServoPosition = rightHangingServoUp;
                         hangingMotorPosition = hangingMotorIn;
                     }
                     wristServoPosition = wristLoad;
+                    intakeServoPosition = intakeOutOfWay;
+
 
                     if (a || b) {
                         state = State.IDLE;
