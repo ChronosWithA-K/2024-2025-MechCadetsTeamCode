@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Config
-@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "AyanshAuto", group = "Test")
+@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "NewAuto", group = "Test")
 public class AutoNew extends LinearOpMode {
 
     private IMU imu = null;
@@ -43,8 +43,8 @@ public class AutoNew extends LinearOpMode {
     private Pose hangSpecimen3Pose = new Pose(31.39, -3);
 
 
-    private Pose prePickUpSpecimenPosept1 = new Pose(55, 0, 0);
-    private Pose prePickUpSpecimenPosept2 = new Pose(55, 48, Math.PI / 2);
+    private Pose prePickUpSpecimenPosept1 = new Pose(40, 0, 0);
+    private Pose prePickUpSpecimenPosept2 = new Pose(40, 48, Math.PI );
     private Pose pickUpSpecimenPose = new Pose(63, 48, Math.PI);
 
     private Pose pushblockpt1 = new Pose(57, 36);
@@ -137,14 +137,14 @@ public class AutoNew extends LinearOpMode {
         addLine(prePickUpSpecimenPosept2, pickUpSpecimenPose); // pre to pick case5
         addLine(pickUpSpecimenPose, preHangSpecimenPose2); // pick to  pre case6
         addLine(preHangSpecimenPose2, hangSpecimen2Pose); // pre to hang2 case7
-//        addLine(hangSpecimen2Pose,pushblockpt1); // hang to pt1 case8
-//        addLine(pushblockpt1, pushblockpt2); // pt1 to pt2 case9
-//        addLine(pushblockpt2, pushblockpt3); // pt2 to pt3 case10
-//        addLine(pushblockpt3,pushblockdone); // pt3 to deliver case11
-//        addLine(pushblockdone,retreat); // deliver to retreat case12
-//        addLine(retreat,pickUpSpecimenPose); // retreat to pick case13
-//        addLine(pickUpSpecimenPose,preHangSpecimenPose3); // pick to pre case14
-//        addLine(preHangSpecimenPose3,hangSpecimen3Pose); // pre to hang3 case15
+        addLine(hangSpecimen2Pose,pushblockpt1); // hang to pt1 case8
+        addLine(pushblockpt1, pushblockpt2); // pt1 to pt2 case9
+        addLine(pushblockpt2, pushblockpt3); // pt2 to pt3 case10
+        addLine(pushblockpt3,pushblockdone); // pt3 to deliver case11
+        addLine(pushblockdone,retreat); // deliver to retreat case12
+        addLine(retreat,pickUpSpecimenPose); // retreat to pick case13
+        addLine(pickUpSpecimenPose,preHangSpecimenPose3); // pick to pre case14
+        addLine(preHangSpecimenPose3,hangSpecimen3Pose); // pre to hang3 case15
 
 
         pathIndex = 0;
@@ -155,7 +155,7 @@ public class AutoNew extends LinearOpMode {
         // Declare positions for parts to move to
         int liftTopBucket = 6180;
         int liftTopBar = 2890;
-        int engaged = 1840;
+        int engaged = 1800;
 
 
         double specimenClawClosed = 0;
@@ -230,8 +230,8 @@ public class AutoNew extends LinearOpMode {
                     specimenClawServo.setPosition(specimenClawClosed);
                     viperSlideMotor.setTargetPosition(liftTopBar);
                     bucketServo.setPosition(liftTopBucket);
-                    intakeServo.setPosition(0.6);
-                    wristServo.setPosition(0.3);
+                    wristServo.setPosition(0);
+                    intakeServo.setPosition(0.5);
                     telemetry.addLine("Stage Initiation Finished");
                     if (follower.getCurrentPath() == null) {
                         follower.followPath(pathChains.get(pathIndex));
@@ -296,7 +296,7 @@ public class AutoNew extends LinearOpMode {
 
                     break;
                 case 7:
-                    if (currentStageStartTime < runtime.seconds() + hangDelay) {
+                    if (currentStageStartTime > runtime.seconds() + hangDelay) {
                         viperSlideMotor.setTargetPosition(engaged);
                         telemetry.addLine("Stage Hang2 finished");
                     } else {
