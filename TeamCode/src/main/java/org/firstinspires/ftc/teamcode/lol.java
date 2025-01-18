@@ -23,8 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Config
-@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "NewAuto", group = "Test")
-public class AutoNew extends LinearOpMode {
+@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "LOL", group = "Test")
+public class lol extends LinearOpMode {
 
     private IMU imu = null;
 
@@ -38,7 +38,7 @@ public class AutoNew extends LinearOpMode {
 
 
     private Pose hangSpadbecimenPose = new Pose(31.9, 0);
-    private Pose hangSpecimen2Pose = new Pose(32.39, 0);
+    private Pose hangSpecimen2Pose = new Pose(33.39, 0);
     private Pose hangSpecimen3Pose = new Pose(31.39, -3);
 
 
@@ -49,6 +49,8 @@ public class AutoNew extends LinearOpMode {
 
     private Pose pushblockpt2 = new Pose(12, 36);
     private Pose pushblockpt3 = new Pose(12, 54, 0);
+    private Pose pushblockpt4 = new Pose(12, 55, 0);
+
     private Pose pushblockdone = new Pose(61, 55, Math.PI / 2);
     private Pose retreat = new Pose(40, 55, Math.PI);
 
@@ -132,18 +134,23 @@ public class AutoNew extends LinearOpMode {
         telemetry.update();
         addLine(startPose, preHangSpecimenPose); // origin to pre   case1
         addLine(preHangSpecimenPose, hangSpecimen2Pose); // pre to hang case2
-        addLine(hangSpecimen2Pose, pickUpSpecimenPose); // hang to pre1 case3
-//        addLine(pushblockpt12, pushblockpt1); // hang to pre1 case3
-//
-//        addLine(pushblockpt1, pushblockpt2); // pt1 to pt2 case5
-//        addLine(pushblockpt2, pushblockpt3); // pt2 to pt3 case6
-//        addLine(pushblockpt3,pushblockdone); // pt3 to deliver case7
-//        addLine(pushblockdone,retreat); // deliver to retreat case8
-//        addLine(retreat,pickUpSpecimenPose); // retreat to pick case9
-//        addLine(pickUpSpecimenPose,preHangSpecimenPose3); // pick to pre case10
-//        addLine(preHangSpecimenPose3,hangSpecimen3Pose); // pre to hang3 case11
-//        addLine(hangSpecimen3Pose,pickUpSpecimenPose); // pre to hang3 case12
-
+        addLine(hangSpecimen2Pose, pushblockpt12); // hang to pre1 case3
+        addLine(pushblockpt12, pushblockpt1); // hang to pre1 case4
+        addLine(pushblockpt1, pushblockpt2); // pt1 to pt2 case5
+        addLine(pushblockpt2, pushblockpt3); // pt2 to pt3 case6
+        addLine(pushblockpt3,pushblockdone); // pt3 to deliver case7
+        addLine(pushblockdone,retreat); // deliver to retreat case8
+        addLine(retreat,pickUpSpecimenPose); // retreat to pick case9
+        addLine(pickUpSpecimenPose,preHangSpecimenPose3); // pick to pre case10
+        addLine(preHangSpecimenPose3,hangSpecimen3Pose); // pre to hang3 case11
+        addLine(hangSpecimen3Pose,pushblockpt12); // pre to hang3 case12
+        addLine(pushblockpt1, pushblockpt2); // pt1 to pt2 case13
+        addLine(pushblockpt2, pushblockpt4); // pt2 to pt3 case14
+        addLine(pushblockpt4,pushblockdone); // pt3 to deliver case15
+        addLine(pushblockdone,retreat); // deliver to retreat case16
+        addLine(retreat,pickUpSpecimenPose); // retreat to pick case17
+        addLine(pickUpSpecimenPose,preHangSpecimenPose); // pick to pre case18
+        addLine(preHangSpecimenPose3,hangSpecimen3Pose); // pre to hang3 case19
 
 
 
@@ -270,48 +277,44 @@ public class AutoNew extends LinearOpMode {
                     }
                     break;
                 case 4 :
-                    intakeServo.setPosition(0.5);
-                    viperSlideMotor.setTargetPosition(0);
                     if (follower.getCurrentPath() == null) {
                         follower.followPath(pathChains.get(pathIndex));
                     }
                 case 5:
-                    intakeServo.setPosition(0.5);
-                    viperSlideMotor.setTargetPosition(0);
+                case 12:
                     if (follower.getCurrentPath() == null) {
                         follower.followPath(pathChains.get(pathIndex));
                     }
                 case 6 :
-                    intakeServo.setPosition(0.5);
-                    viperSlideMotor.setTargetPosition(0);
+                    case 13:
                     if (follower.getCurrentPath() == null) {
                         follower.followPath(pathChains.get(pathIndex));
                     }
                 case 7:
-                    intakeServo.setPosition(0.5);
-                    viperSlideMotor.setTargetPosition(0);
+                case 14:
                     if (follower.getCurrentPath() == null) {
                         follower.followPath(pathChains.get(pathIndex));
                     }
                 case 8:
-                    intakeServo.setPosition(0.5);
-                    viperSlideMotor.setTargetPosition(0);
+                case 15:
                     if (follower.getCurrentPath() == null) {
                         follower.followPath(pathChains.get(pathIndex));
                     }
                 case 9:
-                    if (currentStageStartTime > runtime.seconds() - hangDelay*2) {
+                case 16:
+                    if (currentStageStartTime > runtime.seconds() - hangDelay*3) {
                         intakeServo.setPosition(0.5);
-
                         specimenClawServo.setPosition(specimenClawOpen);
                     } else if (currentStageStartTime > runtime.seconds() - hangDelay) {
                         specimenClawServo.setPosition(specimenClawClosed);
+                        viperSlideMotor.setTargetPosition(liftTopBar);
 
                         if (follower.getCurrentPath() == null) {
                             follower.followPath(pathChains.get(pathIndex));
                         }
                     }
                 case 10:
+                case 17:
                     viperSlideMotor.setTargetPosition(liftTopBar);
                     intakeServo.setPosition(0.5);
 
@@ -319,8 +322,20 @@ public class AutoNew extends LinearOpMode {
                         follower.followPath(pathChains.get(pathIndex));
                     }
                 case 11:
+
                     if (currentStageStartTime > runtime.seconds() - hangDelay) {
-                       viperSlideMotor.setTargetPosition(engaged);
+                        viperSlideMotor.setTargetPosition(engaged);
+                        intakeServo.setPosition(0.5);
+                        viperSlideMotor.setTargetPosition(0);
+                    }
+                    else {
+                        if (follower.getCurrentPath() == null) {
+                            follower.followPath(pathChains.get(pathIndex));
+                        }
+                    }
+                case 18:
+                    if (currentStageStartTime > runtime.seconds() - hangDelay) {
+                        viperSlideMotor.setTargetPosition(engaged);
                         intakeServo.setPosition(0.5);
 
                     }
