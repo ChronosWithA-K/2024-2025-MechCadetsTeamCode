@@ -214,7 +214,7 @@ public class CustomHolonomicDrive extends LinearOpMode {
                         hangingMotorPosition = hangingMotorIn;
 
                     }
-                        wristServoPosition = wristLoad;
+                    wristServoPosition = wristLoad;
                     if (a) {
                         state = State.GRABBED;
                     } else if (b) {
