@@ -48,7 +48,7 @@ public class lol extends LinearOpMode {
     private Pose pushblockpt12 = new Pose(40, 0);
 
     private Pose pushblockpt2 = new Pose(12, 36);
-    private Pose pushblockpt3 = new Pose(12, 54, 0);
+    private Pose pushblockpt3 = new Pose(12, 52, 0);
     private Pose pushblockpt4 = new Pose(12, 55, 0);
 
     private Pose pushblockdone = new Pose(61, 55, Math.PI / 2);
