@@ -95,12 +95,12 @@ public class CustomHolonomicDrive extends LinearOpMode {
         // Declare initial positions for parts
         double extendServoPosition = 0.0;
         double bucketServoPosition = 0.0;
-        double intakeServoPosition = 1.0;
+        double intakeServoPosition = 0.0;
         double sampleClawServoPosition = 0.0;
         double wristServoPosition = 0.0;
         double specimenClawServoPosition = 0.0;
 
-        double leftHangingServoPosition = 1.0;
+        double leftHangingServoPosition = 0.0;
         double rightHangingServoPosition = 0.0;
 
         int viperSlideMotorPosition = 0;
@@ -130,6 +130,7 @@ public class CustomHolonomicDrive extends LinearOpMode {
 
         double intakeDown = 0.15;
         double intakeUp = 1;
+        double intakeStale = 0.3;
         double intakeOutOfWay = 0.5;
 
         double wristLoad = 0;
@@ -174,7 +175,7 @@ public class CustomHolonomicDrive extends LinearOpMode {
                         extendServoPosition = extendClosed;
                         wristServoPosition = wristDrop;
                         sampleClawServoPosition = sampleClawClosed;
-                        specimenClawServoPosition = specimenClawOpen;
+                        specimenClawServoPosition = specimenClawClosed;
                         leftHangingServoPosition = leftHangingServoUp;
                         rightHangingServoPosition = rightHangingServoUp;
                         hangingMotorPosition = hangingMotorIn;
@@ -182,15 +183,19 @@ public class CustomHolonomicDrive extends LinearOpMode {
                     }
                     viperSlideMotorPosition = liftDown;
 
+
+
                     if (a) {
                         state = State.EXTENDED;
                         wristTime = runtime.seconds();
                     } else if (y) {
                         state = State.PLACE_SPECIMEN_HIGH_BAR;
-                        safeTime = runtime.seconds();
+                        safeTime=runtime.seconds();
                     } else if (x) {
                         state = State.PLACE_SPECIMEN_LOW_BAR;
-                        safeTime = runtime.seconds();
+                        safeTime=runtime.seconds();
+
+
                     } else if (dpadUp) {
                         state = State.HANGING_ARMS_OUT;
                         hangingTime = runtime.seconds();
@@ -209,9 +214,7 @@ public class CustomHolonomicDrive extends LinearOpMode {
                         hangingMotorPosition = hangingMotorIn;
 
                     }
-
                     wristServoPosition = wristLoad;
-
                     if (a) {
                         state = State.GRABBED;
                     } else if (b) {
@@ -219,18 +222,19 @@ public class CustomHolonomicDrive extends LinearOpMode {
                     }
                     break;
                 case PLACE_SPECIMEN_HIGH_BAR:
-                    if (runtime.seconds() > safeTime + 0.5) {
+                    if (runtime.seconds() > safeTime+0.5) {
                         viperSlideMotorPosition = liftTopBar;
                         bucketServoPosition = bucketLoad;
                         extendServoPosition = extendClosed;
                         sampleClawServoPosition = sampleClawClosed;
-                        specimenClawServoPosition = specimenClawClosed;
+                        specimenClawServoPosition = specimenClawOpen;
                         leftHangingServoPosition = leftHangingServoUp;
                         rightHangingServoPosition = rightHangingServoUp;
                         hangingMotorPosition = hangingMotorIn;
                     }
                     intakeServoPosition = intakeOutOfWay;
                     wristServoPosition = wristLoad;
+
 
                     if (a || b) {
                         state = State.IDLE;
@@ -243,13 +247,14 @@ public class CustomHolonomicDrive extends LinearOpMode {
                         bucketServoPosition = bucketLoad;
                         extendServoPosition = extendClosed;
                         sampleClawServoPosition = sampleClawClosed;
-                        specimenClawServoPosition = specimenClawClosed;
+                        specimenClawServoPosition = specimenClawOpen;
                         leftHangingServoPosition = leftHangingServoUp;
                         rightHangingServoPosition = rightHangingServoUp;
                         hangingMotorPosition = hangingMotorIn;
                     }
                     wristServoPosition = wristLoad;
                     intakeServoPosition = intakeOutOfWay;
+
 
                     if (a || b) {
                         state = State.IDLE;
@@ -351,6 +356,7 @@ public class CustomHolonomicDrive extends LinearOpMode {
                     }
                     break;
                 case DROP_HIGH_BUCKET:
+
                     viperSlideMotorPosition = liftTopBucket;
                     bucketServoPosition = bucketDrop;
                     extendServoPosition = extendClosed;

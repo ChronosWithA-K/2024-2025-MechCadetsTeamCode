@@ -348,6 +348,7 @@ public class Follower {
     public void resetOffset() {
         poseUpdater.resetOffset();
     }
+    public void resetCurrentPath() {currentPath = null; }
 
     public void resetCurrentPath() {currentPath = null; }
 
@@ -415,6 +416,8 @@ public class Follower {
      *
      * @param pathChain the PathChain to follow.
      */
+
+    
     public void followPath(PathChain pathChain) {
         followPath(pathChain, false);
     }
