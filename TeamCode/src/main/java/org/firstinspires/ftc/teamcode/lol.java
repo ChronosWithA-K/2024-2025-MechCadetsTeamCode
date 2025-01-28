@@ -34,34 +34,23 @@ public class lol extends LinearOpMode {
     // uses global coordinate system
     private Pose startPose = new Pose(63, 24);
     private Pose preHangSpecimenPose = new Pose(35, 0);
-
-
     private Pose hangSpecimen2Pose = new Pose(31.39, 0);
-
-
     private Pose pickUpSpecimenPose = new Pose(63, 48, Math.PI);
-
     private Pose pushblockpt1 = new Pose(40, 36,0);
     private Pose pushblockpt12 = new Pose(40, 0,0);
-
     private Pose pushblockpt2 = new Pose(10, 35,0);
     private Pose pushblockpt3 = new Pose(10, 48, 0);
-
     private Pose pushblockdone = new Pose(58, 48, 0);
-
     private Pose retreat = new Pose(40, 48, Math.PI);
-
     private Pose finish = new Pose(62, 50, 0);
 
-
     private int pathIndex = 0;
+
     private ArrayList<PathChain> pathChains = new ArrayList<PathChain>();
 
     private ElapsedTime runtime = new ElapsedTime();
 
-
     private DcMotor viperSlideMotor = null;
-
 
     private Servo bucketServo = null;
     private Servo intakeServo = null;
@@ -70,7 +59,6 @@ public class lol extends LinearOpMode {
     private Servo specimenClawServo = null;
 
     public static double hangDelay = 0.5;
-
 
     private void addLine(Pose start, Pose end) {
         pathChains.add(follower.pathBuilder()
@@ -86,7 +74,6 @@ public class lol extends LinearOpMode {
                 .setLinearHeadingInterpolation(start.getHeading(), end.getHeading())
                 .build());
     }
-
 
     @Override
     public void runOpMode() {
@@ -149,8 +136,6 @@ public class lol extends LinearOpMode {
 //        addLine(pickUpSpecimenPose,preHangSpecimenPose); // pick to pre case18
 //        addLine(preHangSpecimenPose3,hangSpecimen3Pose); // pre to hang3 case19
 
-
-
         pathIndex = 0;
         follower.followPath(pathChains.get(pathIndex));
         waitForStart();
@@ -160,7 +145,6 @@ public class lol extends LinearOpMode {
         int liftTopBucket = 6180;
         int liftTopBar = 2890;
         int engaged = 1800;
-
 
         double specimenClawClosed = 0;
         double specimenClawOpen = 0.5;
@@ -227,8 +211,10 @@ public class lol extends LinearOpMode {
                     follower.resetCurrentPath();
                 }
             }
+
             telemetry.addData("currentStageStartTime : ", currentStageStartTime);
             telemetry.addData("runtime.seconds() : ", runtime.seconds());
+
             switch (pathIndex) {
                 case 0:
                     specimenClawServo.setPosition(specimenClawClosed);
@@ -402,7 +388,6 @@ public class lol extends LinearOpMode {
 //                        follower.followPath(pathChains.get(pathIndex));
 //                    }
 //                    telemetry.addLine("Stage Pre 16");
-
             }
             telemetry.update();
         }
