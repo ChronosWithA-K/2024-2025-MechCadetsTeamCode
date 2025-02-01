@@ -3,7 +3,7 @@ package common;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-public class SimpleDrive extends Thread{
+public class SimpleDrive extends Thread {
 
     private DcMotor leftFrontDrive = null;
     private DcMotor leftBackDrive = null;
@@ -17,8 +17,7 @@ public class SimpleDrive extends Thread{
         init();
     }
 
-    private void init(){
-
+    private void init() {
         leftFrontDrive = opMode.hardwareMap.get(DcMotor.class, "left_front");
         leftBackDrive = opMode.hardwareMap.get(DcMotor.class, "left_back");
         rightFrontDrive = opMode.hardwareMap.get(DcMotor.class, "right_front");
@@ -37,8 +36,6 @@ public class SimpleDrive extends Thread{
         while (!opMode.isStarted()) Thread.yield();
 
         while (opMode.opModeIsActive()) {
-
-
             double axial = -opMode.gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
             double lateral = opMode.gamepad1.left_stick_x;
             double yaw = opMode.gamepad1.right_stick_x;
@@ -72,12 +69,16 @@ public class SimpleDrive extends Thread{
                 rightBackPower /= max;
             }
 
-            // If right trigger pressed enter half speed
-            if (opMode.gamepad1.left_trigger > 0) {
+            if (opMode.gamepad1.left_bumper) {
                 leftFrontPower /= 2;
                 rightFrontPower /= 2;
                 leftBackPower /= 2;
                 rightBackPower /= 2;
+            } else if (opMode.gamepad1.left_trigger > 0) {
+                leftFrontPower /= 4;
+                rightFrontPower /= 4;
+                leftBackPower /= 4;
+                rightBackPower /= 4;
             }
 
             // Send calculated power to wheels
