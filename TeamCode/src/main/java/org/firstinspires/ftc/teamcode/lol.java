@@ -240,7 +240,7 @@ public class lol extends LinearOpMode {
                     }
                     break;
                 case 3:
-                    if (currentStageStartTime > runtime.seconds() - hangDelay) {
+                    if (currentStageStartTime > runtime.seconds() - hangDelay/2) {
                         viperSlideMotor.setTargetPosition(0);
                     } else {
                         specimenClawServo.setPosition(specimenClawClosed);
@@ -307,8 +307,8 @@ public class lol extends LinearOpMode {
                     }
                     break;
                 case 9:
-                    if (currentStageStartTime > runtime.seconds() - hangDelay) {
-                            specimenClawServo.setPosition(specimenClawOpen);
+                    if (currentStageStartTime > runtime.seconds() - hangDelay/2) {
+                            specimenClawServo.setPosition(specimenClawClosed);
 
                     } else {
                         specimenClawServo.setPosition(specimenClawClosed);
