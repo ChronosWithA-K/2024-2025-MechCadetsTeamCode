@@ -36,22 +36,22 @@ public class lol extends LinearOpMode {
     private Pose preHangSpecimenPose = new Pose(35, 0);
 
 
-    private Pose hangSpecimen2Pose = new Pose(31.39, 0);
+    private Pose hangSpecimen2Pose = new Pose(31.5, 0);
 
 
-    private Pose pickUpSpecimenPose = new Pose(63, 48, Math.PI);
+    private Pose pickUpSpecimenPose = new Pose(61, 48, Math.PI);
 
     private Pose pushblockpt1 = new Pose(40, 36,0);
     private Pose pushblockpt12 = new Pose(40, 0,0);
 
-    private Pose pushblockpt2 = new Pose(10, 35,0);
-    private Pose pushblockpt3 = new Pose(10, 48, 0);
+    private Pose pushblockpt2 = new Pose(10, 35,Math.PI);
+    private Pose pushblockpt3 = new Pose(10, 48, Math.PI);
 
-    private Pose pushblockdone = new Pose(58, 48, 0);
+    private Pose pushblockdone = new Pose(58, 48, Math.PI);
 
     private Pose retreat = new Pose(40, 48, Math.PI);
 
-    private Pose finish = new Pose(62, 50, 0);
+    private Pose finish = new Pose(62.5, 50, 0);
 
 
     private int pathIndex = 0;
@@ -140,14 +140,8 @@ public class lol extends LinearOpMode {
         addLine(retreat,pickUpSpecimenPose); // retreat to pick case9
         addLine(pickUpSpecimenPose,preHangSpecimenPose); // pick to pre case10
         addLine(preHangSpecimenPose,hangSpecimen2Pose); // pre to hang3 case11
-//        addLine(hangSpecimen3Pose,pushblockpt12); // pre to hang3 case12
-//        addLine(pushblockpt1, pushblockpt2); // pt1 to pt2 case13
-//        addLine(pushblockpt2, pushblockpt4); // pt2 to pt3 case14
-//        addLine(pushblockpt4,pushblockdone); // pt3 to deliver case15
-//        addLine(pushblockdone,retreat); // deliver to retreat case16
-//        addLine(retreat,pickUpSpecimenPose); // retreat to pick case17
-//        addLine(pickUpSpecimenPose,preHangSpecimenPose); // pick to pre case18
-//        addLine(preHangSpecimenPose3,hangSpecimen3Pose); // pre to hang3 case19
+        addLine(hangSpecimen2Pose,pushblockdone);
+
 
 
 
@@ -229,6 +223,7 @@ public class lol extends LinearOpMode {
             }
             telemetry.addData("currentStageStartTime : ", currentStageStartTime);
             telemetry.addData("runtime.seconds() : ", runtime.seconds());
+            telemetry.addData("pathIndex : ", pathIndex);
             switch (pathIndex) {
                 case 0:
                     specimenClawServo.setPosition(specimenClawClosed);
@@ -252,7 +247,7 @@ public class lol extends LinearOpMode {
                         viperSlideMotor.setTargetPosition(engaged);
                         telemetry.addLine("Stage Prep finished");
                         telemetry.addData("runtime.seconds() + hangDelay", runtime.seconds() - hangDelay);
-                    } else if (currentStageStartTime > runtime.seconds() - hangDelay*2) {
+                    } else if (currentStageStartTime > runtime.seconds() - hangDelay * 2) {
                         specimenClawServo.setPosition(specimenClawOpen);
                         viperSlideMotor.setTargetPosition(0);
                     } else {
@@ -274,7 +269,7 @@ public class lol extends LinearOpMode {
                     }
                     break;
                 case 4:
-                    if (currentStageStartTime > runtime.seconds() - hangDelay*1) {
+                    if (currentStageStartTime > runtime.seconds() - hangDelay * 1) {
                         viperSlideMotor.setTargetPosition(0);
                     } else {
                         specimenClawServo.setPosition(specimenClawClosed);
@@ -310,7 +305,7 @@ public class lol extends LinearOpMode {
                     if (currentStageStartTime > runtime.seconds() - hangDelay) {
                         viperSlideMotor.setTargetPosition(0);
                     } else {
-                        specimenClawServo.setPosition(specimenClawClosed);
+                        specimenClawServo.setPosition(specimenClawOpen);
                         if (follower.getCurrentPath() == null) {
                             follower.followPath(pathChains.get(pathIndex));
                         }
@@ -320,6 +315,7 @@ public class lol extends LinearOpMode {
                 case 8:
                     if (currentStageStartTime > runtime.seconds() - hangDelay) {
                         viperSlideMotor.setTargetPosition(0);
+                        specimenClawServo.setPosition(specimenClawOpen);
                     } else {
                         specimenClawServo.setPosition(specimenClawClosed);
                         if (follower.getCurrentPath() == null) {
@@ -330,9 +326,11 @@ public class lol extends LinearOpMode {
                     break;
                 case 9:
                     if (currentStageStartTime > runtime.seconds() - hangDelay) {
-                        viperSlideMotor.setTargetPosition(0);
+                            specimenClawServo.setPosition(specimenClawOpen);
+
                     } else {
                         specimenClawServo.setPosition(specimenClawClosed);
+                        viperSlideMotor.setTargetPosition(liftTopBar);
                         if (follower.getCurrentPath() == null) {
                             follower.followPath(pathChains.get(pathIndex));
                         }
@@ -340,69 +338,40 @@ public class lol extends LinearOpMode {
                     }
                     break;
                 case 10:
-                    if (currentStageStartTime > runtime.seconds() - hangDelay) {
-                        viperSlideMotor.setTargetPosition(0);
-                    } else {
                         specimenClawServo.setPosition(specimenClawClosed);
                         if (follower.getCurrentPath() == null) {
                             follower.followPath(pathChains.get(pathIndex));
                         }
                         telemetry.addLine("Stage Pre 1");
-                    }
+
                     break;
                 case 11:
                     if (currentStageStartTime > runtime.seconds() - hangDelay) {
+                        viperSlideMotor.setTargetPosition(engaged);
+                        telemetry.addLine("Stage Prep finished");
+                        telemetry.addData("runtime.seconds() + hangDelay", runtime.seconds() - hangDelay);
+                    } else if (currentStageStartTime > runtime.seconds() - hangDelay * 2) {
+                        specimenClawServo.setPosition(specimenClawOpen);
                         viperSlideMotor.setTargetPosition(0);
                     } else {
-                        specimenClawServo.setPosition(specimenClawClosed);
+                        telemetry.addLine("Stage Hang");
                         if (follower.getCurrentPath() == null) {
                             follower.followPath(pathChains.get(pathIndex));
                         }
-                        telemetry.addLine("Stage Pre 1");
                     }
-                    break;
-//                case 12:
-//                    if (follower.getCurrentPath() == null) {
-//                        follower.followPath(pathChains.get(pathIndex));
-//                    }
-//                    telemetry.addLine("Stage Pre 10");
-//
-//                case 13 :
-//                    if (follower.getCurrentPath() == null) {
-//                        follower.followPath(pathChains.get(pathIndex));
-//                    }
-//                    telemetry.addLine("Stage Pre 11");
-//
-//                case 14:
-//                    if (follower.getCurrentPath() == null) {
-//                        follower.followPath(pathChains.get(pathIndex));
-//                    }
-//                    telemetry.addLine("Stage Pre 12");
-//
-//                case 15:
-//                    if (follower.getCurrentPath() == null) {
-//                        follower.followPath(pathChains.get(pathIndex));
-//                    }
-//                    telemetry.addLine("Stage Pre 13");
-//
-//                case 16:
-//                    if (follower.getCurrentPath() == null) {
-//                        follower.followPath(pathChains.get(pathIndex));
-//                    }
-//                    telemetry.addLine("Stage Pre 14");
-//
-//                case 17:
-//                    if (follower.getCurrentPath() == null) {
-//                        follower.followPath(pathChains.get(pathIndex));
-//                    }
-//                    telemetry.addLine("Stage Pre 15");
-//
-//                case 18:
-//                    if (follower.getCurrentPath() == null) {
-//                        follower.followPath(pathChains.get(pathIndex));
-//                    }
-//                    telemetry.addLine("Stage Pre 16");
+                case 12:
+                    if (currentStageStartTime > runtime.seconds() - hangDelay*5) {
+                        viperSlideMotor.setTargetPosition(0);
+                        intakeServo.setPosition(0.5);
 
+                    }
+                    else {
+                        intakeServo.setPosition(1);
+                        wristServo.setPosition(1);
+                        if (follower.getCurrentPath() == null) {
+                            follower.followPath(pathChains.get(pathIndex));
+                        }
+                    }
             }
             telemetry.update();
         }
