@@ -174,12 +174,13 @@ public class CustomHolonomicDrive extends LinearOpMode {
                         extendServoPosition = extendClosed;
                         wristServoPosition = wristDrop;
                         sampleClawServoPosition = sampleClawClosed;
-                        specimenClawServoPosition = specimenClawOpen;
+                        specimenClawServoPosition = specimenClawClosed;
                         leftHangingServoPosition = leftHangingServoUp;
                         rightHangingServoPosition = rightHangingServoUp;
                         hangingMotorPosition = hangingMotorIn;
                         intakeServoPosition = intakeUp;
                     }
+
                     viperSlideMotorPosition = liftDown;
 
                     if (a) {
@@ -187,10 +188,10 @@ public class CustomHolonomicDrive extends LinearOpMode {
                         wristTime = runtime.seconds();
                     } else if (y) {
                         state = State.PLACE_SPECIMEN_HIGH_BAR;
-                        safeTime = runtime.seconds();
+                        safeTime=runtime.seconds();
                     } else if (x) {
                         state = State.PLACE_SPECIMEN_LOW_BAR;
-                        safeTime = runtime.seconds();
+                        safeTime=runtime.seconds();
                     } else if (dpadUp) {
                         state = State.HANGING_ARMS_OUT;
                         hangingTime = runtime.seconds();
@@ -207,7 +208,6 @@ public class CustomHolonomicDrive extends LinearOpMode {
                         leftHangingServoPosition = leftHangingServoUp;
                         rightHangingServoPosition = rightHangingServoUp;
                         hangingMotorPosition = hangingMotorIn;
-
                     }
 
                     wristServoPosition = wristLoad;
@@ -219,16 +219,17 @@ public class CustomHolonomicDrive extends LinearOpMode {
                     }
                     break;
                 case PLACE_SPECIMEN_HIGH_BAR:
-                    if (runtime.seconds() > safeTime + 0.5) {
+                    if (runtime.seconds() > safeTime+0.5) {
                         viperSlideMotorPosition = liftTopBar;
                         bucketServoPosition = bucketLoad;
                         extendServoPosition = extendClosed;
                         sampleClawServoPosition = sampleClawClosed;
-                        specimenClawServoPosition = specimenClawClosed;
+                        specimenClawServoPosition = specimenClawOpen;
                         leftHangingServoPosition = leftHangingServoUp;
                         rightHangingServoPosition = rightHangingServoUp;
                         hangingMotorPosition = hangingMotorIn;
                     }
+
                     intakeServoPosition = intakeOutOfWay;
                     wristServoPosition = wristLoad;
 
@@ -243,11 +244,12 @@ public class CustomHolonomicDrive extends LinearOpMode {
                         bucketServoPosition = bucketLoad;
                         extendServoPosition = extendClosed;
                         sampleClawServoPosition = sampleClawClosed;
-                        specimenClawServoPosition = specimenClawClosed;
+                        specimenClawServoPosition = specimenClawOpen;
                         leftHangingServoPosition = leftHangingServoUp;
                         rightHangingServoPosition = rightHangingServoUp;
                         hangingMotorPosition = hangingMotorIn;
                     }
+
                     wristServoPosition = wristLoad;
                     intakeServoPosition = intakeOutOfWay;
 
@@ -342,6 +344,7 @@ public class CustomHolonomicDrive extends LinearOpMode {
                     if (runtime.seconds() > liftedTime + 0.5) {
                         wristServoPosition = wristOutOfWay;
                     }
+
                     sampleClawServoPosition = sampleClawOpen;
 
                     if (a) {
@@ -384,7 +387,6 @@ public class CustomHolonomicDrive extends LinearOpMode {
                     if (a) {
                         state = State.IDLE;
                         safeTime = runtime.seconds();
-
                     }
                     if (b) {
                         state = State.LIFTED_LOW_BUCKET;
