@@ -93,7 +93,7 @@ public class lol extends LinearOpMode {
     public void runOpMode() {
         follower = new Follower(hardwareMap);
         follower.setStartingPose(startPose);
-        follower.setMaxPower(0.5);
+        follower.setMaxPower(0.7);
 
         viperSlideMotor = hardwareMap.get(DcMotor.class, "viper_slide_motor");
 
@@ -300,7 +300,7 @@ public class lol extends LinearOpMode {
                         if (follower.getCurrentPath() == null) {
                             follower.followPath(pathChains.get(pathIndex));
                         }
-                        telemetry.addLine("Stage deliever");
+                        telemetry.addLine("Stage deliver");
                     }
                     break;
                 case 7:
