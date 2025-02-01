@@ -27,52 +27,32 @@ import java.util.List;
 public class lol extends LinearOpMode {
 
     private IMU imu = null;
-
     private Limelight3A limelight;
-
     private Follower follower;
+
     // uses global coordinate system
     private Pose startPose = new Pose(63, 24);
     private Pose preHangSpecimenPose = new Pose(35, 0);
     private Pose precheck = new Pose(35, 10, 0);
-
-
     private Pose hangSpecimen2Pose = new Pose(31.5, 0);
-
-
     private Pose pickUpSpecimenPose = new Pose(61, 48, Math.PI);
-
     private Pose pushblockpt1 = new Pose(40, 36,0);
     private Pose pushblockpt12 = new Pose(40, 0,0);
-
     private Pose pushblockpt2 = new Pose(10, 35,Math.PI);
     private Pose pushblockpt3 = new Pose(10, 48, Math.PI);
-
     private Pose pushblockdone = new Pose(58, 48, Math.PI);
-
     private Pose retreat = new Pose(40, 48, Math.PI);
-
     private Pose finish = new Pose(62.5, 50, 0);
-
 
     private int pathIndex = 0;
     private ArrayList<PathChain> pathChains = new ArrayList<PathChain>();
-
     private ElapsedTime runtime = new ElapsedTime();
-
-
     private DcMotor viperSlideMotor = null;
-
-
     private Servo bucketServo = null;
     private Servo intakeServo = null;
-
     private Servo wristServo = null;
     private Servo specimenClawServo = null;
-
     public static double hangDelay = 0.5;
-
-
     private void addLine(Pose start, Pose end) {
         pathChains.add(follower.pathBuilder()
                 .addPath(
@@ -93,7 +73,7 @@ public class lol extends LinearOpMode {
     public void runOpMode() {
         follower = new Follower(hardwareMap);
         follower.setStartingPose(startPose);
-        follower.setMaxPower(0.7);
+        follower.setMaxPower(0.8);
 
         viperSlideMotor = hardwareMap.get(DcMotor.class, "viper_slide_motor");
 
@@ -271,7 +251,7 @@ public class lol extends LinearOpMode {
                     }
                     break;
                 case 4:
-                    if (currentStageStartTime > runtime.seconds() - hangDelay * 1) {
+                    if (currentStageStartTime > runtime.seconds() - hangDelay/2) {
                         viperSlideMotor.setTargetPosition(0);
                     } else {
                         specimenClawServo.setPosition(specimenClawClosed);
@@ -282,7 +262,7 @@ public class lol extends LinearOpMode {
                     }
                     break;
                 case 5:
-                    if (currentStageStartTime > runtime.seconds() - hangDelay) {
+                    if (currentStageStartTime > runtime.seconds() - hangDelay/2) {
                         viperSlideMotor.setTargetPosition(0);
                     } else {
                         specimenClawServo.setPosition(specimenClawClosed);
@@ -293,7 +273,7 @@ public class lol extends LinearOpMode {
                     }
                     break;
                 case 6:
-                    if (currentStageStartTime > runtime.seconds() - hangDelay) {
+                    if (currentStageStartTime > runtime.seconds() - hangDelay/2) {
                         viperSlideMotor.setTargetPosition(0);
                     } else {
                         specimenClawServo.setPosition(specimenClawClosed);
@@ -304,7 +284,7 @@ public class lol extends LinearOpMode {
                     }
                     break;
                 case 7:
-                    if (currentStageStartTime > runtime.seconds() - hangDelay) {
+                    if (currentStageStartTime > runtime.seconds() - hangDelay/2) {
                         viperSlideMotor.setTargetPosition(0);
                     } else {
                         specimenClawServo.setPosition(specimenClawOpen);
